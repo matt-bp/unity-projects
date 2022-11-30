@@ -26,7 +26,6 @@ public class MouseLook : MonoBehaviour
     {
         if (axes == RotationAxes.MouseX)
         {
-            
             // horizontal rotation here
             var speed = Input.GetAxis("Mouse X") * sensitivityHor;
             transform.Rotate(0, speed, 0);
