@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class MouseLook : MonoBehaviour
 {
-    // Start is called before the first frame update
     public enum RotationAxes
     {
         MouseXAndY = 0,
@@ -21,8 +20,17 @@ public class MouseLook : MonoBehaviour
 
     private float verticalRot = 0;
 
+    private void Start()
+    {
+        var body = GetComponent<Rigidbody>();
+        if (body != null)
+        {
+            body.freezeRotation = true;
+        }
+    }
+
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if (axes == RotationAxes.MouseX)
         {
@@ -43,6 +51,13 @@ public class MouseLook : MonoBehaviour
         else
         {
             // both horizontal and vertical rotation here
+            verticalRot -= Input.GetAxis("Mouse Y") * sensitivityVert;
+            verticalRot = Mathf.Clamp(verticalRot, minVert, maxVert);
+
+            var delta = Input.GetAxis("Mouse X") * sensitivityHor;
+            var horizontalRot = transform.localEulerAngles.y + delta;
+
+            transform.localEulerAngles = new Vector3(verticalRot, horizontalRot, 0);
         }
     }
 }
