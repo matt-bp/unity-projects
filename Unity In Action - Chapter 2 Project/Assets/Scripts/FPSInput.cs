@@ -26,6 +26,7 @@ public class FPSInput : MonoBehaviour
 
         movement.y = gravity;
         movement *= Time.deltaTime;
+        // Moving from local to global coordinate space
         movement = transform.TransformDirection(movement);
         _characterController.Move(movement);
     }
