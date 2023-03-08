@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class RayShooter : MonoBehaviour
@@ -36,8 +37,17 @@ public class RayShooter : MonoBehaviour
 
             if (Physics.Raycast(ray, out var hit))
             {
-                // Debug.Log("Hit " + hit.point);
-                StartCoroutine(SphereIndicator(hit.point));
+                var hitObject = hit.transform.GameObject();
+                var target = hitObject.GetComponent<ReactiveTarget>();
+
+                if (target != null)
+                {
+                    target.ReactToHit();
+                }
+                else
+                {
+                    StartCoroutine(SphereIndicator(hit.point));
+                }
             }
         }
     }
