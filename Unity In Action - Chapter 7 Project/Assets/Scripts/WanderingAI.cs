@@ -7,6 +7,7 @@ using Random = UnityEngine.Random;
 public class WanderingAI : MonoBehaviour
 {
     public float speed = 3.0f;
+    public float baseSpeed = 3.0f;
     public float obstacleRange = 5.0f;
     public bool IsAlive { private get; set; }
     [SerializeField] private GameObject fireballPrefab;
@@ -45,5 +46,20 @@ public class WanderingAI : MonoBehaviour
             var angle = Random.Range(-110, 110);
             transform.Rotate(0, angle, 0);
         }
+    }
+
+    private void OnEnable()
+    {
+        Messenger<float>.AddListener(GameEvent.SPEED_CHANGED, OnSpeedChanged);
+    }
+
+    private void OnDisable()
+    {
+        Messenger<float>.RemoveListener(GameEvent.SPEED_CHANGED, OnSpeedChanged);
+    }
+
+    private void OnSpeedChanged(float value)
+    {
+        speed = baseSpeed * value;
     }
 }
