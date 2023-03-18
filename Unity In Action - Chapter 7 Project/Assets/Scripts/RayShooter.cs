@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class RayShooter : MonoBehaviour
 {
@@ -13,8 +14,8 @@ public class RayShooter : MonoBehaviour
     {
         _camera = GetComponent<Camera>();
 
-        Cursor.lockState = CursorLockMode.Locked; // Cursor stays in the center of the screen
-        Cursor.visible = false;
+        // Cursor.lockState = CursorLockMode.Locked; // Cursor stays in the center of the screen
+        // Cursor.visible = false;
     }
 
     // Runs every frame after the 3D scene is rendered
@@ -30,7 +31,7 @@ public class RayShooter : MonoBehaviour
     private void Update()
     {
         // Left (first) mouse button
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
         {
             var point = new Vector3(_camera.pixelWidth / 2, _camera.pixelHeight / 2, 0);
             var ray = _camera.ScreenPointToRay(point);
