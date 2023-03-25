@@ -61,7 +61,9 @@ public class MassSpringCloth : MonoBehaviour
     {
         var springForceY = -k * (_positions[0].y - _positions[2].y);
 
-        _force0y = springForceY + mass0 * gravity;
+        var dampingForceY = dampingCoef * _velocity0y;
+        
+        _force0y = springForceY + mass0 * gravity - dampingForceY;
 
         var a = _force0y / mass0;
 
