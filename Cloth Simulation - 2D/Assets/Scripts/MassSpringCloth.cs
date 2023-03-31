@@ -17,6 +17,7 @@ public class MassSpringCloth : MonoBehaviour
     private Mesh _mesh;
     private Vector3[] _positions;
     private Vector2[] _velocities;
+    private Vector2[] _forces;
     private GameObject[] _hints;
 
     #endregion
@@ -37,6 +38,7 @@ public class MassSpringCloth : MonoBehaviour
         _positions[0].x -= 2.0f;
         
         _velocities = Enumerable.Range(0, _positions.Length).Select(_ => Vector2.zero).ToArray();
+        _forces = Enumerable.Range(0, _positions.Length).Select(_ => Vector2.zero).ToArray();
 
         _hints = new GameObject[_mesh.vertexCount];
 
@@ -58,6 +60,8 @@ public class MassSpringCloth : MonoBehaviour
 
     private void SimulationStep()
     {
+        _forces = _forces.Select(x => Vector2.zero).ToArray();
+        
         // Compute forces
         var springForceY = -K * (_positions[0].y - _positions[2].y);
         var springForceX = -K * (_positions[0].x - _positions[2].x); 
@@ -65,15 +69,14 @@ public class MassSpringCloth : MonoBehaviour
         var dampingForceY = DampingCoef * _velocities[0].y;
         var dampingForceX = DampingCoef * _velocities[0].x;
 
-        var force0Y = springForceY + Mass * Gravity - dampingForceY;
-        var force0X = springForceX - dampingForceX;
+        _forces[0] = new Vector2(springForceX - dampingForceX, springForceY + Mass * Gravity - dampingForceY);
 
         // Calculate new velocities and positions
-        var a0Y = force0Y / Mass;
+        var a0Y = _forces[0].y / Mass;
         _velocities[0].y += a0Y * Time.deltaTime;
         _positions[0].y += _velocities[0].y * Time.deltaTime;
 
-        var a0X = force0X / Mass;
+        var a0X = _forces[0].x / Mass;
         _velocities[0].x += a0X * Time.deltaTime;
         _positions[0].x += _velocities[0].x * Time.deltaTime;
     }
