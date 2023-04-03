@@ -71,13 +71,19 @@ public class MassSpringCloth : MonoBehaviour
 
         _forces[0] = new Vector2(springForceX - dampingForceX, springForceY + Mass * Gravity - dampingForceY);
 
+
+        var acceleration = new Vector2(_forces[0].x / Mass, _forces[0].y / Mass);
+        // _velocities[0] += acceleration * Time.deltaTime;
+        // var pos = _velocities[0] * Time.deltaTime;
+        // _positions[0] += new Vector3(pos.x, pos.y, _positions[0].z);
+        
         // Calculate new velocities and positions
-        var a0Y = _forces[0].y / Mass;
-        _velocities[0].y += a0Y * Time.deltaTime;
+        // var a0Y = _forces[0].y / Mass;
+        _velocities[0].y += acceleration.y * Time.deltaTime;
         _positions[0].y += _velocities[0].y * Time.deltaTime;
 
-        var a0X = _forces[0].x / Mass;
-        _velocities[0].x += a0X * Time.deltaTime;
+        // var a0X = _forces[0].x / Mass;
+        _velocities[0].x += acceleration.x * Time.deltaTime;
         _positions[0].x += _velocities[0].x * Time.deltaTime;
     }
 
