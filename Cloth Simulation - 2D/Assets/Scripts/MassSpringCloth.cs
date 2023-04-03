@@ -38,7 +38,7 @@ public class MassSpringCloth : MonoBehaviour
     {
         _mesh = GetComponent<MeshFilter>().mesh;
         _positions = _mesh.vertices;
-        _positions[0].x -= 2.0f;
+        _positions[0].x -= 0.5f;
 
         _anchors[2] = true;
         _anchors[3] = true;
@@ -68,12 +68,16 @@ public class MassSpringCloth : MonoBehaviour
     {
         ComputeForces();
 
-        var acceleration = new Vector2(_forces[0].x / Mass, _forces[0].y / Mass);
-        _velocities[0] += acceleration * Time.deltaTime;
-        _positions[0] += new Vector3(
-            _velocities[0].x * Time.deltaTime,
-            _velocities[0].y * Time.deltaTime,
-            0);
+        // Update velocities * positions
+        for (var i = 0; i < _forces.Length; i++)
+        {
+            var acceleration = new Vector2(_forces[i].x / Mass, _forces[i].y / Mass);
+            _velocities[i] += acceleration * Time.deltaTime;
+            _positions[i] += new Vector3(
+                _velocities[i].x * Time.deltaTime,
+                _velocities[i].y * Time.deltaTime,
+                0);
+        }
     }
 
     private bool IsAnchor(int index)
@@ -93,14 +97,16 @@ public class MassSpringCloth : MonoBehaviour
             _forces[i].y = massGravity;
         }
 
-        // for (var i = 0; i < _mesh.triangles.Length; i += 3)
-        // {
-        //     ComputeForceForPair(i, i + 1);
-        //     ComputeForceForPair(i + 1, i + 2);
-        //     ComputeForceForPair(i + 2, i);
-        // }
-
-        ComputeForceForPair(0, 2);
+        for (var i = 0; i < _mesh.triangles.Length; i += 3)
+        {
+            var triangles = _mesh.triangles;
+            ComputeForceForPair(triangles[i], triangles[i + 1]);
+            ComputeForceForPair(triangles[i + 1], triangles[i + 2]);
+            ComputeForceForPair(triangles[i + 2], triangles[i]);
+        }
+        
+        // This now works independent of the order of vertices
+        // ComputeForceForPair(2, 0);
     }
 
     private void ComputeForceForPair(int first, int second)
