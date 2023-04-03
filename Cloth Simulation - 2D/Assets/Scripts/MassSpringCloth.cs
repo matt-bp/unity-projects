@@ -78,10 +78,9 @@ public class MassSpringCloth : MonoBehaviour
         var springForceY = -K * (_positions[0].y - _positions[2].y);
         var springForceX = -K * (_positions[0].x - _positions[2].x);
 
-        var dampingForceY = DampingCoef * _velocities[0].y;
-        var dampingForceX = DampingCoef * _velocities[0].x;
+        var dampingForce = DampingCoef * _velocities[0];
 
-        _forces[0] = new Vector2(springForceX - dampingForceX, springForceY + Mass * Gravity - dampingForceY);
+        _forces[0] = new Vector2(springForceX - dampingForce.x, springForceY + Mass * Gravity - dampingForce.y);
     }
 
     #endregion
