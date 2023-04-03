@@ -40,6 +40,7 @@ public class MassSpringCloth : MonoBehaviour
         _positions[0].x -= 2.0f;
 
         _anchors[2] = true;
+        _anchors[3] = true;
 
         _velocities = Enumerable.Range(0, _positions.Length).Select(_ => Vector2.zero).ToArray();
         _forces = Enumerable.Range(0, _positions.Length).Select(_ => Vector2.zero).ToArray();
@@ -74,7 +75,7 @@ public class MassSpringCloth : MonoBehaviour
             0);
     }
 
-    private bool isAnchor(int index)
+    private bool IsAnchor(int index)
     {
         return _anchors.TryGetValue(index, out var isAnchor);
     }
@@ -86,45 +87,43 @@ public class MassSpringCloth : MonoBehaviour
         // Set gravity contribution
         for (var i = 0; i < _forces.Length; i++)
         {
-            if (isAnchor(i)) continue;
+            if (IsAnchor(i)) continue;
             var massGravity = Gravity * Mass;
             _forces[i].y = massGravity;
         }
 
         // for (var i = 0; i < _mesh.triangles.Length; i += 3)
         // {
-        //     
+        //     ComputeForceForPair(i, i + 1);
+        //     ComputeForceForPair(i + 1, i + 2);
+        //     ComputeForceForPair(i + 2, i);
         // }
 
         ComputeForceForPair(0, 2);
-
-
-        // Compute forces
-        // var springForceY = -K * (_positions[0].y - _positions[2].y);
-        // var springForceX = -K * (_positions[0].x - _positions[2].x);
-        //
-        // var dampingForce = DampingCoef * _velocities[0];
-        //
-        // _forces[0] = new Vector2(springForceX - dampingForce.x, springForceY + Mass * Gravity - dampingForce.y);
     }
 
     private void ComputeForceForPair(int first, int second)
     {
         var springForce = -K * new Vector2(
-            _positions[0].x - _positions[2].x,
-            _positions[0].y - _positions[2].y);
+            _positions[first].x - _positions[second].x,
+            _positions[first].y - _positions[second].y);
+        
+        var dampingForce = GetDampingForce(_velocities[first], _velocities[second]);
 
-        var dampingForce = DampingCoef * _velocities[0];
-
-        if (!isAnchor(first))
+        if (!IsAnchor(first))
         {
-            _forces[first] += springForce - dampingForce;
+            _forces[first] += springForce + dampingForce;
         }
 
-        if (!isAnchor(second))
+        if (!IsAnchor(second))
         {
-            _forces[second] -= springForce - dampingForce;
+            _forces[second] -= springForce + dampingForce;
         }
+    }
+
+    private Vector2 GetDampingForce(Vector2 velocity1, Vector2 velocity2)
+    {
+        return -DampingCoef * (velocity1 - velocity2);
     }
 
     #endregion
