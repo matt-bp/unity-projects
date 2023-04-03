@@ -60,6 +60,18 @@ public class MassSpringCloth : MonoBehaviour
 
     private void SimulationStep()
     {
+        ComputeForces();
+
+        var acceleration = new Vector2(_forces[0].x / Mass, _forces[0].y / Mass);
+        _velocities[0] += acceleration * Time.deltaTime;
+        _positions[0] += new Vector3(
+            _velocities[0].x * Time.deltaTime,
+            _velocities[0].y * Time.deltaTime,
+            0);
+    }
+
+    private void ComputeForces()
+    {
         _forces = _forces.Select(x => Vector2.zero).ToArray();
 
         // Compute forces
@@ -70,14 +82,6 @@ public class MassSpringCloth : MonoBehaviour
         var dampingForceX = DampingCoef * _velocities[0].x;
 
         _forces[0] = new Vector2(springForceX - dampingForceX, springForceY + Mass * Gravity - dampingForceY);
-
-
-        var acceleration = new Vector2(_forces[0].x / Mass, _forces[0].y / Mass);
-        _velocities[0] += acceleration * Time.deltaTime;
-        _positions[0] += new Vector3(
-            _velocities[0].x * Time.deltaTime,
-            _velocities[0].y * Time.deltaTime,
-            0);
     }
 
     #endregion
