@@ -30,6 +30,7 @@ public class MassSpringCloth : MonoBehaviour
     private const float DampingCoef = 1.0f;
     private const float Gravity = -10.0f;
     private const int Mass = 1;
+    private const float RestLength = 0.5f;
 
     #endregion
 
@@ -104,21 +105,26 @@ public class MassSpringCloth : MonoBehaviour
 
     private void ComputeForceForPair(int first, int second)
     {
-        var springForce = -K * new Vector2(
-            _positions[first].x - _positions[second].x,
-            _positions[first].y - _positions[second].y);
+        var springForce = GetSpringForce(_positions[first], _positions[second]);
         
         var dampingForce = GetDampingForce(_velocities[first], _velocities[second]);
 
         if (!IsAnchor(first))
         {
-            _forces[first] += springForce + dampingForce;
+            _forces[first] -= springForce - dampingForce;
         }
 
         if (!IsAnchor(second))
         {
-            _forces[second] -= springForce + dampingForce;
+            _forces[second] += springForce - dampingForce;
         }
+    }
+
+    private Vector2 GetSpringForce(Vector3 position1, Vector3 position2)
+    {
+        var distance = Vector3.Distance(position1, position2);
+        var force3 = K * (distance - RestLength) * ((position1 - position2) / distance);
+        return new Vector2(force3.x, force3.y);
     }
 
     private Vector2 GetDampingForce(Vector2 velocity1, Vector2 velocity2)
