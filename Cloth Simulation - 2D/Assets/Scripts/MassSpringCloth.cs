@@ -10,6 +10,7 @@ public class MassSpringCloth : MonoBehaviour
     #region Editor Fields
 
     [SerializeField] private GameObject vertexNotification;
+    public bool isEnabled = false;
 
     #endregion
 
@@ -29,8 +30,8 @@ public class MassSpringCloth : MonoBehaviour
     private const int K = 7;
     private const float DampingCoef = 1.0f;
     private const float Gravity = -10.0f;
-    private const int Mass = 1;
-    private const float RestLength = 0.5f;
+    private const float Mass = 0.5f;
+    private const float RestLength = 0.2f;
 
     #endregion
 
@@ -38,7 +39,7 @@ public class MassSpringCloth : MonoBehaviour
     {
         _mesh = GetComponent<MeshFilter>().mesh;
         _positions = _mesh.vertices;
-        _positions[0].x -= 0.5f;
+        _positions[0].x -= 0.2f;
 
         _anchors[2] = true;
         _anchors[3] = true;
@@ -49,10 +50,13 @@ public class MassSpringCloth : MonoBehaviour
         _hints = new GameObject[_mesh.vertexCount];
 
         AddHints();
+        UpdateHints();
     }
 
     private void Update()
     {
+        if (!isEnabled) return;
+        
         SimulationStep();
 
         // Update mesh with new positions
