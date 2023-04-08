@@ -1538,6 +1538,7 @@ GameObject:
   - component: {fileID: 754066229}
   - component: {fileID: 754066228}
   - component: {fileID: 754066227}
+  - component: {fileID: 754066231}
   m_Layer: 0
   m_Name: Cloth
   m_TagString: Untagged
@@ -1624,6 +1625,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &754066231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 754066226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcaed4d2886a4106bd2a381a4cb29889, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  vertexNotification: {fileID: 6198027611475043313, guid: 94d94323a3a215b49815411bf54d5e01,
+    type: 3}
+  isSimulationEnabled: 0
 --- !u!1 &920921510
 GameObject:
   m_ObjectHideFlags: 0
@@ -1856,7 +1872,6 @@ GameObject:
   - component: {fileID: 1313711681}
   - component: {fileID: 1313711680}
   - component: {fileID: 1313711682}
-  - component: {fileID: 1313711683}
   m_Layer: 0
   m_Name: XR Rig
   m_TagString: Untagged
@@ -1932,53 +1947,6 @@ MonoBehaviour:
       - m_Target: {fileID: 2124922449}
         m_TargetAssemblyTypeName: VRButtonController, Assembly-CSharp
         m_MethodName: OnPrimaryButtonPressed
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  OnRelease:
-    m_PersistentCalls:
-      m_Calls: []
---- !u!114 &1313711683
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1313711679}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4a8d337e8bc7ac4498e0df29e7b8bd5e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  action:
-    m_Name: Action
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: b4c03bcd-c9f2-4d65-b58d-2d7ab0a6efd9
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: 67422ba5-9fa1-4436-961f-55edc1559ec4
-      m_Path: '*/{SecondaryButton}'
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Action
-      m_Flags: 0
-    m_Flags: 0
-  OnPress:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2124922449}
-        m_TargetAssemblyTypeName: VRButtonController, Assembly-CSharp
-        m_MethodName: OnSecondaryButtonPressed
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2326,6 +2294,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51228d1ebb694ac7baaf1e60acd96410, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  simulatedObject: {fileID: 754066231}
 --- !u!4 &2124922450
 Transform:
   m_ObjectHideFlags: 0

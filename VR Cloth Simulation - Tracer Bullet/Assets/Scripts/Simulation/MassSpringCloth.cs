@@ -6,14 +6,25 @@ using UnityEngine;
 
 namespace Simulation
 {
-    public class MassSpringCloth : MonoBehaviour
+    public interface ISimulated
+    {
+        public bool IsSimulationEnabled { get; set; }
+    }
+    
+    public class MassSpringCloth : MonoBehaviour, ISimulated
     {
         #region Editor Fields
 
         [SerializeField] private GameObject vertexNotification;
-        public bool isEnabled = false;
+        [SerializeField] private bool isSimulationEnabled;
 
         #endregion
+        
+        public bool IsSimulationEnabled
+        {
+            get => isSimulationEnabled;
+            set => isSimulationEnabled = value;
+        }
 
         #region Private Fields
 
@@ -28,11 +39,11 @@ namespace Simulation
 
         #region Simulation Constants
 
-        private const int K = 4;
+        private const int K = 10;
         private const float DampingCoef = 1.0f;
         private const float Gravity = -10.0f;
-        private const float Mass = 1.5f;
-        private const float RestLength = 0.2f;
+        private const float Mass = 1.0f;
+        private const float RestLength = 0.05f;
 
         #endregion
 
@@ -59,7 +70,7 @@ namespace Simulation
 
         private void Update()
         {
-            if (!isEnabled) return;
+            if (!IsSimulationEnabled) return;
 
             SimulationStep();
 
