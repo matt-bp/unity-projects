@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-namespace VRButton
+namespace Prototypes._01_VR_Button.Scripts.VRButton
 {
     public class ButtonController : MonoBehaviour
     {
