@@ -1,12 +1,12 @@
-using System;
+using UnityEditor;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 namespace MouseDetection
 {
     public class TrackMouse : MonoBehaviour
     {
         [SerializeField] private Camera Camera;
+        [SerializeField] private GameObject targetPrefab;
         
         private void Start()
         {
@@ -20,8 +20,18 @@ namespace MouseDetection
 
             if (Physics.Raycast(ray, out var hit))
             {
-                Debug.Log("Found something!");  
                 // TODO: See if we're on a grab point, if so, change its color
+                var hitObject = hit.transform.gameObject;
+                // if (hitObject is)
+                var target = hitObject.GetComponent<GrabTarget>();
+                if (target is not null)
+                {
+                    Debug.Log("Found target!");  
+                }
+                else
+                {
+                    Debug.Log("Not over something");
+                }
             }
             else
             {
