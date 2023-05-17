@@ -10,12 +10,16 @@ namespace Prototypes._04_VR_Sphere_Follow.Scripts
         private Vector3 offset;
         private bool following = false;
 
-        public void OnFollowStart(InputActionReference action)
+        public void StartFollowing(InputActionReference action)
         {
             following = true;
-            Debug.Log("Started following!");
             actionToFollow = action;
             offset = GetTargetPosition() - transform.position;
+        }
+
+        public void EndFollowing()
+        {
+            following = false;
         }
 
         private void Update()

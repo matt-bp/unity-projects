@@ -11,6 +11,9 @@ namespace Prototypes._04_VR_Sphere_Follow.Scripts
         
         [SerializeField]
         private GameObject cameraFloorOffsetObject;
+
+        private Collider[] activeColliders = new Collider[10];
+        private int numActiveColliders = 0;
         
         // Update is called once per frame
         void Update()
@@ -27,22 +30,46 @@ namespace Prototypes._04_VR_Sphere_Follow.Scripts
                 var offset = cameraFloorOffsetObject.transform.position.y;
 
                 controllerPosition.y += offset;
-                var colliders = Physics.OverlapSphere(controllerPosition, 0.05f); // How can I visualize this? Maybe match he prefab I'm using for the hand?
-                Debug.Log("Hit " + colliders.Length + " things at " + controllerPosition);
 
-                foreach (var collider in colliders)
+                numActiveColliders = Physics.OverlapSphereNonAlloc(controllerPosition, 0.05f, activeColliders);
+                //var colliders = Physics.OverlapSphere(controllerPosition, 0.05f); // How can I visualize this? Maybe match he prefab I'm using for the hand?
+                Debug.Log("Hit " + numActiveColliders + " things at " + controllerPosition);
+
+                for (var i = 0; i < numActiveColliders; i++)
                 {
+                    var collider = activeColliders[i];
+                    
                     Debug.Log(collider.name);
 
                     if (collider.gameObject.TryGetComponent(out FollowTarget followTarget))
                     {
-                        followTarget.OnFollowStart(leftController);
+                        followTarget.StartFollowing(leftController);
                     }
                     else
                     {
                         Debug.Log("Noep!");
                     }
                 }
+            }
+            else if (buttonAction.ReadValue<float>() == 0)
+            {
+                for (var i = 0; i < numActiveColliders; i++)
+                {
+                    var collider = activeColliders[i];
+                    
+                    Debug.Log(collider.name);
+
+                    if (collider.gameObject.TryGetComponent(out FollowTarget followTarget))
+                    {
+                        followTarget.EndFollowing();
+                    }
+                    else
+                    {
+                        Debug.Log("No component! Add a maksing layer!");
+                    }
+                }
+
+                numActiveColliders = 0;
             }
         }
     }
