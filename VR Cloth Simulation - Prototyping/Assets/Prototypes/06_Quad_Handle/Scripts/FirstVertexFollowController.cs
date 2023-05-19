@@ -1,3 +1,4 @@
+using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -9,7 +10,7 @@ namespace Prototypes._06_Quad_Handle.Scripts
         public InputActionReference controllerPositionAction;
 
         [SerializeField]
-        private GameObject cameraFloorOffsetObject;
+        private XROrigin xrOrigin;
         private MeshFilter meshFilter;
         
         // Start is called before the first frame update
@@ -24,8 +25,7 @@ namespace Prototypes._06_Quad_Handle.Scripts
             var action = controllerPositionAction.action;
 
             var position = action.ReadValue<Vector3>();
-            var offset = cameraFloorOffsetObject.transform.position.y;
-            position.y += offset;
+            position.y += xrOrigin.CameraYOffset;
 
             var mesh = meshFilter.mesh;
             // Local coordinate space
