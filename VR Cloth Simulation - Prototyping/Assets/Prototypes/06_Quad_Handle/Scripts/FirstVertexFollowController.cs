@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Prototypes._05_Quad_Follow_Controller.Scripts
+namespace Prototypes._06_Quad_Handle.Scripts
 {
     [RequireComponent(typeof(MeshFilter))]
     public class FirstVertexFollowController : MonoBehaviour
