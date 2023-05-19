@@ -31,7 +31,6 @@ namespace Prototypes._06_Quad_Handle.Scripts
             // Local coordinate space
             var newVertices = mesh.vertices;
             
-            // How do I move the position into local space?
             newVertices[0] = transform.InverseTransformPoint(position);
 
             mesh.vertices = newVertices;
