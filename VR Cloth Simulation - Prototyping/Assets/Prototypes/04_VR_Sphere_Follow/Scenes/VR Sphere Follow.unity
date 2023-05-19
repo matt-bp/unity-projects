@@ -2087,7 +2087,6 @@ GameObject:
   - component: {fileID: 1872454877}
   - component: {fileID: 1872454876}
   - component: {fileID: 1872454875}
-  - component: {fileID: 1872454878}
   m_Layer: 6
   m_Name: Sphere Button
   m_TagString: Untagged
@@ -2173,19 +2172,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1872454873}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &1872454878
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1872454873}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5e8db237051a4157bef3e1e4b555371f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  actionToFollow: {fileID: 0}
 --- !u!1 &2012051182
 GameObject:
   m_ObjectHideFlags: 0

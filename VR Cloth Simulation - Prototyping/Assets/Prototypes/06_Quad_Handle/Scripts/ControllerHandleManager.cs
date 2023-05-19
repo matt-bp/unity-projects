@@ -7,16 +7,20 @@ namespace Prototypes._06_Quad_Handle.Scripts
 {
     public class ControllerHandleManager : MonoBehaviour
     {
+        #region Editor Fields
+        
         public InputActionReference controller;
         public InputActionReference buttonToPress;
 
-        private readonly Collider[] activeColliders = new Collider[10];
-        private int numActiveColliders = 0;
         [SerializeField]
         private XROrigin xrOrigin;
         [SerializeField]
         private LayerMask layerMask;
-
+        
+        #endregion
+        
+        private readonly Collider[] activeColliders = new Collider[10];
+        private int numActiveColliders = 0;
         private const float HitSphereRadius = 0.05f;
         
         // Update is called once per frame
