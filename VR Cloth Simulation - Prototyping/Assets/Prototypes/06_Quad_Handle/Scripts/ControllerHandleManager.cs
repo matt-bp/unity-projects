@@ -40,8 +40,6 @@ namespace Prototypes._06_Quad_Handle.Scripts
                 {
                     var activeCollider = activeColliders[i];
                     
-                    Debug.Log(activeCollider.name);
-
                     if (activeCollider.gameObject.TryGetComponent(out FollowInputAction follower))
                     {
                         follower.StartFollowing(controller);
@@ -54,8 +52,6 @@ namespace Prototypes._06_Quad_Handle.Scripts
                 {
                     var activeCollider = activeColliders[i];
                     
-                    Debug.Log(activeCollider.name);
-
                     if (activeCollider.gameObject.TryGetComponent(out FollowInputAction follower))
                     {
                         follower.EndFollowing();
