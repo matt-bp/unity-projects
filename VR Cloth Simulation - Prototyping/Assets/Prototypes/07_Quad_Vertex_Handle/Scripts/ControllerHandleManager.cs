@@ -43,6 +43,9 @@ namespace Prototypes._07_Quad_Vertex_Handle.Scripts
                     {
                         follower.StartFollowing(controller);
                     }
+
+                    var update = activeCollider.gameObject.GetComponent<UpdateMeshVertex>();
+                    update.Updating = true;
                 }
             }
             else if (KeyUp(buttonAction))
@@ -59,8 +62,10 @@ namespace Prototypes._07_Quad_Vertex_Handle.Scripts
                     {
                         Debug.Log("No component! Add a masking layer!");
                     }
-                }
 
+                    activeCollider.gameObject.GetComponent<UpdateMeshVertex>().Updating = false;
+                }
+                
                 numActiveColliders = 0;
             }
         }
