@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Prototypes._06_Quad_Handle.Scripts
+namespace Prototypes._07_Quad_Vertex_Handle.Scripts
 {
     public class LeaderGameObject : MonoBehaviour
     {
