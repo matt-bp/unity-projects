@@ -16,9 +16,4 @@ public class VRButtonController : MonoBehaviour
 
         simulatedObject.IsSimulationEnabled = !simulatedObject.IsSimulationEnabled;
     }
-
-    public void OnSecondaryButtonPressed()
-    {
-        Debug.Log("Pressed secondary button");
-    }
 }

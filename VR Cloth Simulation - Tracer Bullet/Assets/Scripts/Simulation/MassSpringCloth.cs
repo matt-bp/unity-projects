@@ -6,12 +6,7 @@ using UnityEngine;
 
 namespace Simulation
 {
-    public interface ISimulated
-    {
-        public bool IsSimulationEnabled { get; set; }
-    }
-    
-    public class MassSpringCloth : MonoBehaviour, ISimulated
+    public class MassSpringCloth : MonoBehaviour
     {
         #region Editor Fields
 
@@ -34,6 +29,7 @@ namespace Simulation
         private Vector3[] _forces;
         private GameObject[] _hints;
         private Dictionary<int, bool> _anchors = new();
+        private List<Vector3> lastPose = new();
 
         #endregion
 
@@ -59,13 +55,21 @@ namespace Simulation
             _anchors[2] = true;
             _anchors[3] = true;
 
+            lastPose = new List<Vector3>(_positions);
+
             _velocities = Enumerable.Range(0, _positions.Length).Select(_ => Vector3.zero).ToArray();
             _forces = Enumerable.Range(0, _positions.Length).Select(_ => Vector3.zero).ToArray();
 
             _hints = new GameObject[_mesh.vertexCount];
 
-            AddHints();
-            UpdateHints();
+            AddHandles();
+            UpdateHandles();
+        }
+
+        public void ResetToLastPose()
+        {
+            _positions = lastPose.ToArray();
+            UpdateMesh();
         }
 
         private void Update()
@@ -74,11 +78,15 @@ namespace Simulation
 
             SimulationStep();
 
-            // Update mesh with new positions
+            UpdateMesh();
+        }
+
+        private void UpdateMesh()
+        {
             _mesh.vertices = _positions;
             _mesh.RecalculateBounds();
-
-            UpdateHints();
+            
+            UpdateHandles();
         }
 
         #region Simulation
@@ -153,9 +161,9 @@ namespace Simulation
 
         #endregion
 
-        #region Vertex Hints
+        #region Vertex Handles
 
-        private void AddHints()
+        private void AddHandles()
         {
             for (var i = 0; i < _mesh.vertexCount; i++)
             {
@@ -163,7 +171,7 @@ namespace Simulation
             }
         }
 
-        private void UpdateHints()
+        private void UpdateHandles()
         {
             for (var i = 0; i < _hints.Length; i++)
             {

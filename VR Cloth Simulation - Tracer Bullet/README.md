@@ -1,6 +1,7 @@
 # Tracer Bullet
 
 Here is a brief gif of what this currently can do:
+
 ![Demo Gif](./docs/demo.gif)
 
 Capabilities: 
