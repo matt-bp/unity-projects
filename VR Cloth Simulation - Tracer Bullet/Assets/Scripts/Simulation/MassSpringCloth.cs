@@ -52,6 +52,7 @@ namespace Simulation
             _positions[0].z += 0.5f;
             
             _anchors[2] = true;
+            _anchors[3] = true;
 
             lastPose = new List<Vector3>(_positions);
 
