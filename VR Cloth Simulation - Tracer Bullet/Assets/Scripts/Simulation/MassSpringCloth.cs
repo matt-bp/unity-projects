@@ -10,7 +10,7 @@ namespace Simulation
     {
         #region Editor Fields
 
-        [SerializeField] private GameObject vertexNotification;
+        [SerializeField] private GameObject handlePrefab;
         [SerializeField] private bool isSimulationEnabled;
 
         #endregion
@@ -27,9 +27,9 @@ namespace Simulation
         private Vector3[] _positions;
         private Vector3[] _velocities;
         private Vector3[] _forces;
-        private GameObject[] _hints;
         private Dictionary<int, bool> _anchors = new();
         private List<Vector3> lastPose = new();
+        private GameObject anchorHandle;
 
         #endregion
 
@@ -49,19 +49,14 @@ namespace Simulation
             _positions = _mesh.vertices;
             _positions[0].x -= 0.2f;
             _positions[0].z += 0.5f;
-
-            _positions[2].z -= 0.5f;
-
+            
             _anchors[2] = true;
-            _anchors[3] = true;
 
             lastPose = new List<Vector3>(_positions);
 
             _velocities = Enumerable.Range(0, _positions.Length).Select(_ => Vector3.zero).ToArray();
             _forces = Enumerable.Range(0, _positions.Length).Select(_ => Vector3.zero).ToArray();
-
-            _hints = new GameObject[_mesh.vertexCount];
-
+            
             AddHandles();
             UpdateHandles();
         }
@@ -165,18 +160,12 @@ namespace Simulation
 
         private void AddHandles()
         {
-            for (var i = 0; i < _mesh.vertexCount; i++)
-            {
-                _hints[i] = Instantiate(vertexNotification, _positions[i], Quaternion.identity);
-            }
+            anchorHandle = Instantiate(handlePrefab, _positions[2], Quaternion.identity);
         }
 
         private void UpdateHandles()
         {
-            for (var i = 0; i < _hints.Length; i++)
-            {
-                _hints[i].transform.position = _positions[i];
-            }
+            
         }
 
         #endregion

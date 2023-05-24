@@ -33,7 +33,6 @@ public class ClothStateManager : MonoBehaviour
         var reset = resetSimulation.action;
         if (reset.WasPressedThisFrame() && reset.IsPressed() && !cloth.IsSimulationEnabled)
         {
-            Debug.Log("Reset!");
             cloth.ResetToLastPose();
         }
     }
