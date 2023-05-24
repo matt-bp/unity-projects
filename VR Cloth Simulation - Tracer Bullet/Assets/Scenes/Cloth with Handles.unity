@@ -227,6 +227,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 197785354}
+  - component: {fileID: 197785355}
   m_Layer: 0
   m_Name: Cloth Handle Manager
   m_TagString: Untagged
@@ -249,6 +250,27 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &197785355
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 197785353}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b93ca539e7be44fdf9db03fe49be1a1a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controller: {fileID: -2024308242397127297, guid: c348712bda248c246b8c49b3db54643f,
+    type: 3}
+  buttonToPress: {fileID: -681151063944262417, guid: da2b439d1a2de5c46a4f428f8cf4fe19,
+    type: 3}
+  xrOrigin: {fileID: 1313711680}
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 64
+  HitSphereRadius: 0.05
 --- !u!1 &364578160
 GameObject:
   m_ObjectHideFlags: 0
@@ -1983,7 +2005,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1313711679}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.338, z: -2.252}
+  m_LocalPosition: {x: 0, y: 0, z: -2.252}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

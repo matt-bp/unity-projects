@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class UpdateMeshVertex : MonoBehaviour
 {
-    [SerializeField] protected MeshFilter meshFilter;
-    [SerializeField] protected int vertexToUpdate;
+    public MeshFilter meshFilter;
+    public int vertexToUpdate;
     public bool Updating { get; set; }
     
     // Update is called once per frame

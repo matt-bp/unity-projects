@@ -20,17 +20,18 @@ namespace Simulation
             get => isSimulationEnabled;
             set => isSimulationEnabled = value;
         }
-
-        #region Private Fields
-
+        
         private Mesh _mesh;
+        private List<Vector3> lastPose = new();
+        private GameObject anchorHandle;
+        
+        #region Simulation Fields
+        
         private Vector3[] _positions;
         private Vector3[] _velocities;
         private Vector3[] _forces;
         private Dictionary<int, bool> _anchors = new();
-        private List<Vector3> lastPose = new();
-        private GameObject anchorHandle;
-
+        
         #endregion
 
         #region Simulation Constants
@@ -156,16 +157,21 @@ namespace Simulation
 
         #endregion
 
-        #region Vertex Handles
+        #region Handles
 
         private void AddHandles()
         {
             anchorHandle = Instantiate(handlePrefab, _positions[2], Quaternion.identity);
+
+            if (anchorHandle.TryGetComponent(out UpdateMeshVertex update))
+            {
+                update.meshFilter = GetComponent<MeshFilter>();
+                update.vertexToUpdate = 2;
+            }
         }
 
         private void UpdateHandles()
         {
-            
         }
 
         #endregion
