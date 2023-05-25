@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 6575244973033553542}
   - component: {fileID: 6846482644030411022}
   - component: {fileID: 7090790063800773498}
-  - component: {fileID: 5965951105634450589}
   - component: {fileID: 1467161713924593750}
+  - component: {fileID: 1794283745864961346}
   m_Layer: 6
   m_Name: Handle
   m_TagString: Untagged
@@ -99,20 +99,6 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &5965951105634450589
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2359737886397254119}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7962b590dc2242f49885106cb658c432, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  meshFilter: {fileID: 0}
-  vertexToUpdate: 0
 --- !u!114 &1467161713924593750
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -126,3 +112,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actionToFollow: {fileID: 0}
+--- !u!114 &1794283745864961346
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2359737886397254119}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b63ac77ddce547f290c72af60dfdae33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cloth: {fileID: 0}
+  vertexToUpdate: 0

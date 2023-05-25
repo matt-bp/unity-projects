@@ -52,7 +52,7 @@ public class ClothHandleManager : MonoBehaviour
                 }
 
                 // And have tings that should follow it start updating
-                activeCollider.gameObject.GetComponent<UpdateMeshVertex>().Updating = true;
+                activeCollider.gameObject.GetComponent<UpdateClothVertex>().Updating = true;
             }
         }
         else if (buttonAction.WasReleasedThisFrame())
@@ -70,7 +70,7 @@ public class ClothHandleManager : MonoBehaviour
                     Debug.Log("No component! Add a masking layer!");
                 }
 
-                activeCollider.gameObject.GetComponent<UpdateMeshVertex>().Updating = false;
+                activeCollider.gameObject.GetComponent<UpdateClothVertex>().Updating = false;
             }
                 
             numActiveColliders = 0;

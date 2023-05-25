@@ -20,7 +20,7 @@ namespace Simulation
             get => isSimulationEnabled;
             set => isSimulationEnabled = value;
         }
-        
+
         private Mesh _mesh;
         private List<Vector3> lastPose = new();
         private GameObject anchorHandle;
@@ -60,14 +60,37 @@ namespace Simulation
             _forces = Enumerable.Range(0, _positions.Length).Select(_ => Vector3.zero).ToArray();
             
             AddHandles();
-            UpdateHandles();
         }
+        
+        #region Posing
 
+        public void UpdatePose(int index, Vector3 value)
+        {
+            Debug.Assert(index >= 0 && index < lastPose.Count);
+            
+            lastPose[index] = value;
+            
+            ResetToLastPose();
+        }
+        
         public void ResetToLastPose()
         {
             _positions = lastPose.ToArray();
             UpdateMesh();
         }
+        
+        private void AddHandles()
+        {
+            anchorHandle = Instantiate(handlePrefab, _positions[2], Quaternion.identity);
+
+            if (anchorHandle.TryGetComponent(out UpdateClothVertex update))
+            {
+                update.cloth = this;
+                update.vertexToUpdate = 2;
+            }
+        }
+                
+        #endregion
 
         private void Update()
         {
@@ -82,8 +105,6 @@ namespace Simulation
         {
             _mesh.vertices = _positions;
             _mesh.RecalculateBounds();
-            
-            UpdateHandles();
         }
 
         #region Simulation
@@ -154,25 +175,6 @@ namespace Simulation
         private Vector3 GetDampingForce(Vector3 velocity1, Vector3 velocity2)
         {
             return -DampingCoef * (velocity1 - velocity2);
-        }
-
-        #endregion
-
-        #region Handles
-
-        private void AddHandles()
-        {
-            anchorHandle = Instantiate(handlePrefab, _positions[2], Quaternion.identity);
-
-            if (anchorHandle.TryGetComponent(out UpdateMeshVertex update))
-            {
-                update.meshFilter = GetComponent<MeshFilter>();
-                update.vertexToUpdate = 2;
-            }
-        }
-
-        private void UpdateHandles()
-        {
         }
 
         #endregion
