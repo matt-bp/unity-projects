@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,31 +7,31 @@ public class OrbitCamera : MonoBehaviour
 {
     [SerializeField] private Transform target;
 
-    public float rotSpeed = 1.5f;
+    public float rotationSpeed = 0.2f;
 
-    private float rotY;
+    private float rotationY;
     private Vector3 offset;
     
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        rotY = transform.eulerAngles.y;
+        rotationY = transform.eulerAngles.y;
         offset = target.position - transform.position;
     }
-    
-    void LateUpdate()
+
+    private void LateUpdate()
     {
-        float horInput = Input.GetAxis("Horizontal");
-        if (!Mathf.Approximately(horInput, 0))
+        float horizontalInput = Input.GetAxis("Horizontal");
+
+        if (!Mathf.Approximately(horizontalInput, 0))
         {
-            rotY += horInput * rotSpeed;
+            rotationY += horizontalInput * rotationSpeed;
         }
         else
         {
-            rotY += Input.GetAxis("Mouse X") * rotSpeed * 3;
+            rotationY += Input.GetAxis("Mouse X") * rotationSpeed * 10;
         }
 
-        var rotation = Quaternion.Euler(0, rotY, 0);
+        var rotation = Quaternion.Euler(0, rotationY, 0);
         transform.position = target.position - (rotation * offset);
         transform.LookAt(target);
     }
