@@ -81,12 +81,19 @@ namespace Simulation
         
         private void AddHandles()
         {
-            anchorHandle = Instantiate(handlePrefab, _positions[2], Quaternion.identity);
+            AddHandle(1);
+            AddHandle(2);
+            AddHandle(3);
+        }
+
+        private void AddHandle(int index)
+        {
+            anchorHandle = Instantiate(handlePrefab, _positions[index], Quaternion.identity);
 
             if (anchorHandle.TryGetComponent(out UpdateClothVertex update))
             {
                 update.cloth = this;
-                update.vertexToUpdate = 2;
+                update.vertexToUpdate = index;
             }
         }
                 

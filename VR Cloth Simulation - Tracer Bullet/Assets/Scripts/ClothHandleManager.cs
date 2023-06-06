@@ -81,7 +81,9 @@ public class ClothHandleManager : MonoBehaviour
     {
         var controllerPosition = controller.action.ReadValue<Vector3>();
         controllerPosition.y += xrOrigin.CameraYOffset;
-        controllerPosition.z += xrOrigin.gameObject.transform.position.z;
+        var position = xrOrigin.gameObject.transform.position;
+        controllerPosition.z += position.z;
+        controllerPosition.x += position.x;
         return controllerPosition;
     }
 }

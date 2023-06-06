@@ -1,6 +1,14 @@
 # Tracer Bullet
 
-Here is a brief gif of what this currently can do:
+## Gif of second tracer-bullet
+
+![Demo Gif 2](./docs/demo2.gif)
+
+Capabilities:
+- Handles update both anchor points and non anchor points
+- Uses new Unity Input System to read controller positions and button presses
+
+## Gif of first tracer-bullet
 
 ![Demo Gif](./docs/demo.gif)
 

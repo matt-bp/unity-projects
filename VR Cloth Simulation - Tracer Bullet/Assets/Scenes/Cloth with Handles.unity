@@ -270,7 +270,6 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 64
-  HitSphereRadius: 0.05
 --- !u!1 &364578160
 GameObject:
   m_ObjectHideFlags: 0
