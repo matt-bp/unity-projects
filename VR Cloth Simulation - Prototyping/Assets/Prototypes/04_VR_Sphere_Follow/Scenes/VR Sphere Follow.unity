@@ -1747,6 +1747,53 @@ MonoBehaviour:
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
+--- !u!1 &1067956101
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1067956103}
+  - component: {fileID: 1067956102}
+  m_Layer: 0
+  m_Name: ControllerColliderHandler
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1067956102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1067956101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2161550e1e8b45a996b505d54b90b385, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonToPress: {fileID: -6131295136447488360, guid: 1fd6fe82d074c984d989e41782dc5bea,
+    type: 3}
+  leftController: {fileID: 364578160}
+--- !u!4 &1067956103
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1067956101}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 14
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1313711679
 GameObject:
   m_ObjectHideFlags: 0
@@ -1757,7 +1804,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1313711681}
   - component: {fileID: 1313711680}
-  - component: {fileID: 1313711682}
   m_Layer: 0
   m_Name: XR Rig
   m_TagString: Untagged
@@ -1798,23 +1844,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1313711682
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1313711679}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2161550e1e8b45a996b505d54b90b385, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  leftController: {fileID: -2024308242397127297, guid: c348712bda248c246b8c49b3db54643f,
-    type: 3}
-  buttonToPress: {fileID: -5982496924579745919, guid: 1fd6fe82d074c984d989e41782dc5bea,
-    type: 3}
-  cameraFloorOffsetObject: {fileID: 650672841}
 --- !u!1 &1350155426
 GameObject:
   m_ObjectHideFlags: 0
@@ -2092,6 +2121,7 @@ GameObject:
   - component: {fileID: 1872454877}
   - component: {fileID: 1872454876}
   - component: {fileID: 1872454875}
+  - component: {fileID: 1872454878}
   m_Layer: 6
   m_Name: Sphere Button
   m_TagString: Untagged
@@ -2177,6 +2207,18 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1872454873}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1872454878
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1872454873}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e8db237051a4157bef3e1e4b555371f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2012051182
 GameObject:
   m_ObjectHideFlags: 0
@@ -2239,7 +2281,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2093057930
 MonoBehaviour:
   m_ObjectHideFlags: 0
