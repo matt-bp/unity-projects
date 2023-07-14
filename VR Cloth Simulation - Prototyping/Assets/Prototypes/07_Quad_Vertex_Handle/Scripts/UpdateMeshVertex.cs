@@ -25,7 +25,7 @@ namespace Prototypes._07_Quad_Vertex_Handle.Scripts
             // Local coordinate space
             var newVertices = mesh.vertices;
             
-            // How do I move the position into local space?
+            // Convert world space into coord space.
             newVertices[vertexToUpdate] = meshFilter.gameObject.transform.InverseTransformPoint(position);
 
             mesh.vertices = newVertices;

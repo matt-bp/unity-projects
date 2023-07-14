@@ -8,18 +8,16 @@ namespace Prototypes._07_Quad_Vertex_Handle.Scripts
     {
         #region Editor Fields
         
-        public InputActionReference controller;
+        public GameObject controller;
         public InputActionReference buttonToPress;
 
-        [SerializeField]
-        private XROrigin xrOrigin;
         [SerializeField]
         private LayerMask layerMask;
         
         #endregion
         
         private readonly Collider[] activeColliders = new Collider[10];
-        private int numActiveColliders = 0;
+        private int numActiveColliders;
         private const float HitSphereRadius = 0.05f;
         
         // Update is called once per frame
@@ -29,7 +27,7 @@ namespace Prototypes._07_Quad_Vertex_Handle.Scripts
 
             if (WasPressedThisFrame(buttonAction))
             {
-                var controllerPosition = ReadAndAdjustControllerPosition();
+                var controllerPosition = controller.transform.position;
 
                 numActiveColliders = Physics.OverlapSphereNonAlloc(controllerPosition, HitSphereRadius, activeColliders, layerMask);
                 
@@ -39,7 +37,7 @@ namespace Prototypes._07_Quad_Vertex_Handle.Scripts
                 {
                     var activeCollider = activeColliders[i];
                     
-                    if (activeCollider.gameObject.TryGetComponent(out FollowInputAction follower))
+                    if (activeCollider.gameObject.TryGetComponent(out FollowTarget follower))
                     {
                         follower.StartFollowing(controller);
                     }
@@ -54,7 +52,7 @@ namespace Prototypes._07_Quad_Vertex_Handle.Scripts
                 {
                     var activeCollider = activeColliders[i];
                     
-                    if (activeCollider.gameObject.TryGetComponent(out FollowInputAction follower))
+                    if (activeCollider.gameObject.TryGetComponent(out FollowTarget follower))
                     {
                         follower.EndFollowing();
                     }
@@ -69,14 +67,7 @@ namespace Prototypes._07_Quad_Vertex_Handle.Scripts
                 numActiveColliders = 0;
             }
         }
-
-        private Vector3 ReadAndAdjustControllerPosition()
-        {
-            var controllerPosition = controller.action.ReadValue<Vector3>();
-            controllerPosition.y += xrOrigin.CameraYOffset;
-            return controllerPosition;
-        }
-
+        
         private bool WasPressedThisFrame(InputAction action) => action.triggered && action.ReadValue<float>() > 0;
 
         private bool KeyUp(InputAction action) => action.ReadValue<float>() == 0;
