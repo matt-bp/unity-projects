@@ -6,10 +6,8 @@ namespace Prototypes._05_Quad_Vertex_Follow_Controller.Scripts
     [RequireComponent(typeof(MeshFilter))]
     public class FirstVertexFollowController : MonoBehaviour
     {
-        public InputActionReference controllerPositionAction;
+        public GameObject controller;
 
-        [SerializeField]
-        private GameObject cameraFloorOffsetObject;
         private MeshFilter meshFilter;
         
         // Start is called before the first frame update
@@ -21,11 +19,7 @@ namespace Prototypes._05_Quad_Vertex_Follow_Controller.Scripts
         // Update is called once per frame
         void Update()
         {
-            var action = controllerPositionAction.action;
-
-            var position = action.ReadValue<Vector3>();
-            var offset = cameraFloorOffsetObject.transform.position.y;
-            position.y += offset;
+            var position = controller.transform.position;
 
             var mesh = meshFilter.mesh;
             // Local coordinate space
