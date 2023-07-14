@@ -2,6 +2,9 @@ using Simulation;
 using UnityEngine;
 
 
+/// <summary>
+/// Facilitates miscellaneous controls to the cloth simulation, like toggling if it is enabled.
+/// </summary>
 public class VRButtonController : MonoBehaviour
 {
     #region Editor Fields

@@ -1,25 +1,28 @@
-using System.Collections;
-using System.Collections.Generic;
 using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+/// <summary>
+/// Facilitates the interaction between the VR controller, and the handle game objects.
+///
+/// I decided to use the VR controller game object, because the world coordinates didn't line up with what we were
+/// getting back as the value from the controller position event. By using the game object, we can get the world
+/// space coordinates without having to calculate them ourselves.
+/// </summary>
 public class ClothHandleManager : MonoBehaviour
 {
     #region Editor Fields
         
-    public InputActionReference controller;
+    public GameObject controller;
     public InputActionReference buttonToPress;
 
-    [SerializeField]
-    private XROrigin xrOrigin;
     [SerializeField]
     private LayerMask layerMask;
         
     #endregion
     
     private readonly Collider[] activeColliders = new Collider[10];
-    private int numActiveColliders = 0;
+    private int numActiveColliders;
     private const float HitSphereRadius = 0.05f;
     
     private void Update()
@@ -28,7 +31,8 @@ public class ClothHandleManager : MonoBehaviour
 
         if (buttonAction.WasPressedThisFrame() && buttonAction.IsPressed())
         {
-            var controllerPosition = ReadAndAdjustControllerPosition();
+            var controllerPosition = controller.transform.position;
+            Debug.Assert(controllerPosition != Vector3.zero); // Basically, want to make sure we're getting something here
 
             numActiveColliders =
                 Physics.OverlapSphereNonAlloc(controllerPosition, HitSphereRadius, activeColliders, layerMask);
@@ -42,7 +46,7 @@ public class ClothHandleManager : MonoBehaviour
                 Debug.Log("Hit object was at " + activeCollider.gameObject.transform.position);
                     
                 // Start having the game object follow this
-                if (activeCollider.gameObject.TryGetComponent(out FollowInputAction follower))
+                if (activeCollider.gameObject.TryGetComponent(out FollowTarget follower))
                 {
                     follower.StartFollowing(controller);
                 }
@@ -51,7 +55,7 @@ public class ClothHandleManager : MonoBehaviour
                     Debug.Log("The handle won't follow the input action.");
                 }
 
-                // And have tings that should follow it start updating
+                // And have things that should follow it start updating
                 activeCollider.gameObject.GetComponent<UpdateClothVertex>().Updating = true;
             }
         }
@@ -61,13 +65,13 @@ public class ClothHandleManager : MonoBehaviour
             {
                 var activeCollider = activeColliders[i];
                     
-                if (activeCollider.gameObject.TryGetComponent(out FollowInputAction follower))
+                if (activeCollider.gameObject.TryGetComponent(out FollowTarget follower))
                 {
                     follower.EndFollowing();
                 }
                 else
                 {
-                    Debug.Log("No component! Add a masking layer!");
+                    Debug.Log("Found an object, but it didn't have the " + nameof(FollowTarget) + " component.");
                 }
 
                 activeCollider.gameObject.GetComponent<UpdateClothVertex>().Updating = false;
@@ -75,15 +79,5 @@ public class ClothHandleManager : MonoBehaviour
                 
             numActiveColliders = 0;
         }
-    }
-    
-    private Vector3 ReadAndAdjustControllerPosition()
-    {
-        var controllerPosition = controller.action.ReadValue<Vector3>();
-        controllerPosition.y += xrOrigin.CameraYOffset;
-        var position = xrOrigin.gameObject.transform.position;
-        controllerPosition.z += position.z;
-        controllerPosition.x += position.x;
-        return controllerPosition;
     }
 }
