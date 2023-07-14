@@ -1,36 +1,36 @@
-using Prototypes._06_Quad_Handle.Scripts;
-using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace Prototypes._06_Quad_Handle.Scripts
 {
+    /// <summary>
+    /// Facilitates a VR game controller interacting with handles to move the cloth associated with that handle.
+    ///
+    /// The whole cloth will me moved, not an individual vertex.
+    /// </summary>
     public class ControllerHandleManager : MonoBehaviour
     {
         #region Editor Fields
         
-        public InputActionReference controller;
+        public GameObject controller;
         public InputActionReference buttonToPress;
 
-        [SerializeField]
-        private XROrigin xrOrigin;
         [SerializeField]
         private LayerMask layerMask;
         
         #endregion
         
         private readonly Collider[] activeColliders = new Collider[10];
-        private int numActiveColliders = 0;
+        private int numActiveColliders;
         private const float HitSphereRadius = 0.05f;
         
-        // Update is called once per frame
         private void Update()
         {
             var buttonAction = buttonToPress.action;
 
             if (WasPressedThisFrame(buttonAction))
             {
-                var controllerPosition = ReadAndAdjustControllerPosition();
+                var controllerPosition = controller.transform.position;
 
                 numActiveColliders = Physics.OverlapSphereNonAlloc(controllerPosition, HitSphereRadius, activeColliders, layerMask);
                 
@@ -40,7 +40,7 @@ namespace Prototypes._06_Quad_Handle.Scripts
                 {
                     var activeCollider = activeColliders[i];
                     
-                    if (activeCollider.gameObject.TryGetComponent(out FollowInputAction follower))
+                    if (activeCollider.gameObject.TryGetComponent(out FollowTarget follower))
                     {
                         follower.StartFollowing(controller);
                     }
@@ -52,25 +52,18 @@ namespace Prototypes._06_Quad_Handle.Scripts
                 {
                     var activeCollider = activeColliders[i];
                     
-                    if (activeCollider.gameObject.TryGetComponent(out FollowInputAction follower))
+                    if (activeCollider.gameObject.TryGetComponent(out FollowTarget follower))
                     {
                         follower.EndFollowing();
                     }
                     else
                     {
-                        Debug.Log("No component! Add a masking layer!");
+                        Debug.Log("Collider found, but no FollowTarget component attached to it.");
                     }
                 }
 
                 numActiveColliders = 0;
             }
-        }
-
-        private Vector3 ReadAndAdjustControllerPosition()
-        {
-            var controllerPosition = controller.action.ReadValue<Vector3>();
-            controllerPosition.y += xrOrigin.CameraYOffset;
-            return controllerPosition;
         }
 
         private bool WasPressedThisFrame(InputAction action) => action.triggered && action.ReadValue<float>() > 0;

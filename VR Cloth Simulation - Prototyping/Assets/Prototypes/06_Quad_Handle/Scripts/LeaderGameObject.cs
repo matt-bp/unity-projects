@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace Prototypes._06_Quad_Handle.Scripts
 {
+    /// <summary>
+    /// Makes game objects have the same world space positions as this object.
+    /// </summary>
     public class LeaderGameObject : MonoBehaviour
     {
         public List<GameObject> followers;

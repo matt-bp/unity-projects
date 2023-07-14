@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028305, g: 0.22571313, b: 0.3069213, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2035,7 +2035,7 @@ GameObject:
   - component: {fileID: 1466306669}
   - component: {fileID: 1466306668}
   m_Layer: 0
-  m_Name: Test
+  m_Name: Button Test
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2297,6 +2297,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: XR Device Simulator
       objectReference: {fileID: 0}
+    - target: {fileID: 6598815579406187037, guid: 9f5a24a380916d14db9775daab4fe333,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9f5a24a380916d14db9775daab4fe333, type: 3}
 --- !u!1 &1948336662
@@ -2332,7 +2337,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6afd157e0a68a4a0aa3c6153befe5d30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actionToFollow: {fileID: 0}
 --- !u!135 &1948336664
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -2404,7 +2408,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1948336662}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.874, z: 0.615}
+  m_LocalPosition: {x: 0, y: 0.874, z: 0.195}
   m_LocalScale: {x: 0.21334, y: 0.21334, z: 0.21334}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2454,11 +2458,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b9ead7ef4d4a4fb0b20e7c63f2f7f4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  controller: {fileID: -2024308242397127297, guid: c348712bda248c246b8c49b3db54643f,
+  controller: {fileID: 364578160}
+  buttonToPress: {fileID: -6131295136447488360, guid: 1fd6fe82d074c984d989e41782dc5bea,
     type: 3}
-  buttonToPress: {fileID: -160020527567978557, guid: da2b439d1a2de5c46a4f428f8cf4fe19,
-    type: 3}
-  xrOrigin: {fileID: 1313711680}
   layerMask:
     serializedVersion: 2
     m_Bits: 64
@@ -2508,6 +2510,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ActionAssets:
   - {fileID: -944628639613478452, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  - {fileID: -944628639613478452, guid: 1fd6fe82d074c984d989e41782dc5bea, type: 3}
 --- !u!4 &2124398260
 Transform:
   m_ObjectHideFlags: 0
