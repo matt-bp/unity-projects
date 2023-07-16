@@ -64,11 +64,16 @@ namespace Simulation
         
         #region Posing
 
-        public void UpdatePose(int index, Vector3 value)
+        /// <summary>
+        /// Updates the posed particle to the specified world position.
+        /// </summary>
+        /// <param name="index">Which particle to move.</param>
+        /// <param name="worldPosition">Position, in world space, to move the particle to.</param>
+        public void UpdatePose(int index, Vector3 worldPosition)
         {
             Debug.Assert(index >= 0 && index < lastPose.Count);
             
-            lastPose[index] = value;
+            lastPose[index] = transform.InverseTransformPoint(worldPosition);
             
             ResetToLastPose();
         }
@@ -88,7 +93,10 @@ namespace Simulation
 
         private void AddHandle(int index)
         {
-            anchorHandle = Instantiate(handlePrefab, _positions[index], Quaternion.identity);
+            // Transform local to world coords
+            var worldPosition = transform.TransformPoint(_positions[index]);
+            
+            anchorHandle = Instantiate(handlePrefab, worldPosition, Quaternion.identity);
 
             if (anchorHandle.TryGetComponent(out UpdateClothVertex update))
             {
