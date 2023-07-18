@@ -1,0 +1,19 @@
+{
+    "name": "com.matt.math",
+    "version": "0.1.0",
+    "displayName": "Matt Math",
+    "description": "Implementing math algorithms",
+    "unity": "2021.3",
+    "unityRelease": "20f1",
+    "documentationUrl": "https://github.com/matt-bp/unity-projects",
+    "changelogUrl": "https://github.com/matt-bp/unity-projects",
+    "licenseUrl": "https://github.com/matt-bp/unity-projects",
+    "keywords": [
+        "math"
+    ],
+    "author": {
+        "name": "Matt Bishop",
+        "email": "mattsbishop1@gmail.com",
+        "url": "https://github.com/matt-bp"
+    }
+}
