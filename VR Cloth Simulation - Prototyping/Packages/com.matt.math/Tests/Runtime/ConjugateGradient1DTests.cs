@@ -52,6 +52,22 @@ namespace Tests.Runtime
 
             AssertGridVectorsEqual(result, expected);
         }
+        
+        [Test]
+        public void CgMult_WithMatrixAndVector_ReturnsVector()
+        {
+            var expected = new List<double> { 4.5, 9.5 };
+            var vector = new List<double> { 2.0, 0.5 };
+            var matrix = new List<List<double>>();
+            // In column major order
+            matrix.Add(new List<double> { 2.0, 4.0 });
+            matrix.Add(new List<double> { 1.0, 3.0 });
+
+
+            var result = ConjugateGradient1D.CgMult(matrix, vector);
+
+            AssertGridVectorsEqual(result, expected);
+        }
 
         
         #region Helpers
