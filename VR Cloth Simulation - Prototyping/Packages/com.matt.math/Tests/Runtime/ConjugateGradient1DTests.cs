@@ -43,7 +43,7 @@ namespace Tests.Runtime
         }
         
         [Test]
-        public void CgMult_With1DVectors_MultipliesCorrectly()
+        public void CgMult_WithValues_MultipliesCorrectly()
         {
             var expected = new List<double> { 2.0, 1.5 };
             var first = new List<double> { 4.0, 3.0 };
@@ -58,13 +58,33 @@ namespace Tests.Runtime
         {
             var expected = new List<double> { 4.5, 9.5 };
             var vector = new List<double> { 2.0, 0.5 };
-            var matrix = new List<List<double>>();
-            // In column major order
-            matrix.Add(new List<double> { 2.0, 4.0 });
-            matrix.Add(new List<double> { 1.0, 3.0 });
+            var matrix = new List<List<double>>
+            {
+                // In column major order
+                new() { 2.0, 4.0 },
+                new() { 1.0, 3.0 }
+            };
 
 
             var result = ConjugateGradient1D.CgMult(matrix, vector);
+
+            AssertGridVectorsEqual(result, expected);
+        }
+        
+        
+        [Test]
+        public void Solve_WithExampleFromPaper1D_ReturnsExpectedResult()
+        {
+            var expected = new List<double> { 2.0, -2.0 };
+            var vector = new List<double> { 2.0, -8.0 };
+            var matrix = new List<List<double>>
+            {
+                // In column major order
+                new() { 3.0, 2.0 },
+                new() { 2.0, 6.0 }
+            };
+
+            var result = ConjugateGradient1D.Solve(matrix, vector, 100, 0.0001);
 
             AssertGridVectorsEqual(result, expected);
         }

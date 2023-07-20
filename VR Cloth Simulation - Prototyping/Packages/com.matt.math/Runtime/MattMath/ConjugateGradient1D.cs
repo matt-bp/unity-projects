@@ -77,5 +77,35 @@ namespace MattMath
 
             return first.Zip(second, (firstValue, secondValue) => firstValue * secondValue).Sum();
         }
+        
+        public static GridVector Solve(GridMatrix a, GridVector b, int iMax, double e)
+        {
+            var dv = Enumerable
+                .Range(0, b.Count)
+                .Select(_ => 0.0).ToList();
+
+            var i = 0;
+            var r = CgSub(b, CgMult(a, dv));
+            var d = r.Select(m => m).ToList();
+            var deltaNew = CgDot(r, r);
+            var delta0 = deltaNew;
+
+            while (i < iMax && deltaNew > e * e * delta0)
+            {
+                var q = CgMult(a, d);
+                var alpha = deltaNew / CgDot(d, q);
+                dv = CgAdd(dv, CgMult(d, alpha));
+                r = CgSub(r, CgMult(q, alpha));
+
+                var deltaOld = deltaNew;
+                deltaNew = CgDot(r, r);
+                var beta = deltaNew / deltaOld;
+                d = CgAdd(r, CgMult(d, beta));
+
+                i++;
+            }
+
+            return dv;
+        }
     }
 }
