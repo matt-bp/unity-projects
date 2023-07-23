@@ -11,6 +11,8 @@ public class SimWrapper : MonoBehaviour
     private ImplicitMassSpring1D system = new();
 
     private List<GameObject> CreatedPrefabs = new();
+
+    public bool enabled = false;
     
     private void Start()
     {
@@ -26,7 +28,9 @@ public class SimWrapper : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //system.Update(Time.deltaTime);
+        if (!enabled) return;
+        
+        system.Update(0.0069);
 
         for (var i = 0; i < system.positions.Count; i++)
         {

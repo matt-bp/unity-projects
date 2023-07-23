@@ -9,7 +9,7 @@ namespace MattMath
     {
         #region Simulation Constants
 
-        private const double K = 1000;
+        private const double K = 10;
         private const double Kd = 0.0;
         private const double L = 0.1;
         private const double Gravity = -10.0;
@@ -19,7 +19,7 @@ namespace MattMath
 
         #region Simulation State
 
-        private readonly List<double> externalVelocities = new() { 0, 0 };
+        private readonly List<double> externalForces = new() { 0, 0 };
         public readonly List<double> positions = new() { 3, 0 };
         private readonly List<double> velocities = new() { 0, 0 };
         private readonly List<double> masses = new() { 0.1, 0.1 };
@@ -34,18 +34,20 @@ namespace MattMath
 
         public void Update(double dt)
         {
+            Debug.Log(dt);
+            
             // Clearing out forces
-            foreach (var index in Enumerable.Range(0, externalVelocities.Count))
+            foreach (var index in Enumerable.Range(0, externalForces.Count))
             {
-                externalVelocities[index] = Gravity;
+                externalForces[index] = Gravity * masses[index];
             }
 
             // Setting spring force
             foreach (var (firstIndex, secondIndex) in springs)
             {
                 var springF = GetSpringForce(positions[firstIndex], positions[secondIndex]);
-                externalVelocities[firstIndex] += springF;
-                externalVelocities[secondIndex] -= springF;
+                externalForces[firstIndex] += springF;
+                externalForces[secondIndex] -= springF;
             }
 
             var a = MakeEmptyGridMatrix();
@@ -74,18 +76,20 @@ namespace MattMath
             // Populate external forces vector
             var f = MakeEmptyGridVector();
             foreach (var index in Enumerable.Range(0, f.Count))
-                f[index] = dt * f[index];
+                f[index] = dt * externalForces[index];
 
-            var b = ConjugateGradient1D.CgSub(f, ConjugateGradient1D.CgMult(dfdx, velocities));
+            var newVelocities = ConjugateGradient1D.CgMult(velocities, dt * dt);
 
+            var b = ConjugateGradient1D.CgAdd(f, ConjugateGradient1D.CgMult(dfdx, newVelocities));
+            
             var dvs = ConjugateGradient1D.Solve(a, b, 20, 0.001);
 
             foreach (var (dv, index) in dvs.Select((v, i) => (v, i)))
             {
-                if (index == 1) continue; // We're treating the point at 0 as an anchor.
+                if (index == 1) continue;
 
-                velocities[index] += dv * 1 / masses[index];
-                positions[index] += velocities[index] * dt;
+                positions[index] += dt * (velocities[index] + dv);
+                velocities[index] += dt * dv;
             }
 
             Elapsed += Time.deltaTime;
@@ -119,13 +123,13 @@ namespace MattMath
         private List<List<double>> MakeEmptyGridMatrix() => Enumerable
             .Range(0, positions.Count)
             .Select(_ => Enumerable.Range(0, positions.Count)
-                .Select(_ => 0.0 /* Set value of cells here */)
+                .Select(_ => 1.0 /* Set value of cells here */)
                 .ToList())
             .ToList();
 
         private List<double> MakeEmptyGridVector() => Enumerable
             .Range(0, positions.Count)
-            .Select(_ => 0.0 /* Set value of cells here */)
+            .Select(_ => 1.0 /* Set value of cells here */)
             .ToList();
     }
 }
