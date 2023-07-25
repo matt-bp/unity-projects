@@ -6,11 +6,9 @@ namespace Helpers
 {
     public class StatsWriter
     {
-        public static void WriteRunStatistics(List<RunStatistics1D> stats)
+        public static void WriteRunStatistics(List<RunStatistics1D> stats, string filename)
         {
-            Debug.Log("Writing file to " + System.IO.Directory.GetCurrentDirectory());
-            
-            using var fs = System.IO.File.Create("./Stats/stats.csv");
+            using var fs = File.Create(filename);
             using var sr = new StreamWriter(fs);
             
             sr.WriteLine("Elapsed, Position");
