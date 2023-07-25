@@ -1,40 +1,69 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using Helpers;
 using MattMath;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-public class SimWrapper : MonoBehaviour
+namespace Prototypes._08_Implicit_MassSpring_1D.Scripts
 {
-    [SerializeField] private GameObject massPrefab;
-    
-    private ImplicitMassSpring1D system = new();
-
-    private List<GameObject> CreatedPrefabs = new();
-
-    public bool enabled = false;
-    
-    private void Start()
+    public class SimWrapper : MonoBehaviour
     {
-        foreach (var pos in system.positions)
-        {
-            var newPrefab = Instantiate(massPrefab);
-            CreatedPrefabs.Add(newPrefab);
-
-            newPrefab.transform.position = new Vector3(0, (float)pos, 0);
-        }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (!enabled) return;
+        [SerializeField] private GameObject massPrefab;
+    
+        private readonly ImplicitMassSpring1D system = new();
         
-        system.Update(0.0069);
+        private List<RunStatistics1D> runStatistics = new();
+        private List<GameObject> createdPrefabs = new();
+        /// <summary>
+        /// Time, in seconds, since the simulation started.
+        /// </summary>
+        private double Elapsed;
 
-        for (var i = 0; i < system.positions.Count; i++)
+        [SerializeField] private InputAction downloadReport;
+        
+        public bool isEnabled = false;
+    
+        private void Start()
         {
-            CreatedPrefabs[i].transform.position = new Vector3(0, (float)system.positions[i], 0);
+            foreach (var pos in system.positions)
+            {
+                var newPrefab = Instantiate(massPrefab);
+                createdPrefabs.Add(newPrefab);
+
+                newPrefab.transform.position = new Vector3(0, (float)pos, 0);
+            }
+            
+            downloadReport.Enable();
+        }
+        
+        // Update is called once per frame
+        void Update()
+        {
+            if (downloadReport.WasPerformedThisFrame())
+            {
+                Debug.Log("Downloading CSV report.");
+                // TODO: Actually create report here
+
+                StatsWriter.WriteRunStatistics(runStatistics);
+            }
+
+            if (!isEnabled) return;
+
+            system.Update(Time.deltaTime);
+
+            for (var i = 0; i < system.positions.Count; i++)
+            {
+                createdPrefabs[i].transform.position = new Vector3(0, (float)system.positions[i], 0);
+            }
+
+            Elapsed += Time.deltaTime;
+
+            runStatistics.Add(new RunStatistics1D()
+            {
+                Elapsed = Elapsed,
+                Position = system.positions[0],
+            });
         }
     }
 }

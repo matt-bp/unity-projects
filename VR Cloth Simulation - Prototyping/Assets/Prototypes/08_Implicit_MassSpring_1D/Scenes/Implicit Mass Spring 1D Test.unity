@@ -169,6 +169,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   massPrefab: {fileID: 5821650435297185737, guid: 124af3b4d571d461ab3bdc8bfc42fc8d,
     type: 3}
+  downloadReport:
+    m_Name: Download Report
+    m_Type: 0
+    m_ExpectedControlType: Button
+    m_Id: 5fe27e2b-c074-4cb2-9480-81440d0b3b8d
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: f71983dc-cdf5-4819-a9bd-67ed430eb7b0
+      m_Path: <Keyboard>/space
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Download Report
+      m_Flags: 0
+    m_Flags: 0
+  isEnabled: 0
 --- !u!1 &133354736
 GameObject:
   m_ObjectHideFlags: 0

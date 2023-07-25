@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Helpers;
 using UnityEngine;
 
 namespace MattMath
@@ -9,7 +10,7 @@ namespace MattMath
     {
         #region Simulation Constants
 
-        private const double K = 10;
+        private const double K = 500;
         private const double Kd = 0.0;
         private const double L = 0.1;
         private const double Gravity = -10.0;
@@ -26,15 +27,10 @@ namespace MattMath
         private readonly List<(int, int)> springs = new() { (0, 1) };
 
         #endregion
-
-        /// <summary>
-        /// Time, in seconds, since the simulation started.
-        /// </summary>
-        private double Elapsed;
-
+        
         public void Update(double dt)
         {
-            Debug.Log(dt);
+            //Debug.Log(dt);
             
             // Clearing out forces
             foreach (var index in Enumerable.Range(0, externalForces.Count))
@@ -91,8 +87,6 @@ namespace MattMath
                 positions[index] += dt * (velocities[index] + dv);
                 velocities[index] += dt * dv;
             }
-
-            Elapsed += Time.deltaTime;
         }
 
         private double SpringJdx(int firstIndex, int secondIndex)
