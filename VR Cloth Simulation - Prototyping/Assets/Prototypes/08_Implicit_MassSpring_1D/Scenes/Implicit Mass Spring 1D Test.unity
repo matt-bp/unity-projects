@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028305, g: 0.22571313, b: 0.3069213, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -169,21 +169,55 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   massPrefab: {fileID: 5821650435297185737, guid: 124af3b4d571d461ab3bdc8bfc42fc8d,
     type: 3}
-  downloadReport:
-    m_Name: Download Report
+  createReport:
+    m_Name: Create Report
     m_Type: 0
-    m_ExpectedControlType: Button
-    m_Id: 5fe27e2b-c074-4cb2-9480-81440d0b3b8d
+    m_ExpectedControlType: 
+    m_Id: faf4e2da-d190-4f4b-a3e9-a41980a04bb4
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings:
     - m_Name: 
-      m_Id: f71983dc-cdf5-4819-a9bd-67ed430eb7b0
-      m_Path: <Keyboard>/space
+      m_Id: 3ff53b6d-c3f1-4ff3-9b24-7a464ca92521
+      m_Path: <Keyboard>/c
       m_Interactions: 
       m_Processors: 
       m_Groups: 
-      m_Action: Download Report
+      m_Action: Create Report
+      m_Flags: 0
+    m_Flags: 0
+  resetSimulation:
+    m_Name: Reset Simulation
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 8dac18d9-6ec1-41a7-b4ab-9efb77dc2610
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: f73aa85e-0692-4e1f-a090-25a63b4ad982
+      m_Path: <Keyboard>/r
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Reset Simulation
+      m_Flags: 0
+    m_Flags: 0
+  toggleSimulation:
+    m_Name: Toggle Simulation
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: b75c5f3c-d6e0-4a12-8e13-c3b91e40762b
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: 95ac5808-1a07-4ddc-bdbc-525a3b9318f7
+      m_Path: <Keyboard>/t
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Toggle Simulation
       m_Flags: 0
     m_Flags: 0
   isEnabled: 0
