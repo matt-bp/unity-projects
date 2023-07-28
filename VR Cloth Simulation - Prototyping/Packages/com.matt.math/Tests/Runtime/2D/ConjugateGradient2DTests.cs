@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using MattMath;
+﻿using System.Collections.Generic;
 using MattMath._2D;
 using NUnit.Framework;
-using UnityEngine;
 using Unity.Mathematics;
 
 namespace Tests.Runtime._2D
