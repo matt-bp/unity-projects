@@ -10,24 +10,50 @@ namespace Tests.Runtime._2D
     public class ConjugateGradient2DTests
     {
         [Test]
-        public void CgAdd_WithValues_AddsThemTogether()
+        public void Add_With2DValues_AddsThemTogether()
         {
-            var expected = MakeExpected();
+            var expected = new List<double2>
+            {
+                math.double2(7.0, 5),
+                math.double2(1.0, 3.0)
+            };
             var first = MakeFirst();
             var second = MakeSecond();
 
-            var result = ConjugateGradient.CgAdd(first, second);
+            var result = ConjugateGradient.Add(first, second);
 
             AssertGridVectorsEqual(result, expected);
         }
+
+        [Test]
+        public void Sub_With2DValues_SubtractsThem()
+        {
+            var expected = new List<double2>
+            {
+                math.double2(1.0, 2),
+                math.double2(1.0, 1.0)
+            };
+            var first = MakeFirst();
+            var second = MakeSecond();
+
+            var result = ConjugateGradient.Sub(first, second);
+
+            AssertGridVectorsEqual(result, expected);
+        }
+
+        [Test]
+        public void Dot_With2DValues_ReturnsTheFullDotProduct()
+        {
+            const double expected = 19.25;
+            var first = MakeFirst();
+            var second = MakeSecond();
+
+            var result = ConjugateGradient.Dot(first, second);
+            
+            Assert.That(result, Is.EqualTo(expected));
+        }
         
         #region Helpers
-
-        private static List<double2> MakeExpected() => new()
-        {
-            math.double2(7.0, 5),
-            math.double2(1.0, 3.0)
-        };
         
         private static List<double2> MakeFirst() => new()
         {
