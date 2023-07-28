@@ -81,6 +81,18 @@ namespace Tests.Runtime._2D
             AssertGridVectorsEqual(result, expected);
         }
 
+        [Test]
+        public void Solve_WithExampleFromPaper_ReturnsCorrectVector()
+        {
+            var expected = new List<double2> { math.double2(2.0, -2.0) };
+            var vector = new List<double2> { math.double2(2.0, -8.0) };
+            var matrix = new List<List<double2x2>> { new() { math.double2x2(3.0, 2.0, 2.0, 6.0) } };
+
+            var result = ConjugateGradient.Solve(matrix, vector, 100, 0.0001);
+            
+            AssertGridVectorsEqual(result, expected);
+        }
+
         #region Helpers
 
         private static List<double2> MakeFirst() => new()
