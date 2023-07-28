@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using MattMath;
 using MattMath._2D;
 using NUnit.Framework;
@@ -51,6 +52,22 @@ namespace Tests.Runtime._2D
             var result = ConjugateGradient.Dot(first, second);
             
             Assert.That(result, Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void Mult_With2DValuesAndConstant_ReturnsMultiplication()
+        {
+            var expected = new List<double2>()
+            {
+                math.double2(2.0, 1.75),
+                math.double2(0.5, 1.0)
+            };
+            var first = MakeFirst();
+            const double constant = 0.5;
+            
+            var result = ConjugateGradient.Mult(first, constant);
+
+            AssertGridVectorsEqual(result, expected);
         }
         
         #region Helpers

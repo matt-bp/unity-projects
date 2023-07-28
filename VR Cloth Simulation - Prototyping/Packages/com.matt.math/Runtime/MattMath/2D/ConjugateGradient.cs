@@ -53,7 +53,7 @@ namespace MattMath._2D
 
             return result;
         }
-        
+
         /// <summary>
         /// This returns the dot product from the given vectors.
         ///
