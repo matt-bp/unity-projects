@@ -53,6 +53,27 @@ namespace MattMath._2D
 
             return result;
         }
+        
+        public static GridVector Mult(GridMatrix matrix, GridVector vector)
+        {
+            Debug.Assert(vector.Count == matrix.Count);
+            var result = Enumerable
+                .Range(0, vector.Count)
+                .Select(_ => double2.zero)
+                .ToList();
+
+            foreach (var (columnOfMatrices, columnIndex) in matrix.Select((v, i) => (v, i)))
+            {
+                Debug.Assert(columnOfMatrices.Count == matrix.Count);
+
+                foreach (var (cellMatrix, rowIndex) in columnOfMatrices.Select((cv, ci) => (cv, ci)))
+                {
+                    result[rowIndex] += math.mul(cellMatrix, vector[columnIndex]);
+                }
+            }
+
+            return result;
+        }
 
         /// <summary>
         /// This returns the dot product from the given vectors.

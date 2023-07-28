@@ -50,7 +50,7 @@ namespace Tests.Runtime._2D
             var second = MakeSecond();
 
             var result = ConjugateGradient.Dot(first, second);
-            
+
             Assert.That(result, Is.EqualTo(expected));
         }
 
@@ -64,20 +64,31 @@ namespace Tests.Runtime._2D
             };
             var first = MakeFirst();
             const double constant = 0.5;
-            
+
             var result = ConjugateGradient.Mult(first, constant);
 
             AssertGridVectorsEqual(result, expected);
         }
-        
+
+        [Test]
+        public void Mult_With2DValuesAndIdentity_ReturnsTheVector()
+        {
+            var expected = new List<double2> { math.double2(4.0, 3.5) };
+            var matrix = new List<List<double2x2>> { new() { math.double2x2(1.0, 0.0, 0.0, 1.0) } };
+
+            var result = ConjugateGradient.Mult(matrix, expected);
+            
+            AssertGridVectorsEqual(result, expected);
+        }
+
         #region Helpers
-        
+
         private static List<double2> MakeFirst() => new()
         {
             math.double2(4.0, 3.5),
             math.double2(1.0, 2.0)
         };
-        
+
         private static List<double2> MakeSecond() => new()
         {
             math.double2(3.0, 1.5),
