@@ -56,6 +56,15 @@ namespace MattMath._2D
         public void StepSimulation(double dt)
         {
             SetForces();
+            
+            var a = MakeEmptyGridMatrix();
+            var dfdx = MakeEmptyGridMatrix();
+
+            foreach (var (firstIndex, secondIndex) in springs)
+            {
+                var jp = dt * dt * SpringJdx(firstIndex, secondIndex);
+                var jv = dt * SpringJdv();
+            }
         }
         
         private void SetForces()
@@ -67,7 +76,39 @@ namespace MattMath._2D
             }
             
             // Spring force, should be added onto force vector
-            
+            foreach (var (firstIndex, secondIndex) in springs)
+            {
+                var springForce = GetSpringForce(positions[firstIndex], positions[secondIndex]);
+                forces[firstIndex] += springForce;
+                forces[secondIndex] -= springForce;
+            }
         }
+
+        private double2 GetSpringForce(double2 position1, double2 position2)
+        {
+            var vectorBetween = position1 - position2;
+            var distance = math.distance(position1, position2);
+            var force = -k * (distance - l) * (vectorBetween / distance);
+            return force;
+        }
+        
+        private List<List<double2x2>> MakeEmptyGridMatrix() => Enumerable
+            .Range(0, positions.Count)
+            .Select(_ => Enumerable.Range(0, positions.Count)
+                .Select(_ => double2x2.identity /* Set value of cells here */)
+                .ToList())
+            .ToList();
+
+        private List<double2> MakeEmptyGridVector() => Enumerable
+            .Range(0, positions.Count)
+            .Select(_ => double2.zero /* Set value of cells here */)
+            .ToList();
+
+        private double2x2 SpringJdx(int firstIndex, int secondIndex)
+        {
+            return double2x2.identity;
+        }
+        
+        private double2x2 SpringJdv() => -kd * double2x2.identity;
     }
 }
