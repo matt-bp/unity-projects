@@ -29,18 +29,17 @@ namespace Prototypes._09_Implicit_MassSpring_2D.Scripts
         
         private void Start()
         {
-            Debug.Log("Banana1");
             processor = GetComponent<SimulationStatisticsProcessor>();
             cloth = GetComponentInChildren<ImplicitMassSpring>();
         
             resetSimulation.Enable();
             toggleSimulation.Enable();
-            Debug.Log("Banana2");
-            initialPositions.Add(math.double2(0, 3));
+            
+            initialPositions.Add(math.double2(1, 3));
             initialPositions.Add(math.double2(0, 0));
         
             springs.Add((0, 1));
-            Debug.Log("Banana3");
+            
             cloth.SetPositionsAndSprings(initialPositions, springs);
         }
 
@@ -63,7 +62,7 @@ namespace Prototypes._09_Implicit_MassSpring_2D.Scripts
     
         private void RunSimulation()
         {
-            //cloth.StepSimulation(Time.deltaTime);
+            cloth.StepSimulation(Time.deltaTime);
 
             elapsed += Time.deltaTime;
 

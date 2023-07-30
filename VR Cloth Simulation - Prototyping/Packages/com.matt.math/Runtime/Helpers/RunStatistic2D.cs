@@ -11,10 +11,10 @@ namespace Helpers
         
         public string GetCsvLine()
         {
-            return DeltaTime + "," + Elapsed + "," + Position.y;
+            return DeltaTime + "," + Elapsed + "," + Position.x + "," + Position.y;
         }
 
         public string GetCsvHeader() => 
-            "DeltaTime, Elapsed, Y Position";
+            "DeltaTime, Elapsed, X Position, Y Position";
     }
 }
