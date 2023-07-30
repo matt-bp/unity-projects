@@ -248,6 +248,7 @@ GameObject:
   m_Component:
   - component: {fileID: 377941197}
   - component: {fileID: 377941198}
+  - component: {fileID: 377941199}
   m_Layer: 0
   m_Name: Simulation Controller
   m_TagString: Untagged
@@ -318,6 +319,53 @@ MonoBehaviour:
       m_Flags: 0
     m_Flags: 0
   outputFolder: ./Stats
+--- !u!114 &377941199
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 377941196}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb0489eb32e3f4ef2ba4ea09b5bf1c1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  resetSimulation:
+    m_Name: Reset Simulation
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 90a5262c-415c-4efa-95e8-26c66ec4416f
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: 235bbeed-18c7-4fac-8e23-04a84422b5af
+      m_Path: <Keyboard>/r
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Reset Simulation
+      m_Flags: 0
+    m_Flags: 0
+  toggleSimulation:
+    m_Name: Toggle Simulation
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: b64a9b43-8d50-4d3e-8b11-023eb266b4e1
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: b973e7d6-acda-45c3-8f12-58db29d6e987
+      m_Path: <Keyboard>/t
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Toggle Simulation
+      m_Flags: 0
+    m_Flags: 0
+  isEnabled: 0
 --- !u!1 &779523934
 GameObject:
   m_ObjectHideFlags: 0

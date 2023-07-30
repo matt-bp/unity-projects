@@ -17,7 +17,7 @@ namespace Prototypes._09_Implicit_MassSpring_2D.Scripts
         #endregion
 
         [SerializeField] private string outputFolder = "./Stats";
-        private List<RunStatistics1D> runStatistics = new();
+        private List<IRunStatistic> runStatistics = new();
         private readonly Guid runIdentifier = Guid.NewGuid();
 
         private void Start()
@@ -40,7 +40,7 @@ namespace Prototypes._09_Implicit_MassSpring_2D.Scripts
 
             if (resetStatistics.WasPerformedThisFrame())
             {
-                runStatistics = new List<RunStatistics1D>();
+                runStatistics = new List<IRunStatistic>();
             }
         }
         
@@ -49,6 +49,11 @@ namespace Prototypes._09_Implicit_MassSpring_2D.Scripts
             var filename = $"./Stats/stats-{runIdentifier}";
             Debug.Log("Creating report here: " + filename);
             StatsWriter.WriteRunStatistics(runStatistics, filename, "csv");
+        }
+
+        public void AddStat(RunStatistic2D stat)
+        {
+            runStatistics.Add(stat);
         }
     }
 }

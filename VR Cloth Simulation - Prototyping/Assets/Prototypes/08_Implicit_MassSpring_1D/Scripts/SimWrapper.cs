@@ -17,7 +17,7 @@ namespace Prototypes._08_Implicit_MassSpring_1D.Scripts
         [SerializeField] private GameObject massPrefab;
         private readonly List<GameObject> createdPrefabs = new();
         
-        private List<RunStatistics1D> runStatistics = new();
+        private List<IRunStatistic> runStatistics = new();
         /// <summary>
         /// Time, in seconds, since the simulation run started.
         /// </summary>
@@ -62,7 +62,7 @@ namespace Prototypes._08_Implicit_MassSpring_1D.Scripts
                 }
 
                 UpdateMassVisualization();
-                runStatistics = new List<RunStatistics1D>();
+                runStatistics = new List<IRunStatistic>();
             }
 
             if (toggleSimulation.WasPerformedThisFrame())

@@ -6,7 +6,7 @@ namespace Helpers
 {
     public class StatsWriter
     {
-        public static void WriteRunStatistics(List<RunStatistics1D> stats, string filename, string extension)
+        public static void WriteRunStatistics(List<IRunStatistic> stats, string filename, string extension)
         {
             var availableFilename = filename + "." + extension;
             var attempt = 1;
@@ -19,15 +19,17 @@ namespace Helpers
             }
             
             Debug.Assert(attempt < maxAttempts);
+
+            Debug.Assert(stats.Count > 0);
             
             using var fs = File.Create(availableFilename);
             using var sr = new StreamWriter(fs);
             
-            sr.WriteLine(RunStatistics1D.GetCSVHeader());
+            sr.WriteLine(stats[0].GetCsvHeader());
             
             foreach (var stat in stats)
             {
-                sr.WriteLine(stat.GetCSVLine());
+                sr.WriteLine(stat.GetCsvLine());
             }
         }
     }

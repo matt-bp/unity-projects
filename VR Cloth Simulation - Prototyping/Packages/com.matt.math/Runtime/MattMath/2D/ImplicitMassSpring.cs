@@ -31,6 +31,8 @@ namespace MattMath._2D
         private List<double> masses;
         private List<(int, int)> springs;
 
+        public List<double2> Positions => positions;
+
         public void SetPositionsAndSprings(List<double2> newPositions, List<(int, int)> newSprings)
         {
             forces = Grid<double2>.MakeVector(positions.Count, double2.zero);
