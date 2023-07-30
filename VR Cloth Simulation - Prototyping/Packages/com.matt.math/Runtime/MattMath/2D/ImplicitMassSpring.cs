@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Helpers;
 using Unity.Mathematics;
@@ -64,6 +65,39 @@ namespace MattMath._2D
             {
                 var jp = dt * dt * SpringJdx(firstIndex, secondIndex);
                 var jv = dt * SpringJdv();
+                
+                a[firstIndex][firstIndex] -= jp - jv;
+                a[firstIndex][secondIndex] += jp + jv;
+                a[secondIndex][secondIndex] -= jp - jv;
+                a[secondIndex][firstIndex] += jp + jv;
+
+                dfdx[firstIndex][firstIndex] -= jp;
+                dfdx[firstIndex][secondIndex] += jp;
+                dfdx[secondIndex][secondIndex] -= jp;
+                dfdx[secondIndex][firstIndex] += jp;
+            }
+            
+            // M
+            foreach (var index in Enumerable.Range(0, a.Count))
+                a[index][index] += double2x2.identity * masses[index];
+            
+            // Populate forces vector
+            var f = MakeEmptyGridVector();
+            foreach (var index in Enumerable.Range(0, f.Count))
+                f[index] = dt * forces[index];
+            
+            var newVelocities = ConjugateGradient.Mult(velocities, dt * dt);
+
+            var b = ConjugateGradient.Add(f, ConjugateGradient.Mult(dfdx, newVelocities));
+            
+            var dvs = ConjugateGradient.Solve(a, b, 20, 0.001);
+
+            foreach (var (dv, index) in dvs.Select((v, i) => (v, i)))
+            {
+                if (index == 1) continue;
+
+                positions[index] += dt * (velocities[index] + dv);
+                velocities[index] += dt * dv;
             }
         }
         
@@ -95,7 +129,7 @@ namespace MattMath._2D
         private List<List<double2x2>> MakeEmptyGridMatrix() => Enumerable
             .Range(0, positions.Count)
             .Select(_ => Enumerable.Range(0, positions.Count)
-                .Select(_ => double2x2.identity /* Set value of cells here */)
+                .Select(_ => double2x2.zero /* Set value of cells here */)
                 .ToList())
             .ToList();
 
@@ -106,7 +140,14 @@ namespace MattMath._2D
 
         private double2x2 SpringJdx(int firstIndex, int secondIndex)
         {
-            return double2x2.identity;
+            var xij = positions[firstIndex] - positions[secondIndex];
+            var dotResult = math.dot(xij, xij);
+            Debug.Assert(dotResult > 0);
+            var outer = mm.outerProduct(xij, xij);
+            var xijs = outer / dotResult;
+            var magnitude = Math.Sqrt(dotResult);
+
+            return (xijs + (double2x2.identity - xijs) * ((1 - l) / magnitude)) * k;
         }
         
         private double2x2 SpringJdv() => -kd * double2x2.identity;

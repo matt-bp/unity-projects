@@ -117,13 +117,13 @@ namespace MattMath
         private List<List<double>> MakeEmptyGridMatrix() => Enumerable
             .Range(0, positions.Count)
             .Select(_ => Enumerable.Range(0, positions.Count)
-                .Select(_ => 1.0 /* Set value of cells here */)
+                .Select(_ => 0.0 /* Set value of cells here */)
                 .ToList())
             .ToList();
 
         private List<double> MakeEmptyGridVector() => Enumerable
             .Range(0, positions.Count)
-            .Select(_ => 1.0 /* Set value of cells here */)
+            .Select(_ => 0.0 /* Set value of cells here */)
             .ToList();
     }
 }
