@@ -279,7 +279,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 377941196}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6c18c37ef8844a47a0da3a61d96d3ecc, type: 3}
   m_Name: 
@@ -558,6 +558,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1903765828}
   - component: {fileID: 1903765829}
+  - component: {fileID: 1903765830}
   m_Layer: 0
   m_Name: Cloth
   m_TagString: Untagged
@@ -599,3 +600,17 @@ MonoBehaviour:
     x: 0
     y: -10
   m: 0.1
+--- !u!114 &1903765830
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1903765827}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8994a0afa41346b5a512cd5a1565e7a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  massPrefab: {fileID: 5821650435297185737, guid: b93729b462ec5934da63ec90c1ac3a58,
+    type: 3}

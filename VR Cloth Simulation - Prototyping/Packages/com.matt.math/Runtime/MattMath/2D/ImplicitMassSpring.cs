@@ -25,35 +25,32 @@ namespace MattMath._2D
         
         #region Simulation State
 
-        private List<double2> forces;
-        private List<double2> positions;
-        private List<double2> velocities;
-        private List<double> masses;
-        private List<(int, int)> springs;
+        private List<double2> forces = new();
+        private List<double2> positions = new();
+        private List<double2> velocities = new();
+        private List<double> masses = new();
+        private List<(int, int)> springs = new();
 
         public List<double2> Positions => positions;
 
         public void SetPositionsAndSprings(List<double2> newPositions, List<(int, int)> newSprings)
         {
-            forces = Grid<double2>.MakeVector(positions.Count, double2.zero);
-            positions = Grid<double2>.MakeVector(positions.Count, double2.zero);
-            velocities = Grid<double2>.MakeVector(velocities.Count, double2.zero);
-            masses = Grid<double>.MakeVector(positions.Count, m);
+            forces = Grid<double2>.MakeVector(newPositions.Count, double2.zero);
+            positions = newPositions.Select(x => x).ToList();
+            velocities = Grid<double2>.MakeVector(newPositions.Count, double2.zero);
+            masses = Grid<double>.MakeVector(newPositions.Count, m);
+            Debug.Assert(newSprings.All(x => x.Item1 != x.Item2));
             springs = newSprings.Select(x => (x.Item1, x.Item2)).ToList();
             
-            Debug.Assert(IsSimulationStateValid());
+            Debug.Assert(positions.Count == forces.Count);
+            Debug.Assert(positions.Count == velocities.Count);
+            Debug.Assert(positions.Count == masses.Count);
+            Debug.Assert(springs.All(pair =>
+                pair.Item1 >= 0 && pair.Item1 < positions.Count && pair.Item2 >= 0 &&
+                pair.Item2 < positions.Count));
+            Debug.Assert(springs.All(pair => pair.Item1 != pair.Item2));
         }
-        
-        private bool IsSimulationStateValid()
-        {
-            return positions.Count == forces.Count &&
-                   positions.Count == velocities.Count &&
-                   positions.Count == masses.Count &&
-                   springs.All(pair =>
-                       pair.Item1 >= 0 && pair.Item1 < positions.Count && pair.Item2 >= 0 &&
-                       pair.Item2 < positions.Count);
-        }
-        
+
         #endregion
 
         public void StepSimulation(double dt)
