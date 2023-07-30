@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Helpers;
 using MattMath._2D;
 using Unity.Mathematics;
@@ -58,6 +59,8 @@ namespace Prototypes._09_Implicit_MassSpring_2D.Scripts
             if (!isEnabled) return;
 
             RunSimulation();
+            
+            // OneShotSimulation();
         }
     
         private void RunSimulation()
@@ -72,6 +75,32 @@ namespace Prototypes._09_Implicit_MassSpring_2D.Scripts
                 Position = cloth.Positions?[0] ?? double2.zero - 101,
                 DeltaTime = Time.deltaTime
             });
+        }
+        
+        /// <summary>
+        /// Runs the simulation with a fixed time step. Primarily used to test simulation parameters. Immediately creates a CSV report with run statistics.
+        /// </summary>
+        private void OneShotSimulation()
+        {
+            Debug.Log("Running one shot simulation. NOT in real time!");
+            
+            foreach(var _ in Enumerable.Range(0, 1000))
+            {
+                cloth.StepSimulation(Time.deltaTime);
+
+                elapsed += Time.deltaTime;
+
+                processor.AddStat(new RunStatistic2D()
+                {
+                    Elapsed = elapsed,
+                    Position = cloth.Positions[0],
+                    DeltaTime = Time.deltaTime
+                });
+            }
+
+            isEnabled = false;
+            
+            Debug.Log("Done with one shot simulation!");
         }
     }
 }
