@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Helpers;
-using MattMath._2D;
+using MattMath._3D;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -25,7 +25,7 @@ namespace Prototypes._10_Implicit_MassSpring_3D.Scripts
         private SimulationStatisticsProcessor processor;
         private ImplicitMassSpring cloth;
         
-        private readonly List<double2> initialPositions = new();
+        private readonly List<double3> initialPositions = new();
         private readonly List<(int, int)> springs = new();
         
         private void Start()
@@ -36,8 +36,8 @@ namespace Prototypes._10_Implicit_MassSpring_3D.Scripts
             resetSimulation.Enable();
             toggleSimulation.Enable();
             
-            initialPositions.Add(math.double2(1, 3));
-            initialPositions.Add(math.double2(0, 0));
+            initialPositions.Add(math.double3(1, 3, 1));
+            initialPositions.Add(math.double3(0, 0, 0));
         
             springs.Add((0, 1));
             
@@ -69,10 +69,10 @@ namespace Prototypes._10_Implicit_MassSpring_3D.Scripts
 
             elapsed += Time.deltaTime;
 
-            processor.AddStat(new RunStatistic2D
+            processor.AddStat(new RunStatistic3D
             {
                 Elapsed = elapsed,
-                Position = cloth.Positions?[0] ?? double2.zero - 101,
+                Position = cloth.Positions?[0] ?? double3.zero - 101,
                 DeltaTime = Time.deltaTime
             });
         }
@@ -90,7 +90,7 @@ namespace Prototypes._10_Implicit_MassSpring_3D.Scripts
 
                 elapsed += Time.deltaTime;
 
-                processor.AddStat(new RunStatistic2D()
+                processor.AddStat(new RunStatistic3D()
                 {
                     Elapsed = elapsed,
                     Position = cloth.Positions[0],

@@ -102,6 +102,8 @@ namespace MattMath._3D
                 i++;
             }
 
+            Debug.Assert(i != iMax, "Hit the max limit of iterations in the 3D solve.");
+
             return dv;
         }
     }

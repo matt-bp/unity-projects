@@ -46,12 +46,12 @@ namespace Prototypes._10_Implicit_MassSpring_3D.Scripts
         
         private void CreateReport()
         {
-            var filename = $"./Stats/stats-{runIdentifier}";
+            var filename = $"{outputFolder}/stats-{runIdentifier}";
             Debug.Log("Creating report here: " + filename);
             StatsWriter.WriteRunStatistics(runStatistics, filename, "csv");
         }
 
-        public void AddStat(RunStatistic2D stat)
+        public void AddStat(RunStatistic3D stat)
         {
             runStatistics.Add(stat);
         }
