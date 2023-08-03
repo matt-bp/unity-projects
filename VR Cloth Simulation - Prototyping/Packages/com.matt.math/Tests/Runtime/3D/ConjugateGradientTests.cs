@@ -19,7 +19,7 @@ namespace Tests.Runtime._3D
             var second = MakeSecond();
 
             var result = ConjugateGradient.Add(first, second);
-            
+
             AssertGridVectorsEqual(result, expected);
         }
 
@@ -33,9 +33,9 @@ namespace Tests.Runtime._3D
             };
             var first = MakeFirst();
             var second = MakeSecond();
-            
+
             var result = ConjugateGradient.Sub(first, second);
-            
+
             AssertGridVectorsEqual(result, expected);
         }
 
@@ -51,7 +51,7 @@ namespace Tests.Runtime._3D
             const double constant = 0.5;
 
             var result = ConjugateGradient.Mult(first, constant);
-            
+
             AssertGridVectorsEqual(result, expected);
         }
 
@@ -62,7 +62,7 @@ namespace Tests.Runtime._3D
             var matrix = new List<List<double3x3>> { new() { double3x3.identity } };
 
             var result = ConjugateGradient.Mult(matrix, expected);
-            
+
             AssertGridVectorsEqual(result, expected);
         }
 
@@ -78,6 +78,25 @@ namespace Tests.Runtime._3D
             Assert.That(result, Is.EqualTo(expected));
         }
 
+        [Test]
+        public void Solve_With3DValues_ReturnsCorrectSolution()
+        {
+            var expected = new List<double3> { math.double3(2.0, -2.0, 0.0) };
+            var vector = new List<double3> { math.double3(2.0, -8.0, 0.0) };
+            var matrix = new List<List<double3x3>>
+            {
+                new()
+                {
+                    math.double3x3(3, 2, 0, 2, 6, 0, 0, 0, 0)
+                }
+            };
+
+            var result = ConjugateGradient.Solve(matrix, vector, 1000, 0.0001);
+            
+            AssertGridVectorsEqual(result, expected);
+        }
+
+
         #region Helpers
 
         private static List<double3> MakeFirst() => new()
@@ -91,7 +110,7 @@ namespace Tests.Runtime._3D
             math.double3(3.0, 1.5, 1.0),
             math.double3(0.0, 1.0, 0.5)
         };
-        
+
         private static void AssertGridVectorsEqual(List<double3> result, List<double3> expected)
         {
             Assert.That(result, Has.Count.EqualTo(expected.Count));

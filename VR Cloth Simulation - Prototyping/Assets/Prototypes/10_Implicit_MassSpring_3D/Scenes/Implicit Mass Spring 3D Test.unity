@@ -863,6 +863,7 @@ GameObject:
   - component: {fileID: 1903765828}
   - component: {fileID: 1903765829}
   - component: {fileID: 1903765830}
+  - component: {fileID: 1903765831}
   m_Layer: 0
   m_Name: Cloth
   m_TagString: Untagged
@@ -918,3 +919,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   massPrefab: {fileID: 5821650435297185737, guid: 5e86ed0ba041c09469deb1051cd1c7cf,
     type: 3}
+--- !u!114 &1903765831
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1903765827}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3f39e980cb64afa95a62bb13c47e3e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

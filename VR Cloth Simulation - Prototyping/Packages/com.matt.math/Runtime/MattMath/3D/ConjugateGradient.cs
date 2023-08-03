@@ -74,5 +74,35 @@ namespace MattMath._3D
 
             return first.Zip(second, math.dot).Sum();
         }
+        
+        public static GridVector Solve(GridMatrix a, GridVector b, int iMax, double e)
+        {
+            var dv = Enumerable
+                .Range(0, b.Count)
+                .Select(_ => double3.zero).ToList();
+
+            var i = 0;
+            var r = Sub(b, Mult(a, dv));
+            var d = r.Select(m => m).ToList();
+            var deltaNew = Dot(r, r);
+            var delta0 = deltaNew;
+
+            while (i < iMax && deltaNew > e * e * delta0)
+            {
+                var q = Mult(a, d);
+                var alpha = deltaNew / Dot(d, q);
+                dv = Add(dv, Mult(d, alpha));
+                r = Sub(r, Mult(q, alpha));
+
+                var deltaOld = deltaNew;
+                deltaNew = Dot(r, r);
+                var beta = deltaNew / deltaOld;
+                d = Add(r, Mult(d, beta));
+
+                i++;
+            }
+
+            return dv;
+        }
     }
 }
