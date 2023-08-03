@@ -59,19 +59,17 @@ namespace Tests.Runtime._3D
         public void Mult_With3DValuesAndIdentity_ReturnsTheValues()
         {
             var expected = new List<double3> { math.double3(4.0, 3.5, 0.1) };
-            var matrix = double3x3.identity;
+            var matrix = new List<List<double3x3>> { new() { double3x3.identity } };
 
-            // var result = ConjugateGradient.Mult(matrix, expected);
-            //
-            // AssertGridVectorsEqual(result, expected);
+            var result = ConjugateGradient.Mult(matrix, expected);
             
-            Assert.Fail();
+            AssertGridVectorsEqual(result, expected);
         }
 
         [Test]
         public void Dot_With3DValues_ReturnsTheFullDotProduct()
         {
-            const double expected = 0;
+            const double expected = 24.75;
             var first = MakeFirst();
             var second = MakeSecond();
 
