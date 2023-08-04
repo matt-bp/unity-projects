@@ -45,8 +45,8 @@ namespace MattMath._1D
                 externalForces[secondIndex] -= springF;
             }
 
-            var a = MakeEmptyGridMatrix();
-            var dfdx = MakeEmptyGridMatrix();
+            var a = Helpers.Grid<double>.MakeMatrix(positions.Count, 0.0);
+            var dfdx = Helpers.Grid<double>.MakeMatrix(positions.Count, 0.0);
 
             foreach (var (firstIndex, secondIndex) in springs)
             {
@@ -69,7 +69,7 @@ namespace MattMath._1D
                 a[index][index] += Identity * masses[index];
 
             // Populate external forces vector
-            var f = MakeEmptyGridVector();
+            var f = Helpers.Grid<double>.MakeVector(positions.Count, 0.0);
             foreach (var index in Enumerable.Range(0, f.Count))
                 f[index] = dt * externalForces[index];
 
@@ -112,17 +112,5 @@ namespace MattMath._1D
             var force = -K * (dist - L) * (vectorBetween / dist);
             return force;
         }
-
-        private List<List<double>> MakeEmptyGridMatrix() => Enumerable
-            .Range(0, positions.Count)
-            .Select(_ => Enumerable.Range(0, positions.Count)
-                .Select(_ => 0.0 /* Set value of cells here */)
-                .ToList())
-            .ToList();
-
-        private List<double> MakeEmptyGridVector() => Enumerable
-            .Range(0, positions.Count)
-            .Select(_ => 0.0 /* Set value of cells here */)
-            .ToList();
     }
 }
