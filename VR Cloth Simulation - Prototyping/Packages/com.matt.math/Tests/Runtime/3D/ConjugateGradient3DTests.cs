@@ -5,7 +5,7 @@ using Unity.Mathematics;
 
 namespace Tests.Runtime._3D
 {
-    public class ConjugateGradientTests
+    public class ConjugateGradient3DTests
     {
         [Test]
         public void Add_With3DValues_AddsThemTogether()

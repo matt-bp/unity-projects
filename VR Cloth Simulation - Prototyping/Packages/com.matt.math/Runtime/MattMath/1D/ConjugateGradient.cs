@@ -1,4 +1,8 @@
+using System.Collections.Generic;
 using System.Linq;
+using Codice.Client.Commands.Matcher;
+using Helpers;
+using Unity.Mathematics;
 using UnityEngine;
 using GridMatrix = System.Collections.Generic.List<System.Collections.Generic.List<double>>;
 using GridVector = System.Collections.Generic.List<double>;
@@ -77,32 +81,76 @@ namespace MattMath._1D
         
         public static GridVector Solve(GridMatrix a, GridVector b, int iMax, double e)
         {
-            var dv = Enumerable
-                .Range(0, b.Count)
-                .Select(_ => 0.0).ToList();
-
+            var dv = Grid<double>.MakeVector(b.Count, 0.0);
             var i = 0;
             var r = CgSub(b, CgMult(a, dv));
-            var d = r.Select(m => m).ToList();
+            var c = r.Select(m => m).ToList();
             var deltaNew = CgDot(r, r);
             var delta0 = deltaNew;
 
             while (i < iMax && deltaNew > e * e * delta0)
             {
-                var q = CgMult(a, d);
-                var alpha = deltaNew / CgDot(d, q);
-                dv = CgAdd(dv, CgMult(d, alpha));
+                var q = CgMult(a, c);
+                var alpha = deltaNew / CgDot(c, q);
+                dv = CgAdd(dv, CgMult(c, alpha));
                 r = CgSub(r, CgMult(q, alpha));
 
                 var deltaOld = deltaNew;
                 deltaNew = CgDot(r, r);
                 var beta = deltaNew / deltaOld;
-                d = CgAdd(r, CgMult(d, beta));
+                c = CgAdd(r, CgMult(c, beta));
 
                 i++;
             }
 
             return dv;
+        }
+        
+        public static GridVector ConstrainedSolve(GridMatrix a, GridVector b, int iMax, double e, List<int> constrainedIndices)
+        {
+            GridVector Filter(GridVector list) => FilterList(list, constrainedIndices);
+
+            var dv = Grid<double>.MakeVector(b.Count, 0.0);
+            var fb = Filter(b);
+            var delta0 = CgDot(fb, fb);
+            var r = Filter(CgSub(b, CgMult(a, dv)));
+            var c = Filter(r);
+            var deltaNew = CgDot(r, c);
+
+            var i = 0;
+            while (i < iMax && deltaNew > e * e * delta0)
+            {
+                var q = Filter(CgMult(a, c));
+                var alpha = deltaNew / CgDot(c, q);
+                dv = CgAdd(dv, CgMult(c, alpha));
+                r = CgSub(r, CgMult(q, alpha));
+                
+                var deltaOld = deltaNew;
+                deltaNew = CgDot(r, r);
+                c = Filter(CgAdd(r, CgMult(c, deltaNew / deltaOld)));
+                
+                i++;
+            }
+
+            return dv;
+        }
+
+        /// <summary>
+        /// Creates a new vector, copying the contents of the passed in vector, and zeros out the indices passed in constrainedIndices.
+        /// </summary>
+        /// <param name="vector">Vector to filter.</param>
+        /// <param name="constrainedIndices">Indices to target.</param>
+        /// <returns>The filtered vector.</returns>
+        private static GridVector FilterList(GridVector vector, IEnumerable<int> constrainedIndices)
+        {
+            var result = vector.Select(m => m).ToList();
+            
+            foreach (var index in constrainedIndices)
+            {
+                result[index] = 0;
+            }
+            
+            return result;
         }
     }
 }

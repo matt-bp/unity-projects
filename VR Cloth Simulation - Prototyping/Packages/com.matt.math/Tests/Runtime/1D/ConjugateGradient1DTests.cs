@@ -4,7 +4,7 @@ using NUnit.Framework;
 
 namespace Tests.Runtime._1D
 {
-    public class ConjugateGradientTests
+    public class ConjugateGradient1DTests
     {
         [Test]
         public void CgAdd_WithValues_AddsThemTogether()
@@ -89,6 +89,25 @@ namespace Tests.Runtime._1D
             AssertGridVectorsEqual(result, expected);
         }
 
+        [TestCase(100.0)]
+        [TestCase(-100.0)]
+        [TestCase(0.0)]
+        public void ConstrainedSolve_OneConstrainedIndexWithVaryingValues_DoesntUpdateThatIndex(double secondValue)
+        {
+            var expected = new List<double> { 1.0, 0.0 };
+            var vector = new List<double> { 3.0, secondValue };
+            var matrix = new List<List<double>>
+            {
+                // In column major order
+                new() { 3.0, 2.0 },
+                new() { 2.0, 6.0 }
+            };
+            var constrainedIndices = new List<int> { 1 };
+
+            var result = ConjugateGradient.ConstrainedSolve(matrix, vector, 100, 0.0001, constrainedIndices);
+            
+            AssertGridVectorsEqual(result, expected);
+        }
         
         #region Helpers
         
