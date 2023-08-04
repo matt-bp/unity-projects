@@ -1,14 +1,11 @@
-using System;
-using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
+using UnityEngine;
 using GridMatrix = System.Collections.Generic.List<System.Collections.Generic.List<double>>;
 using GridVector = System.Collections.Generic.List<double>;
-using Unity.Mathematics;
 
-namespace MattMath
+namespace MattMath._1D
 {
-    public static class ConjugateGradient1D
+    public static class ConjugateGradient
     {
         public static GridVector CgAdd(GridVector first, GridVector second)
         {

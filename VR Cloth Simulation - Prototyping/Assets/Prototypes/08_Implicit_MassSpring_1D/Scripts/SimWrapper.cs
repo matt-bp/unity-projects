@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Helpers;
 using MattMath;
+using MattMath._1D;
 using Unity.VisualScripting;
 using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
@@ -12,7 +13,7 @@ namespace Prototypes._08_Implicit_MassSpring_1D.Scripts
 {
     public class SimWrapper : MonoBehaviour
     {
-        private readonly ImplicitMassSpring1D system = new();
+        private readonly ImplicitMassSpring system = new();
         private IList<double> initialPositions;
         [SerializeField] private GameObject massPrefab;
         private readonly List<GameObject> createdPrefabs = new();

@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Helpers;
 using UnityEngine;
 
-namespace MattMath
+namespace MattMath._1D
 {
-    public class ImplicitMassSpring1D
+    public class ImplicitMassSpring
     {
         #region Simulation Constants
 
@@ -74,11 +73,11 @@ namespace MattMath
             foreach (var index in Enumerable.Range(0, f.Count))
                 f[index] = dt * externalForces[index];
 
-            var newVelocities = ConjugateGradient1D.CgMult(velocities, dt * dt);
+            var newVelocities = ConjugateGradient.CgMult(velocities, dt * dt);
 
-            var b = ConjugateGradient1D.CgAdd(f, ConjugateGradient1D.CgMult(dfdx, newVelocities));
+            var b = ConjugateGradient.CgAdd(f, ConjugateGradient.CgMult(dfdx, newVelocities));
             
-            var dvs = ConjugateGradient1D.Solve(a, b, 20, 0.001);
+            var dvs = ConjugateGradient.Solve(a, b, 20, 0.001);
 
             foreach (var (dv, index) in dvs.Select((v, i) => (v, i)))
             {

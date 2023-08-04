@@ -1,10 +1,10 @@
-using NUnit.Framework;
 using System.Collections.Generic;
-using MattMath;
+using MattMath._1D;
+using NUnit.Framework;
 
-namespace Tests.Runtime
+namespace Tests.Runtime._1D
 {
-    public class ConjugateGradient1DTests
+    public class ConjugateGradientTests
     {
         [Test]
         public void CgAdd_WithValues_AddsThemTogether()
@@ -13,7 +13,7 @@ namespace Tests.Runtime
             var first = new List<double> { 4.0, -3.0 };
             var second = new List<double> { 2.0, -3.0 };
 
-            var result = ConjugateGradient1D.CgAdd(first, second);
+            var result = ConjugateGradient.CgAdd(first, second);
 
             AssertGridVectorsEqual(result, expected);
         }
@@ -25,7 +25,7 @@ namespace Tests.Runtime
             var first = new List<double> { 4.0, -3.0 };
             var second = new List<double> { 2.0, -3.0 };
 
-            var result = ConjugateGradient1D.CgSub(first, second);
+            var result = ConjugateGradient.CgSub(first, second);
 
             AssertGridVectorsEqual(result, expected);
         }
@@ -37,7 +37,7 @@ namespace Tests.Runtime
             var first = new List<double> { 1.0, 3.0 };
             var second = new List<double> { 2.0, 1.0 };
 
-            var result = ConjugateGradient1D.CgDot(first, second);
+            var result = ConjugateGradient.CgDot(first, second);
 
             Assert.That(result, Is.EqualTo(expected).Within(0.01));
         }
@@ -48,7 +48,7 @@ namespace Tests.Runtime
             var expected = new List<double> { 2.0, 1.5 };
             var first = new List<double> { 4.0, 3.0 };
 
-            var result = ConjugateGradient1D.CgMult(first, 0.5);
+            var result = ConjugateGradient.CgMult(first, 0.5);
 
             AssertGridVectorsEqual(result, expected);
         }
@@ -66,7 +66,7 @@ namespace Tests.Runtime
             };
 
 
-            var result = ConjugateGradient1D.CgMult(matrix, vector);
+            var result = ConjugateGradient.CgMult(matrix, vector);
 
             AssertGridVectorsEqual(result, expected);
         }
@@ -84,7 +84,7 @@ namespace Tests.Runtime
                 new() { 2.0, 6.0 }
             };
 
-            var result = ConjugateGradient1D.Solve(matrix, vector, 100, 0.0001);
+            var result = ConjugateGradient.Solve(matrix, vector, 100, 0.0001);
 
             AssertGridVectorsEqual(result, expected);
         }
