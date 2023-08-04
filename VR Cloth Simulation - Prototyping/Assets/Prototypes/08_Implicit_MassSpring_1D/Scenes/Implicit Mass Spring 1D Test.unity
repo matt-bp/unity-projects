@@ -123,104 +123,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &83167792
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 83167793}
-  - component: {fileID: 83167794}
-  m_Layer: 0
-  m_Name: Simulation Runner
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &83167793
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 83167792}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &83167794
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 83167792}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a1da2cf6b5e1e437bb138cba0546c769, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  massPrefab: {fileID: 5821650435297185737, guid: 124af3b4d571d461ab3bdc8bfc42fc8d,
-    type: 3}
-  createReport:
-    m_Name: Create Report
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: faf4e2da-d190-4f4b-a3e9-a41980a04bb4
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: 3ff53b6d-c3f1-4ff3-9b24-7a464ca92521
-      m_Path: <Keyboard>/c
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Create Report
-      m_Flags: 0
-    m_Flags: 0
-  resetSimulation:
-    m_Name: Reset Simulation
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 8dac18d9-6ec1-41a7-b4ab-9efb77dc2610
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: f73aa85e-0692-4e1f-a090-25a63b4ad982
-      m_Path: <Keyboard>/r
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Reset Simulation
-      m_Flags: 0
-    m_Flags: 0
-  toggleSimulation:
-    m_Name: Toggle Simulation
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: b75c5f3c-d6e0-4a12-8e13-c3b91e40762b
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: 95ac5808-1a07-4ddc-bdbc-525a3b9318f7
-      m_Path: <Keyboard>/t
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Toggle Simulation
-      m_Flags: 0
-    m_Flags: 0
-  isEnabled: 0
 --- !u!1 &133354736
 GameObject:
   m_ObjectHideFlags: 0
@@ -552,3 +454,152 @@ MonoBehaviour:
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
+--- !u!1 &1033680495
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1033680498}
+  - component: {fileID: 1033680497}
+  - component: {fileID: 1033680496}
+  m_Layer: 0
+  m_Name: Simulation Controller
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1033680496
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1033680495}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e35d35a599fb074db1345f41824dcdb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  createReport:
+    m_Name: Create Report
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 585aa392-d9ee-464f-ad35-2b3c20c66160
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  resetStatistics:
+    m_Name: Reset Statistics
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 7ed5170b-1e88-49ec-98c8-1b8e044bc489
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  outputFolder: ./Stats1D
+--- !u!114 &1033680497
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1033680495}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b28f5457992a92940822f16561b2eec8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  resetSimulation:
+    m_Name: Reset Simulation
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 0f7b9efa-b48a-4eea-8570-b96b45787e03
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  toggleSimulation:
+    m_Name: Toggle Simulation
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: c6ffdf1f-5838-41f6-a0c2-ed884b42b8a2
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  isEnabled: 0
+--- !u!4 &1033680498
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1033680495}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2091944533}
+  m_Father: {fileID: 0}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2091944532
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2091944533}
+  - component: {fileID: 2091944534}
+  m_Layer: 0
+  m_Name: Cloth
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2091944533
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2091944532}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1033680498}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2091944534
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2091944532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1364f1dd08f4010bd166807192fa2ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  K: 10
+  Kd: 0
+  L: 0.1
+  Gravity: -10
+  m: 0.1
+  constrainedIndices: 01000000
+  temp:
+  - serializableKeys: 
+    serializableValues: []

@@ -2,7 +2,7 @@ using System.Linq;
 
 namespace Helpers
 {
-    public class RunStatistics1D : IRunStatistic
+    public class RunStatistic1D : IRunStatistic
     {
         public double DeltaTime { get; set; }
         public double Elapsed { get; set; }
@@ -15,7 +15,7 @@ namespace Helpers
 
         public string GetCsvHeader() => 
             string.Join(",", 
-                from p in typeof(RunStatistics1D).GetProperties()
+                from p in typeof(RunStatistic1D).GetProperties()
                 where p.CanRead &&
                       p.CanWrite
                 orderby p.Name
