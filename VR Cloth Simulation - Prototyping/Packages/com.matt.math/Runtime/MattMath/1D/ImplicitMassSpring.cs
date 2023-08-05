@@ -37,7 +37,6 @@ namespace MattMath._1D
         
         public void SetPositionsAndSprings(List<double> newPositions)
         {
-            Debug.Log("Set positions.");
             forces = Grid<double>.MakeVector(newPositions.Count, 0.0);
             positions = newPositions.Select(x => x).ToList();
             velocities = Grid<double>.MakeVector(newPositions.Count, 0.0);
@@ -93,20 +92,17 @@ namespace MattMath._1D
 
             var b = ConjugateGradient.CgAdd(f, ConjugateGradient.CgMult(dfdx, newVelocities));
             
-            var dvs = ConjugateGradient.Solve(a, b, 20, 0.001);
+            var dvs = ConjugateGradient.ConstrainedSolve(a, b, 20, 0.001, constrainedIndices);
 
             foreach (var (dv, index) in dvs.Select((v, i) => (v, i)))
             {
-                if (index == 1) continue;
-                
                 positions[index] += dt * (velocities[index] + dv);
                 velocities[index] += dt * dv;
 
-                // if (constrainedIndices.Contains(index))
-                // {
-                //     Debug.Log(velocities[index]);
-                //     Debug.Assert(velocities[index] == 0.0);
-                // }
+                if (constrainedIndices.Contains(index))
+                {
+                    Debug.Assert(velocities[index] == 0.0);
+                }
             }
         }
 

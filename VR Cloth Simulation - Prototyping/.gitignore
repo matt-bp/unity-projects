@@ -3,6 +3,9 @@
 .idea
 .DS_Store
 /[Ss]tats/
+/[Ss]tats1D/
+/[Ss]tats2D/
+/[Ss]tats3D/
 
 #
 # Get latest from https://github.com/github/gitignore/blob/main/Unity.gitignore

@@ -627,12 +627,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1364f1dd08f4010bd166807192fa2ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  K: 10
+  K: 20
   Kd: 0
   L: 0.1
   Gravity: -10
-  m: 0.1
-  constrainedIndices: 01000000
+  m: 0.2
+  constrainedIndices: 00000000
   springs:
   - firstIndex: 0
     secondIndex: 1
