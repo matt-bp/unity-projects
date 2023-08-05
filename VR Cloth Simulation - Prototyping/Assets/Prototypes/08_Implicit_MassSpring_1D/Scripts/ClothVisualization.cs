@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using MattMath._3D;
+using MattMath._1D;
 using UnityEngine;
 
 namespace Prototypes._08_Implicit_MassSpring_1D.Scripts
@@ -14,6 +14,7 @@ namespace Prototypes._08_Implicit_MassSpring_1D.Scripts
         private void Start()
         {
             cloth = GetComponent<ImplicitMassSpring>();
+            Debug.Assert(cloth is not null);
 
             CreatePrefabs();
         }
@@ -37,7 +38,7 @@ namespace Prototypes._08_Implicit_MassSpring_1D.Scripts
                 var newPrefab = Instantiate(massPrefab);
                 createdPrefabs.Add(newPrefab);
 
-                newPrefab.transform.position = new Vector3((float)pos.x, (float)pos.y, (float)pos.z);
+                newPrefab.transform.position = new Vector3(0, (float)pos, 0);
             }
         }
 
@@ -47,7 +48,7 @@ namespace Prototypes._08_Implicit_MassSpring_1D.Scripts
             for (var i = 0; i < cloth.Positions.Count; i++)
             {
                 var pos = cloth.Positions[i];
-                createdPrefabs[i].transform.position = new Vector3((float)pos.x, (float)pos.y, (float)pos.z);
+                createdPrefabs[i].transform.position = new Vector3(0, (float)pos, 0);
             }
         }
     }

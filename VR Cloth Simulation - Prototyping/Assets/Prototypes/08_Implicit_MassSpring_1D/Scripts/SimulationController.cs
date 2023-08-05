@@ -26,7 +26,6 @@ namespace Prototypes._08_Implicit_MassSpring_1D.Scripts
         private ImplicitMassSpring cloth;
         
         private readonly List<double> initialPositions = new();
-        private readonly List<(int, int)> springs = new();
         
         private void Start()
         {
@@ -38,17 +37,15 @@ namespace Prototypes._08_Implicit_MassSpring_1D.Scripts
             
             initialPositions.Add(3.0);
             initialPositions.Add(0.0);
-        
-            springs.Add((0, 1));
             
-            cloth.SetPositionsAndSprings(initialPositions, new());
+            cloth.SetPositionsAndSprings(initialPositions);
         }
 
         void Update()
         {
             if (resetSimulation.WasPerformedThisFrame())
             {
-                cloth.SetPositionsAndSprings(initialPositions, new ());
+                cloth.SetPositionsAndSprings(initialPositions);
             }
             
             if (toggleSimulation.WasPerformedThisFrame())
@@ -100,7 +97,7 @@ namespace Prototypes._08_Implicit_MassSpring_1D.Scripts
 
             isEnabled = false;
             
-            Debug.Log("Done with one shot simulation!");
+            Debug.Log("Done with one shot simulation! Please now manually create the report.");
         }
     }
 }

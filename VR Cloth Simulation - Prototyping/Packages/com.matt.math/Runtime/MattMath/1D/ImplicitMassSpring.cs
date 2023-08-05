@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Helpers;
+using MassSpring;
 using UnityEngine;
 
 namespace MattMath._1D
@@ -29,29 +30,26 @@ namespace MattMath._1D
         private List<double> positions = new();
         private List<double> velocities = new();
         private List<double> masses = new();
-        [SerializeField] private List<Tuple<int, int>> springs = new();
         [SerializeField] private List<int> constrainedIndices = new();
-        // Replace this with a custom spring pair class
-        [SerializeField] private List<SerializableDictionary<int, string>> temp = new();
+        [SerializeField] private List<ParticlePair> springs = new();
         
         public List<double> Positions => positions;
         
-        public void SetPositionsAndSprings(List<double> newPositions, List<Tuple<int, int>> newSprings)
+        public void SetPositionsAndSprings(List<double> newPositions)
         {
+            Debug.Log("Set positions.");
             forces = Grid<double>.MakeVector(newPositions.Count, 0.0);
             positions = newPositions.Select(x => x).ToList();
             velocities = Grid<double>.MakeVector(newPositions.Count, 0.0);
             masses = Grid<double>.MakeVector(newPositions.Count, m);
-            Debug.Assert(newSprings.All(x => x.Item1 != x.Item2));
-            springs = newSprings;
-            
+
             Debug.Assert(positions.Count == forces.Count);
             Debug.Assert(positions.Count == velocities.Count);
             Debug.Assert(positions.Count == masses.Count);
             Debug.Assert(springs.All(pair =>
-                pair.Item1 >= 0 && pair.Item1 < positions.Count && pair.Item2 >= 0 &&
-                pair.Item2 < positions.Count));
-            Debug.Assert(springs.All(pair => pair.Item1 != pair.Item2));
+                pair.firstIndex >= 0 && pair.firstIndex < positions.Count && pair.secondIndex >= 0 &&
+                pair.secondIndex < positions.Count));
+            Debug.Assert(springs.All(pair => pair.firstIndex != pair.secondIndex));
         }
         
         #endregion
@@ -63,8 +61,11 @@ namespace MattMath._1D
             var a = Grid<double>.MakeMatrix(positions.Count, 0.0);
             var dfdx = Grid<double>.MakeMatrix(positions.Count, 0.0);
 
-            foreach (var (firstIndex, secondIndex) in springs)
+            foreach (var spring in springs)
             {
+                var firstIndex = spring.firstIndex;
+                var secondIndex = spring.secondIndex;
+                
                 var jp = dt * dt * SpringJdx(firstIndex, secondIndex);
                 var jv = dt * SpringJdv();
 
@@ -97,9 +98,15 @@ namespace MattMath._1D
             foreach (var (dv, index) in dvs.Select((v, i) => (v, i)))
             {
                 if (index == 1) continue;
-
+                
                 positions[index] += dt * (velocities[index] + dv);
                 velocities[index] += dt * dv;
+
+                // if (constrainedIndices.Contains(index))
+                // {
+                //     Debug.Log(velocities[index]);
+                //     Debug.Assert(velocities[index] == 0.0);
+                // }
             }
         }
 
@@ -112,11 +119,11 @@ namespace MattMath._1D
             }
 
             // Setting spring force
-            foreach (var (firstIndex, secondIndex) in springs)
+            foreach (var spring in springs)
             {
-                var springF = GetSpringForce(positions[firstIndex], positions[secondIndex]);
-                forces[firstIndex] += springF;
-                forces[secondIndex] -= springF;
+                var springF = GetSpringForce(positions[spring.firstIndex], positions[spring.secondIndex]);
+                forces[spring.firstIndex] += springF;
+                forces[spring.secondIndex] -= springF;
             }
         }
 
