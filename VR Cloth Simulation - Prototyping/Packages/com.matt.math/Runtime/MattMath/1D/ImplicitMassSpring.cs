@@ -34,6 +34,7 @@ namespace MattMath._1D
         [SerializeField] private List<ParticlePair> springs = new();
         
         public List<double> Positions => positions;
+        public List<double> Velocities => velocities;
         
         public void SetPositionsAndSprings(List<double> newPositions)
         {

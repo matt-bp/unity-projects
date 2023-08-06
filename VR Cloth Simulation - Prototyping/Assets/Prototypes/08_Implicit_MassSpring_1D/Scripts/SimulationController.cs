@@ -62,6 +62,12 @@ namespace Prototypes._08_Implicit_MassSpring_1D.Scripts
     
         private void RunSimulation()
         {
+            if (Time.deltaTime > 0.01)
+            {
+                Debug.LogWarning("Skipped a time step because it was too big. Need to handle this by sub stepping simulation.");
+                return;
+            }
+            
             cloth.StepSimulation(Time.deltaTime);
 
             elapsed += Time.deltaTime;
@@ -69,7 +75,8 @@ namespace Prototypes._08_Implicit_MassSpring_1D.Scripts
             processor.AddStat(new RunStatistic1D
             {
                 Elapsed = elapsed,
-                Position = cloth.Positions?[0] ?? -101,
+                Positions = cloth.Positions.Select(v => v).ToList(),
+                Velocities = cloth.Velocities.Select(v => v).ToList(),
                 DeltaTime = Time.deltaTime
             });
         }
@@ -90,7 +97,8 @@ namespace Prototypes._08_Implicit_MassSpring_1D.Scripts
                 processor.AddStat(new RunStatistic1D()
                 {
                     Elapsed = elapsed,
-                    Position = cloth.Positions[0],
+                    Positions = cloth.Positions.Select(v => v).ToList(),
+                    Velocities = cloth.Velocities.Select(v => v).ToList(),
                     DeltaTime = Time.deltaTime
                 });
             }

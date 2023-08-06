@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Helpers
@@ -6,19 +7,25 @@ namespace Helpers
     {
         public double DeltaTime { get; set; }
         public double Elapsed { get; set; }
-        public double Position { get; set; }
+        public List<double> Positions { get; set; }
+        public List<double> Velocities { get; set; }
         
         public string GetCsvLine()
         {
-            return DeltaTime + "," + Elapsed + "," + Position;
+            return DeltaTime + "," + Elapsed + "," + GetPositionLine() + "," + GetVelocityLive();
         }
 
-        public string GetCsvHeader() => 
-            string.Join(",", 
-                from p in typeof(RunStatistic1D).GetProperties()
-                where p.CanRead &&
-                      p.CanWrite
-                orderby p.Name
-                select p.Name);
+        private string GetPositionLine() => string.Join(',', Positions.Select((v, _) => v));
+
+        private string GetVelocityLive() => string.Join(',', Velocities.Select((v, _) => v));
+
+        public string GetCsvHeader()
+        {
+            return "DeltaTime,Elapsed," + GetPositionHeader() + "," + GetVelocityHeader();
+        }
+
+        private string GetPositionHeader() => string.Join(',', Positions.Select((_, i) => i + " Position Y"));
+        
+        private string GetVelocityHeader() => string.Join(',', Velocities.Select((_, i) => i + " Velocity Y"));
     }
 }
