@@ -92,6 +92,19 @@ namespace Tests.Runtime._3D
             };
 
             var result = ConjugateGradient.Solve(matrix, vector, 1000, 0.0001);
+
+            AssertGridVectorsEqual(result, expected);
+        }
+
+        [Test]
+        public void ConstrainedSolve_NonZeroValues_ReturnsZeroValues()
+        {
+            var expected = new List<double3> { double3.zero };
+            var vector = new List<double3> { math.double3(3.0, 100.0, 5.0) };
+            var matrix = new List<List<double3x3>> { new() { math.double3x3(3.0) } };
+            var constrainedIndices = new List<int> { 0 };
+            
+            var result = ConjugateGradient.ConstrainedSolve(matrix, vector, 100, 0.0001, constrainedIndices);
             
             AssertGridVectorsEqual(result, expected);
         }

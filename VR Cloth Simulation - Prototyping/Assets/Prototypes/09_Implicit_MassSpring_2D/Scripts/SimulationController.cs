@@ -41,7 +41,7 @@ namespace Prototypes._09_Implicit_MassSpring_2D.Scripts
             cloth.SetPositionsAndSprings(initialPositions);
         }
 
-        void Update()
+        private void Update()
         {
             if (Time.deltaTime > 0.01)
             {

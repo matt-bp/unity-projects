@@ -26,7 +26,6 @@ namespace Prototypes._10_Implicit_MassSpring_3D.Scripts
         private ImplicitMassSpring cloth;
         
         private readonly List<double3> initialPositions = new();
-        private readonly List<(int, int)> springs = new();
         
         private void Start()
         {
@@ -38,17 +37,21 @@ namespace Prototypes._10_Implicit_MassSpring_3D.Scripts
             
             initialPositions.Add(math.double3(1, 3, 1));
             initialPositions.Add(math.double3(0, 0, 0));
-        
-            springs.Add((0, 1));
-            
-            cloth.SetPositionsAndSprings(initialPositions, springs);
+
+            cloth.SetPositionsAndSprings(initialPositions);
         }
 
-        void Update()
+        private void Update()
         {
+            if (Time.deltaTime > 0.01)
+            {
+                Debug.LogWarning("Skipped a time step because it was too big. Need to handle this by sub stepping simulation.");
+                return;
+            }
+            
             if (resetSimulation.WasPerformedThisFrame())
             {
-                cloth.SetPositionsAndSprings(initialPositions, springs);
+                cloth.SetPositionsAndSprings(initialPositions);
             }
             
             if (toggleSimulation.WasPerformedThisFrame())
