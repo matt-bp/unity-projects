@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Linq;
+using Helpers;
 using Unity.Mathematics;
 using UnityEngine;
 using GridMatrix = System.Collections.Generic.List<System.Collections.Generic.List<Unity.Mathematics.double2x2>>;
@@ -118,6 +120,54 @@ namespace MattMath._2D
             }
 
             return dv;
+        }
+
+        public static GridVector ConstrainedSolve(GridMatrix a, GridVector b, int iMax, double e,
+            List<int> constrainedIndices)
+        {
+            GridVector Filter(GridVector list) => FilterList(list, constrainedIndices);
+
+            var dv = Grid<double2>.MakeVector(b.Count, 0.0);
+            var fb = Filter(b);
+            var delta0 = Dot(fb, fb);
+            var r = Filter(Sub(b, Mult(a, dv)));
+            var c = Filter(r);
+            var deltaNew = Dot(r, c);
+
+            var i = 0;
+            while (i < iMax && deltaNew > e * e * delta0)
+            {
+                var q = Filter(Mult(a, c));
+                var alpha = deltaNew / Dot(c, q);
+                dv = Add(dv, Mult(c, alpha));
+                r = Sub(r, Mult(q, alpha));
+                
+                var deltaOld = deltaNew;
+                deltaNew = Dot(r, r);
+                c = Filter(Add(r, Mult(c, deltaNew / deltaOld)));
+                
+                i++;
+            }
+
+            return dv;
+        }
+        
+        /// <summary>
+        /// Creates a new vector, copying the contents of the passed in vector, and zeros out the indices passed in constrainedIndices.
+        /// </summary>
+        /// <param name="vector">Vector to filter.</param>
+        /// <param name="constrainedIndices">Indices to target.</param>
+        /// <returns>The filtered vector.</returns>
+        private static GridVector FilterList(GridVector vector, IEnumerable<int> constrainedIndices)
+        {
+            var result = vector.Select(m => m).ToList();
+            
+            foreach (var index in constrainedIndices)
+            {
+                result[index] = 0;
+            }
+            
+            return result;
         }
     }
 }

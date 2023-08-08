@@ -90,6 +90,20 @@ namespace Tests.Runtime._2D
             AssertGridVectorsEqual(result, expected);
         }
 
+        [Test]
+        public void ConstrainedSolve_OneConstrainedIndex_DoesntChangeItsValue()
+        {
+            var expected = new List<double2> { double2.zero };
+            var vector = new List<double2> { math.double2(3.0, 100.0) };
+            var matrix = new List<List<double2x2>> { new() { math.double2x2(3.0, 2.0, 2.0, 6.0) } };
+            var constrainedIndices = new List<int> { 0 };
+            
+            var result = ConjugateGradient.ConstrainedSolve(matrix, vector, 100, 0.0001, constrainedIndices);
+            
+            AssertGridVectorsEqual(result, expected);
+            
+        }
+
         #region Helpers
 
         private static List<double2> MakeFirst() => new()
