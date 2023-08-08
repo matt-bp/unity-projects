@@ -43,6 +43,12 @@ namespace Prototypes._09_Implicit_MassSpring_2D.Scripts
 
         void Update()
         {
+            if (Time.deltaTime > 0.01)
+            {
+                Debug.LogWarning("Skipped a time step because it was too big. Need to handle this by sub stepping simulation.");
+                return;
+            }
+            
             if (resetSimulation.WasPerformedThisFrame())
             {
                 cloth.SetPositionsAndSprings(initialPositions);

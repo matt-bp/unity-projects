@@ -21,6 +21,8 @@ namespace MattMath._2D
         /// whole cloth, and then evenly distributing that across all particles.
         /// </summary>
         [SerializeField] private double m = 0.1;
+
+        [SerializeField] private List<int> constrainedIndices;
         [SerializeField] private List<ParticlePair> springs = new();
         
         #endregion
@@ -91,12 +93,10 @@ namespace MattMath._2D
 
             var b = ConjugateGradient.Add(f, ConjugateGradient.Mult(dfdx, newVelocities));
             
-            var dvs = ConjugateGradient.Solve(a, b, 20, 0.001);
+            var dvs = ConjugateGradient.ConstrainedSolve(a, b, 20, 0.001, constrainedIndices);
 
             foreach (var (dv, index) in dvs.Select((v, i) => (v, i)))
             {
-                if (index == 1) continue;
-
                 positions[index] += dt * (velocities[index] + dv);
                 velocities[index] += dt * dv;
             }

@@ -600,6 +600,7 @@ MonoBehaviour:
     x: 0
     y: -10
   m: 0.1
+  constrainedIndices: 01000000
   springs:
   - firstIndex: 0
     secondIndex: 1
