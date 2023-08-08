@@ -919,7 +919,7 @@ MonoBehaviour:
     y: -10
     z: 0
   m: 0.1
-  constrainedIndices: 
+  constrainedIndices: 01000000
   springs:
   - firstIndex: 0
     secondIndex: 1

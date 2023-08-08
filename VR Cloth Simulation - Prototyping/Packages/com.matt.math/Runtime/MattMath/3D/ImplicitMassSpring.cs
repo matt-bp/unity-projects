@@ -92,12 +92,10 @@ namespace MattMath._3D
 
             var b = ConjugateGradient.Add(f, ConjugateGradient.Mult(dfdx, newVelocities));
             
-            var dvs = ConjugateGradient.Solve(a, b, 1000, 0.001);
+            var dvs = ConjugateGradient.ConstrainedSolve(a, b, 1000, 0.001, constrainedIndices);
 
             foreach (var (dv, index) in dvs.Select((v, i) => (v, i)))
             {
-                if (index == 1) continue;
-
                 positions[index] += dt * (velocities[index] + dv);
                 velocities[index] += dt * dv;
             }
