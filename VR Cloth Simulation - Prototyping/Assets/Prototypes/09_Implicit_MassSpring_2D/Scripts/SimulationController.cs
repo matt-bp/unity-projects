@@ -26,7 +26,6 @@ namespace Prototypes._09_Implicit_MassSpring_2D.Scripts
         private ImplicitMassSpring cloth;
         
         private readonly List<double2> initialPositions = new();
-        private readonly List<(int, int)> springs = new();
         
         private void Start()
         {
@@ -38,17 +37,15 @@ namespace Prototypes._09_Implicit_MassSpring_2D.Scripts
             
             initialPositions.Add(math.double2(1, 3));
             initialPositions.Add(math.double2(0, 0));
-        
-            springs.Add((0, 1));
-            
-            cloth.SetPositionsAndSprings(initialPositions, springs);
+
+            cloth.SetPositionsAndSprings(initialPositions);
         }
 
         void Update()
         {
             if (resetSimulation.WasPerformedThisFrame())
             {
-                cloth.SetPositionsAndSprings(initialPositions, springs);
+                cloth.SetPositionsAndSprings(initialPositions);
             }
             
             if (toggleSimulation.WasPerformedThisFrame())

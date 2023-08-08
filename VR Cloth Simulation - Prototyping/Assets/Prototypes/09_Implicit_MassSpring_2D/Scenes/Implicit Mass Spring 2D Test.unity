@@ -318,7 +318,7 @@ MonoBehaviour:
       m_Action: Reset Statistics
       m_Flags: 0
     m_Flags: 0
-  outputFolder: ./Stats
+  outputFolder: ./Stats2D
 --- !u!114 &377941199
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -600,6 +600,9 @@ MonoBehaviour:
     x: 0
     y: -10
   m: 0.1
+  springs:
+  - firstIndex: 0
+    secondIndex: 1
 --- !u!114 &1903765830
 MonoBehaviour:
   m_ObjectHideFlags: 0

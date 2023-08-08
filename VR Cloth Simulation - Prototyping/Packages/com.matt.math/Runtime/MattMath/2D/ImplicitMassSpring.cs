@@ -4,6 +4,7 @@ using System.Linq;
 using Helpers;
 using Unity.Mathematics;
 using UnityEngine;
+using MassSpring;
 
 namespace MattMath._2D
 {
@@ -20,7 +21,8 @@ namespace MattMath._2D
         /// whole cloth, and then evenly distributing that across all particles.
         /// </summary>
         [SerializeField] private double m = 0.1;
-
+        [SerializeField] private List<ParticlePair> springs = new();
+        
         #endregion
         
         #region Simulation State
@@ -29,26 +31,23 @@ namespace MattMath._2D
         private List<double2> positions = new();
         private List<double2> velocities = new();
         private List<double> masses = new();
-        private List<(int, int)> springs = new();
 
         public List<double2> Positions => positions;
 
-        public void SetPositionsAndSprings(List<double2> newPositions, List<(int, int)> newSprings)
+        public void SetPositionsAndSprings(List<double2> newPositions)
         {
             forces = Grid<double2>.MakeVector(newPositions.Count, double2.zero);
             positions = newPositions.Select(x => x).ToList();
             velocities = Grid<double2>.MakeVector(newPositions.Count, double2.zero);
             masses = Grid<double>.MakeVector(newPositions.Count, m);
-            Debug.Assert(newSprings.All(x => x.Item1 != x.Item2));
-            springs = newSprings.Select(x => (x.Item1, x.Item2)).ToList();
-            
+
             Debug.Assert(positions.Count == forces.Count);
             Debug.Assert(positions.Count == velocities.Count);
             Debug.Assert(positions.Count == masses.Count);
             Debug.Assert(springs.All(pair =>
-                pair.Item1 >= 0 && pair.Item1 < positions.Count && pair.Item2 >= 0 &&
-                pair.Item2 < positions.Count));
-            Debug.Assert(springs.All(pair => pair.Item1 != pair.Item2));
+                pair.firstIndex >= 0 && pair.firstIndex < positions.Count && pair.secondIndex >= 0 &&
+                pair.secondIndex < positions.Count));
+            Debug.Assert(springs.All(pair => pair.firstIndex != pair.secondIndex));
         }
 
         #endregion
@@ -60,8 +59,11 @@ namespace MattMath._2D
             var a = MakeEmptyGridMatrix();
             var dfdx = MakeEmptyGridMatrix();
 
-            foreach (var (firstIndex, secondIndex) in springs)
+            foreach (var spring in springs)
             {
+                var firstIndex = spring.firstIndex;
+                var secondIndex = spring.secondIndex;
+                
                 var jp = dt * dt * SpringJdx(firstIndex, secondIndex);
                 var jv = dt * SpringJdv();
                 
@@ -109,8 +111,11 @@ namespace MattMath._2D
             }
             
             // Spring force, should be added onto force vector
-            foreach (var (firstIndex, secondIndex) in springs)
+            foreach (var spring in springs)
             {
+                var firstIndex = spring.firstIndex;
+                var secondIndex = spring.secondIndex;
+                
                 var springForce = GetSpringForce(positions[firstIndex], positions[secondIndex]);
                 forces[firstIndex] += springForce;
                 forces[secondIndex] -= springForce;
