@@ -1,18 +1,15 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using Unity.Mathematics;
 
-public class SpringForce : MonoBehaviour
+namespace Forces
 {
-    // Start is called before the first frame update
-    void Start()
+    public static class Force
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        public static double3 SpringForce(double k, double l, double3 position1, double3 position2)
+        {
+            var vectorBetween = position1 - position2;
+            var distance = math.distance(position1, position2);
+            var force = -k * (distance - l) * (vectorBetween / distance);
+            return force;
+        }
     }
 }

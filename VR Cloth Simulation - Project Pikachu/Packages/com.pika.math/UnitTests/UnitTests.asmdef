@@ -1,5 +1,5 @@
 {
-    "name": "Pika.Mass.Spring.UnitTests",
+    "name": "Pika.Math.UnitTests",
     "rootNamespace": "",
     "references": [
         "UnityEngine.TestRunner",

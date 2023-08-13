@@ -1,11 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DataStructures;
+using LinearAlgebra;
+using Solvers;
 using Unity.Mathematics;
 using UnityEngine;
 
-public class ImplicitMassSpring3D : MonoBehaviour
+namespace Integration
 {
+    public class ImplicitMassSpring3D : MonoBehaviour
+    {
         #region Simulation Constants
 
         [SerializeField] private double k = 10;
@@ -84,11 +89,11 @@ public class ImplicitMassSpring3D : MonoBehaviour
             foreach (var index in Enumerable.Range(0, f.Count))
                 f[index] = dt * forces[index];
             
-            var newVelocities = ConjugateGradient.Mult(velocities, dt * dt);
+            var newVelocities = ConjugateGradient3D.Mult(velocities, dt * dt);
 
-            var b = ConjugateGradient.Add(f, ConjugateGradient.Mult(dfdx, newVelocities));
+            var b = ConjugateGradient3D.Add(f, ConjugateGradient3D.Mult(dfdx, newVelocities));
             
-            var dvs = ConjugateGradient.ConstrainedSolve(a, b, 1000, 0.001, constrainedIndices);
+            var dvs = ConjugateGradient3D.ConstrainedSolve(a, b, 1000, 0.001, constrainedIndices);
 
             foreach (var (dv, index) in dvs.Select((v, i) => (v, i)))
             {
@@ -127,7 +132,7 @@ public class ImplicitMassSpring3D : MonoBehaviour
             var xij = positions[firstIndex] - positions[secondIndex];
             var dotResult = math.dot(xij, xij);
             Debug.Assert(dotResult > 0);
-            var outer = mm.outerProduct(xij, xij);
+            var outer = Double3.OuterProduct(xij, xij);
             var xijs = outer / dotResult;
             var magnitude = Math.Sqrt(dotResult);
 
@@ -147,4 +152,5 @@ public class ImplicitMassSpring3D : MonoBehaviour
             .Range(0, positions.Count)
             .Select(_ => double3.zero /* Set value of cells here */)
             .ToList();
+    }
 }
