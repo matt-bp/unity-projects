@@ -1,0 +1,21 @@
+{
+  "name": "com.pika.math",
+  "version": "0.1.0",
+  "displayName": "Pika Math",
+  "description": "Implementations math needs for the project.",
+  "unity": "2021.3",
+  "unityRelease": "20f1",
+  "documentationUrl": "https://github.com/matt-bp/unity-projects",
+  "changelogUrl": "https://github.com/matt-bp/unity-projects",
+  "licenseUrl": "https://github.com/matt-bp/unity-projects",
+  "keywords": [
+    "math",
+    "liner algebra",
+    "conjugate gradient"
+  ],
+  "author": {
+    "name": "Matt Bishop",
+    "email": "mattsbishop1@gmail.com",
+    "url": "https://github.com/matt-bp"
+  }
+}

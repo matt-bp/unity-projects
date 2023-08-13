@@ -1,5 +1,23 @@
 {
   "dependencies": {
+    "com.pika.mass-spring": {
+      "version": "file:com.pika.mass-spring",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
+    "com.pika.math": {
+      "version": "file:com.pika.math",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
+    "com.pika.simulation-helpers": {
+      "version": "file:com.pika.simulation-helpers",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.unity.burst": {
       "version": "1.8.2",
       "depth": 1,
