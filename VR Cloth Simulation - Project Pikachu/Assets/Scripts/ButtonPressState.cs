@@ -14,8 +14,8 @@ public class ButtonPressState : MonoBehaviour
     {
         var buttonAction = buttonToPress.action;
 
-        var currentValue = buttonAction.ReadValue<float>();
-        Debug.Log($"Val: {currentValue}, triggered: {buttonAction.triggered}");
+        // var currentValue = buttonAction.ReadValue<float>();
+        Debug.Log($"triggered: {buttonAction.triggered}");
         
         // if (currentValue != prevValue)
         // {
