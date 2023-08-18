@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: 6846482644030411022}
   - component: {fileID: 7090790063800773498}
   - component: {fileID: 6894201018968402489}
-  m_Layer: 6
+  - component: {fileID: 4291719488629451236}
+  m_Layer: 7
   m_Name: Handle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -111,3 +112,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   vertexToUpdate: 0
+  clothPoser: {fileID: 0}
+  updating: 0
+--- !u!114 &4291719488629451236
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2359737886397254119}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b74eb488b0274d8d88fbbca6a251e76a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

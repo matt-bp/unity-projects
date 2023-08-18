@@ -6,7 +6,12 @@ namespace SimulationHelpers.Posing
     {
         public int vertexToUpdate;
         public ClothPoser clothPoser;
-        public bool updating;
+
+        [SerializeField] private bool updating;
+        
+        public bool Updating {
+            set => updating = value;
+        }
     
         private void Update()
         {

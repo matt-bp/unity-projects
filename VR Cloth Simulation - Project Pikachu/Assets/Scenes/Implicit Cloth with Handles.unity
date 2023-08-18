@@ -802,8 +802,9 @@ GameObject:
   m_Component:
   - component: {fileID: 473939445}
   - component: {fileID: 473939444}
+  - component: {fileID: 473939446}
   m_Layer: 0
-  m_Name: Frame Interaction Controller
+  m_Name: Handle Interaction Controller
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -840,6 +841,24 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &473939446
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 473939443}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ad6b284ce974375bbf4fc277eaa0d5f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  vrController: {fileID: 243818997}
+  buttonToPress: {fileID: -6131295136447488360, guid: 16c750d8ac098de4cb6eac21ec5e07be,
+    type: 3}
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!1 &543240725
 GameObject:
   m_ObjectHideFlags: 0
@@ -2046,7 +2065,7 @@ GameObject:
   - component: {fileID: 1892112887}
   - component: {fileID: 1892112890}
   m_Layer: 0
-  m_Name: Frame Position
+  m_Name: Frame Initial Position
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
