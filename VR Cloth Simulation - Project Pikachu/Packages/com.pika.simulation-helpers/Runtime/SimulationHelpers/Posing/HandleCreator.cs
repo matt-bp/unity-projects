@@ -1,19 +1,23 @@
 using System.Collections.Generic;
 using SimulationHelpers.Geometry;
+using SimulationHelpers.Posing;
 using UnityEngine;
 
 namespace SimulationHelpers.Handles
 {
     public class HandleCreator : MonoBehaviour
     {
+        [SerializeField] private ClothPoser clothPoser;
         [SerializeField] private GameObject handlePrefab;
         private List<Vector3> initialPositions;
-        private List<GameObject> handles = new();
+        
 
         private void Start()
         {
             var mesh = GetComponentInChildren<WorldSpaceMesh>();
             initialPositions = mesh.positions;
+            
+            clothPoser.StartNewPose(initialPositions.Count);
 
             AddHandle(0);
         }
@@ -25,10 +29,10 @@ namespace SimulationHelpers.Handles
             
             var handle = Instantiate(handlePrefab, worldPosition, Quaternion.identity);
 
-            if (handle.TryGetComponent(out UpdateMeshVertex update))
+            if (handle.TryGetComponent(out ClothPoserUpdater update))
             {
+                update.clothPoser = clothPoser;
                 update.vertexToUpdate = index;
-                handles.Add(handle);
             }
             else
             {
