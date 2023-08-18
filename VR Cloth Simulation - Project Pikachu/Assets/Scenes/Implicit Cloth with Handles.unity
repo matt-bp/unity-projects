@@ -868,8 +868,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 543240726}
+  - component: {fileID: 543240727}
   m_Layer: 0
-  m_Name: Cloth Visualizer
+  m_Name: Graph Visualizer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -890,6 +891,18 @@ Transform:
   m_Father: {fileID: 1915693208}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &543240727
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 543240725}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b950cc033dbf44269c2f9db5e6dd6740, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &896921686
 GameObject:
   m_ObjectHideFlags: 0
@@ -2214,6 +2227,7 @@ MonoBehaviour:
     type: 3}
   toggleSimulation: {fileID: -3766293602763253937, guid: 16c750d8ac098de4cb6eac21ec5e07be,
     type: 3}
+  isEnabled: 0
 --- !u!1 &2009594948
 GameObject:
   m_ObjectHideFlags: 0

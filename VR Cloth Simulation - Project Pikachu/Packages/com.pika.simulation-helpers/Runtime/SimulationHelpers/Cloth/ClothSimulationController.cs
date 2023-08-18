@@ -1,4 +1,5 @@
-using System;
+using SimulationHelpers.Posing;
+using SimulationHelpers.Visualization;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -15,21 +16,41 @@ namespace SimulationHelpers.Cloth
         #endregion
         
         public bool isEnabled;
-        
-        public void Update()
+        private ClothPoser clothPoser;
+        private ClothVisualizer visualizer;
+
+        private void Start()
         {
+            clothPoser = GetComponentInChildren<ClothPoser>();
+            Debug.Assert(clothPoser is not null);
+            
+            visualizer = GetComponentInChildren<ClothVisualizer>();
+            Debug.Assert(visualizer is not null);
+            
+            // Use the cloth poser to initialize the cloth simulation
+        }
+
+        private void Update()
+        {
+            if (resetSimulation.action.WasPerformedThisFrame())
+            {
+                // Use the clothPoser as "initial positions" to set the cloth sim to
+                // cloth.SetPositionsAndSprings(initialPositions);
+            }
+            
             if (toggleSimulation.action.WasPerformedThisFrame())
             {
                 isEnabled = !isEnabled;
             }
 
             if (!isEnabled) return;
-
-            // Get positions from cloth poser for initial start
-
-            // Feed them to cloth to get new positions out
+            
+            // RunSimulation();
+            
+            // OneShotSimulation();
 
             // Create a visualization for those new positions
+            visualizer.Visualize(new());
         }
     }
 }
