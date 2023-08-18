@@ -2172,7 +2172,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1915693208}
-  - component: {fileID: 1915693211}
+  - component: {fileID: 1915693209}
   m_Layer: 0
   m_Name: Cloth Simulation Controller
   m_TagString: Untagged
@@ -2198,19 +2198,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1915693211
+--- !u!114 &1915693209
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1915693207}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a55f7af0a0d74e86b65f82669822bf8e, type: 3}
+  m_Script: {fileID: 11500000, guid: 27413577b8dd47d1bf0f835ed2327486, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  button: {fileID: -6131295136447488360, guid: 16c750d8ac098de4cb6eac21ec5e07be, type: 3}
+  resetSimulation: {fileID: 1957698210801217823, guid: 16c750d8ac098de4cb6eac21ec5e07be,
+    type: 3}
+  toggleSimulation: {fileID: -3766293602763253937, guid: 16c750d8ac098de4cb6eac21ec5e07be,
+    type: 3}
 --- !u!1 &2009594948
 GameObject:
   m_ObjectHideFlags: 0
