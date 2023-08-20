@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Linq;
+using MassSpring.Integration;
 using SimulationHelpers.Posing;
 using SimulationHelpers.Visualization;
 using UnityEngine;
@@ -19,6 +21,7 @@ namespace SimulationHelpers.Cloth
         public bool isEnabled;
         private ClothPoser clothPoser;
         private Visualizer visualizer;
+        private ImplicitMassSpring3D cloth;
         /// <summary>
         /// Time, in seconds, that this simulation has been enabled.
         /// </summary>
@@ -69,7 +72,12 @@ namespace SimulationHelpers.Cloth
                 elapsed += Time.deltaTime;
                 
                 // Create a visualization for those new positions
-                visualizer.Visualize(new(), elapsed, Time.deltaTime);
+                visualizer.Visualize(new List<Vector3>(new []
+                {
+                    new Vector3(),
+                    new Vector3(),
+                    new Vector3()
+                }), elapsed, Time.deltaTime);
             }
 
             isEnabled = false;

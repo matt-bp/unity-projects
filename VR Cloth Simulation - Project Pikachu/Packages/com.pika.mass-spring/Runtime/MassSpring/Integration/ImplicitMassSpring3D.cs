@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using DataStructures;
 using LinearAlgebra;
+using MassSpring.DataStructures;
 using Solvers;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Integration
+namespace MassSpring.Integration
 {
+    [AddComponentMenu("Mass Spring/Integration/3D Implicit Mass Spring")]
     public class ImplicitMassSpring3D : MonoBehaviour
     {
         #region Simulation Constants

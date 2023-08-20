@@ -2,7 +2,8 @@
     "name": "Pika.Simulation.Helpers",
     "rootNamespace": "",
     "references": [
-        "GUID:75469ad4d38634e559750d17036d5f7c"
+        "GUID:75469ad4d38634e559750d17036d5f7c",
+        "GUID:6c1e985154d5b4aebb6381f23c3d70c8"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

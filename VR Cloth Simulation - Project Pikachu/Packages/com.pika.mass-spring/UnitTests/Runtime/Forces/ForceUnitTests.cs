@@ -1,6 +1,6 @@
 using NUnit.Framework;
 
-namespace UnitTests.Forces
+namespace UnitTests.Runtime.Forces
 {
     public class ForceUnitTests
     {

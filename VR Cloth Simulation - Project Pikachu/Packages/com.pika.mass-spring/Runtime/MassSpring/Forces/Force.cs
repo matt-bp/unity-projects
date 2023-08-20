@@ -1,6 +1,6 @@
 using Unity.Mathematics;
 
-namespace Forces
+namespace MassSpring.Forces
 {
     public static class Force
     {

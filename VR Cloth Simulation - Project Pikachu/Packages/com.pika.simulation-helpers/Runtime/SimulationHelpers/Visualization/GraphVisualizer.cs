@@ -20,14 +20,23 @@ namespace SimulationHelpers.Visualization
         
         #endregion
         
+        [SerializeField] private string outputFolder = "./Stats";
         private List<IRunStatistic> runStatistics = new();
+        private readonly Guid runIdentifier = Guid.NewGuid();
+        private int? expectedPositionCount;
         
         public override void Visualize(List<Vector3> positions, float elapsed, float dt)
         {
+            if (expectedPositionCount is null) 
+                expectedPositionCount = positions.Count;
+            
+            Debug.Assert(positions.Count == expectedPositionCount);
+            
             runStatistics.Add(new RunStatistic3D
             {
                 Elapsed = elapsed,
-                DeltaTime = dt
+                DeltaTime = dt,
+                Positions = positions
             });
         }
 
@@ -35,14 +44,32 @@ namespace SimulationHelpers.Visualization
         {
             if (createReport.action.WasPerformedThisFrame())
             {
-                Debug.Log($"Creating a report for {runStatistics.Count} stats.");
+                CreateReport();
             }
             
             if (resetStatistics.action.WasPerformedThisFrame())
             {
-                Debug.Log("Resetting statistics!");
-                runStatistics = new List<IRunStatistic>();
+                Reset();
             }
+        }
+        
+        private void CreateReport()
+        {
+            if (runStatistics.Count == 0)
+            {
+                Debug.Log("There are no statistics to write, skipping noop.");
+                return;
+            }
+            
+            var filename = $"{outputFolder}/stats-{runIdentifier}";
+            Debug.Log("Creating report: " + filename);
+            RunStatisticWriter.Write(runStatistics, filename, "csv");
+        }
+
+        private void Reset()
+        {
+            runStatistics = new List<IRunStatistic>();
+            expectedPositionCount = null;
         }
     }
 }

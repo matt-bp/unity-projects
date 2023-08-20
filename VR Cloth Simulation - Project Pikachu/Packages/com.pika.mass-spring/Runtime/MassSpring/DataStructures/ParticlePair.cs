@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace DataStructures
+namespace MassSpring.DataStructures
 {
     [Serializable]
     public class ParticlePair
