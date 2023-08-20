@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using SimulationHelpers.Geometry;
-using SimulationHelpers.Posing;
 using UnityEngine;
 
-namespace SimulationHelpers.Handles
+namespace SimulationHelpers.Posing
 {
     public class HandleCreator : MonoBehaviour
     {
@@ -16,6 +15,7 @@ namespace SimulationHelpers.Handles
         {
             var mesh = GetComponentInChildren<WorldSpaceMesh>();
             initialPositions = mesh.positions;
+            Debug.Assert(mesh.positions.Count > 0);
             
             clothPoser.StartNewPose(initialPositions.Count);
 

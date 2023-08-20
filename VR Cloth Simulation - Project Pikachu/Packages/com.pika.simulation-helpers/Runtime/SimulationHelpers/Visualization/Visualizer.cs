@@ -3,9 +3,9 @@ using UnityEngine;
 
 namespace SimulationHelpers.Visualization
 {
-    public class ClothVisualizer : MonoBehaviour
+    public class Visualizer : MonoBehaviour
     {
-        public virtual void Visualize(List<Vector3> positions)
+        public virtual void Visualize(List<Vector3> positions, float elapsed, float dt)
         {
             Debug.Log("Noting");
         }

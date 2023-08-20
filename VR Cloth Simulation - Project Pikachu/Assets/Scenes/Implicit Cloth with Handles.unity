@@ -903,6 +903,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b950cc033dbf44269c2f9db5e6dd6740, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  createReport: {fileID: -3149213562287271507, guid: 16c750d8ac098de4cb6eac21ec5e07be,
+    type: 3}
+  resetStatistics: {fileID: 1540606437978052394, guid: 16c750d8ac098de4cb6eac21ec5e07be,
+    type: 3}
 --- !u!1 &896921686
 GameObject:
   m_ObjectHideFlags: 0
@@ -2227,6 +2231,7 @@ MonoBehaviour:
     type: 3}
   toggleSimulation: {fileID: -3766293602763253937, guid: 16c750d8ac098de4cb6eac21ec5e07be,
     type: 3}
+  elapsed: 0
   isEnabled: 0
 --- !u!1 &2009594948
 GameObject:

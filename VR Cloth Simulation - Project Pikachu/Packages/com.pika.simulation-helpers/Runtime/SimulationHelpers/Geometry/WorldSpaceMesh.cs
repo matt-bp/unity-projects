@@ -13,7 +13,7 @@ namespace SimulationHelpers.Geometry
     {
         public List<Vector3> positions;
 
-        private void Start()
+        private void Awake()
         {
             var mesh = GetComponent<MeshFilter>().mesh;
             positions = mesh.vertices.Select(v => transform.TransformPoint(v)).ToList();

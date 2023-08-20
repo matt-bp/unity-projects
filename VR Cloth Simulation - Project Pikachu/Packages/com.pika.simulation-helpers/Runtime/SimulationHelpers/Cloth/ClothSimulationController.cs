@@ -1,3 +1,4 @@
+using System.Linq;
 using SimulationHelpers.Posing;
 using SimulationHelpers.Visualization;
 using UnityEngine;
@@ -17,14 +18,18 @@ namespace SimulationHelpers.Cloth
         
         public bool isEnabled;
         private ClothPoser clothPoser;
-        private ClothVisualizer visualizer;
+        private Visualizer visualizer;
+        /// <summary>
+        /// Time, in seconds, that this simulation has been enabled.
+        /// </summary>
+        private float elapsed;
 
         private void Start()
         {
             clothPoser = GetComponentInChildren<ClothPoser>();
             Debug.Assert(clothPoser is not null);
             
-            visualizer = GetComponentInChildren<ClothVisualizer>();
+            visualizer = GetComponentInChildren<Visualizer>();
             Debug.Assert(visualizer is not null);
             
             // Use the cloth poser to initialize the cloth simulation
@@ -47,10 +52,29 @@ namespace SimulationHelpers.Cloth
             
             // RunSimulation();
             
-            // OneShotSimulation();
+            OneShotSimulation();
+        }
+        
+        /// <summary>
+        /// Runs the simulation with a fixed time step. Primarily used to test simulation parameters. Immediately creates a CSV report with run statistics.
+        /// </summary>
+        private void OneShotSimulation()
+        {
+            Debug.Log("Running one shot simulation. NOT in real time!");
+            
+            foreach(var _ in Enumerable.Range(0, 1000))
+            {
+                // cloth.StepSimulation(Time.deltaTime);
 
-            // Create a visualization for those new positions
-            visualizer.Visualize(new());
+                elapsed += Time.deltaTime;
+                
+                // Create a visualization for those new positions
+                visualizer.Visualize(new(), elapsed, Time.deltaTime);
+            }
+
+            isEnabled = false;
+            
+            Debug.Log("Done with one shot simulation!");
         }
     }
 }

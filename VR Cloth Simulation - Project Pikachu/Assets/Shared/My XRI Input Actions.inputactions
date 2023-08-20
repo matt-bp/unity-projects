@@ -1036,7 +1036,7 @@
                 {
                     "name": "",
                     "id": "7c874de9-2b5c-423b-95d6-ff80924e4c07",
-                    "path": "<ValveIndexController>{RightHand}/primaryButton",
+                    "path": "<XRController>{RightHand}/primaryButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "Generic XR Controller",
@@ -1047,7 +1047,7 @@
                 {
                     "name": "",
                     "id": "7248620b-2952-4835-bf2b-6e4bc6d063e9",
-                    "path": "<ValveIndexController>{RightHand}/secondaryButton",
+                    "path": "<XRController>{RightHand}/secondaryButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "Generic XR Controller",
