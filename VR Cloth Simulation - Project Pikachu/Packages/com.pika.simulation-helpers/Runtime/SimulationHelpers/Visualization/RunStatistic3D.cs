@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace SimulationHelpers.Visualization
@@ -8,7 +9,7 @@ namespace SimulationHelpers.Visualization
     {
         public double DeltaTime { get; set; }
         public double Elapsed { get; set; }
-        public List<Vector3> Positions { get; set; }
+        public List<double3> Positions { get; set; }
 
         public string GetCsvLine()
         {

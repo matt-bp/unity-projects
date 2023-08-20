@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using MassSpring.Integration;
 using SimulationHelpers.Posing;
@@ -34,8 +33,12 @@ namespace SimulationHelpers.Cloth
             
             visualizer = GetComponentInChildren<Visualizer>();
             Debug.Assert(visualizer is not null);
-            
+
+            cloth = GetComponentInChildren<ImplicitMassSpring3D>();
+            Debug.Assert(cloth is not null);
+
             // Use the cloth poser to initialize the cloth simulation
+            cloth.SetPositionsAndSprings(clothPoser.lastPose);
         }
 
         private void Update()
@@ -67,17 +70,12 @@ namespace SimulationHelpers.Cloth
             
             foreach(var _ in Enumerable.Range(0, 1000))
             {
-                // cloth.StepSimulation(Time.deltaTime);
+                cloth.StepSimulation(Time.deltaTime);
 
                 elapsed += Time.deltaTime;
                 
                 // Create a visualization for those new positions
-                visualizer.Visualize(new List<Vector3>(new []
-                {
-                    new Vector3(),
-                    new Vector3(),
-                    new Vector3()
-                }), elapsed, Time.deltaTime);
+                visualizer.Visualize(cloth.Positions, elapsed, Time.deltaTime);
             }
 
             isEnabled = false;

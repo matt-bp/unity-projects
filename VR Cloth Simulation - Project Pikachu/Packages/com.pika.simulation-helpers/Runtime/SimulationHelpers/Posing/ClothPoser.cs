@@ -1,16 +1,17 @@
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace SimulationHelpers.Posing
 {
     public class ClothPoser : MonoBehaviour
     {
-        public List<Vector3> lastPose = new();
+        public List<double3> lastPose = new();
 
         public void StartNewPose(int particleCount)
         {
-            lastPose = Enumerable.Range(0, particleCount).Select(_ => Vector3.zero).ToList();
+            lastPose = Enumerable.Range(0, particleCount).Select(_ => double3.zero).ToList();
         }
         
         /// <summary>
@@ -22,7 +23,7 @@ namespace SimulationHelpers.Posing
         {
             Debug.Assert(index >= 0 && index < lastPose.Count && lastPose.Count > 0);
 
-            lastPose[index] = worldPosition;
+            lastPose[index] = math.double3(worldPosition);
             
             // ResetToLastPose();
         }
