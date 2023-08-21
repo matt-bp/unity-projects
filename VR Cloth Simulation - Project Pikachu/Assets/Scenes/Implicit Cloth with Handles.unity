@@ -1013,18 +1013,10 @@ MonoBehaviour:
     y: -10
     z: 0
   m: 0.1
-  constrainedIndices: 0200000003000000
+  constrainedIndices: 02000000
   springs:
   - firstIndex: 0
-    secondIndex: 1
-  - firstIndex: 1
-    secondIndex: 3
-  - firstIndex: 3
     secondIndex: 2
-  - firstIndex: 2
-    secondIndex: 0
-  - firstIndex: 2
-    secondIndex: 1
 --- !u!1 &985359857
 GameObject:
   m_ObjectHideFlags: 0
@@ -1249,6 +1241,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lastPose: []
+  meshFilter: {fileID: 1892112889}
 --- !u!4 &1119569789
 Transform:
   m_ObjectHideFlags: 0
@@ -1257,7 +1250,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1119569787}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 1.086976}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2319,7 +2312,7 @@ MonoBehaviour:
     type: 3}
   toggleSimulation: {fileID: -3766293602763253937, guid: 16c750d8ac098de4cb6eac21ec5e07be,
     type: 3}
-  OneShotInterationCount: 10000
+  oneShotIterationCount: 10000
   isEnabled: 0
 --- !u!1 &2009594948
 GameObject:

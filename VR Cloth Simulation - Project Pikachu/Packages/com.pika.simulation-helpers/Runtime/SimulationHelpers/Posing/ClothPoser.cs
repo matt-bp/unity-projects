@@ -8,6 +8,7 @@ namespace SimulationHelpers.Posing
     public class ClothPoser : MonoBehaviour
     {
         public List<double3> lastPose = new();
+        [SerializeField] private MeshFilter meshFilter; 
 
         public void StartNewPose(int particleCount)
         {
@@ -24,14 +25,14 @@ namespace SimulationHelpers.Posing
             Debug.Assert(index >= 0 && index < lastPose.Count && lastPose.Count > 0);
 
             lastPose[index] = math.double3(worldPosition);
-            
-            // ResetToLastPose();
+
+            UpdateFramePose();
         }
-        
-        // public void ResetToLastPose()
-        // {
-        //     _positions = lastPose.ToArray();
-        //     UpdateMesh();
-        // }
+
+        private void UpdateFramePose()
+        {
+            meshFilter.mesh.vertices = lastPose.Select(v => meshFilter.gameObject.transform.InverseTransformPoint(new Vector3((float)v.x, (float)v.y, (float)v.z))).ToArray();
+            meshFilter.mesh.RecalculateBounds();
+        }
     }
 }
