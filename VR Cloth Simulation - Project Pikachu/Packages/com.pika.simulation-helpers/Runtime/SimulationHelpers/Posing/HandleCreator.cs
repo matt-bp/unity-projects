@@ -18,8 +18,9 @@ namespace SimulationHelpers.Posing
             Debug.Assert(mesh.positions.Count > 0);
             
             clothPoser.StartNewPose(initialPositions.Count);
-
-            AddHandle(0);
+            
+            for(var i = 0; i < initialPositions.Count; i++)
+                AddHandle(i);
         }
         
         private void AddHandle(int index)
@@ -33,6 +34,8 @@ namespace SimulationHelpers.Posing
             {
                 update.clothPoser = clothPoser;
                 update.vertexToUpdate = index;
+                
+                clothPoser.UpdatePose(index, worldPosition);
             }
             else
             {

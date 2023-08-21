@@ -2,49 +2,48 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DataStructures;
-using LinearAlgebra;
 using MassSpring.DataStructures;
 using Solvers;
-using Unity.Mathematics;
 using UnityEngine;
 
 namespace MassSpring.Integration
 {
-    [AddComponentMenu("Mass Spring/Integration/3D Implicit Mass Spring")]
-    public class ImplicitMassSpring3D : MonoBehaviour
+    public class ImplicitMassSpring1D : MonoBehaviour
     {
         #region Simulation Constants
 
         [SerializeField] private double k = 10;
         [SerializeField] private double kd = 0.0;
         [SerializeField] private double l = 0.1;
-        [SerializeField] private double3 gravity = math.double3(0.0, -10.0, 0.0);
+        [SerializeField] private double gravity = -10.0;
         /// <summary>
         /// This is the mass in kg for each particle. This will eventually be replaced by specifying the weight for the
         /// whole cloth, and then evenly distributing that across all particles.
         /// </summary>
         [SerializeField] private double m = 0.1;
+        private const double Identity = 1.0;
 
         #endregion
-        
+
         #region Simulation State
 
-        private List<double3> forces = new();
-        private List<double3> positions = new();
-        private List<double3> velocities = new();
+        private List<double> forces = new();
+        private List<double> positions = new();
+        private List<double> velocities = new();
         private List<double> masses = new();
         [SerializeField] private List<int> constrainedIndices = new();
         [SerializeField] private List<ParticlePair> springs = new();
-
-        public List<double3> Positions => positions;
-
-        public void SetPositionsAndSprings(List<double3> newPositions)
+        
+        public List<double> Positions => positions;
+        public List<double> Velocities => velocities;
+        
+        public void SetPositionsAndSprings(List<double> newPositions)
         {
-            forces = Grid<double3>.MakeVector(newPositions.Count, double3.zero);
+            forces = Grid<double>.MakeVector(newPositions.Count, 0.0);
             positions = newPositions.Select(x => x).ToList();
-            velocities = Grid<double3>.MakeVector(newPositions.Count, double3.zero);
+            velocities = Grid<double>.MakeVector(newPositions.Count, 0.0);
             masses = Grid<double>.MakeVector(newPositions.Count, m);
-            
+
             Debug.Assert(positions.Count == forces.Count);
             Debug.Assert(positions.Count == velocities.Count);
             Debug.Assert(positions.Count == masses.Count);
@@ -52,22 +51,17 @@ namespace MassSpring.Integration
                 pair.firstIndex >= 0 && pair.firstIndex < positions.Count && pair.secondIndex >= 0 &&
                 pair.secondIndex < positions.Count));
             Debug.Assert(springs.All(pair => pair.firstIndex != pair.secondIndex));
-            Debug.Log("Setup!");
-            setup = true;
         }
-
+        
         #endregion
-
-        private bool setup;
 
         public void StepSimulation(double dt)
         {
-            Debug.Assert(setup);
             SetForces();
-            
-            var a = MakeEmptyGridMatrix();
-            var dfdx = MakeEmptyGridMatrix();
-            
+
+            var a = Grid<double>.MakeMatrix(positions.Count, 0.0);
+            var dfdx = Grid<double>.MakeMatrix(positions.Count, 0.0);
+
             foreach (var spring in springs)
             {
                 var firstIndex = spring.firstIndex;
@@ -75,7 +69,7 @@ namespace MassSpring.Integration
                 
                 var jp = dt * dt * SpringJdx(firstIndex, secondIndex);
                 var jv = dt * SpringJdv();
-                
+
                 a[firstIndex][firstIndex] -= jp - jv;
                 a[firstIndex][secondIndex] += jp + jv;
                 a[secondIndex][secondIndex] -= jp - jv;
@@ -86,78 +80,74 @@ namespace MassSpring.Integration
                 dfdx[secondIndex][secondIndex] -= jp;
                 dfdx[secondIndex][firstIndex] += jp;
             }
-            
+
             // M
             foreach (var index in Enumerable.Range(0, a.Count))
-                a[index][index] += double3x3.identity * masses[index];
-            
-            // Populate forces vector
-            var f = MakeEmptyGridVector();
+                a[index][index] += Identity * masses[index];
+
+            // Populate external forces vector
+            var f = Grid<double>.MakeVector(positions.Count, 0.0);
             foreach (var index in Enumerable.Range(0, f.Count))
                 f[index] = dt * forces[index];
-            
-            var newVelocities = ConjugateGradient3D.Mult(velocities, dt * dt);
 
-            var b = ConjugateGradient3D.Add(f, ConjugateGradient3D.Mult(dfdx, newVelocities));
+            var newVelocities = ConjugateGradient1D.CgMult(velocities, dt * dt);
+
+            var b = ConjugateGradient1D.CgAdd(f, ConjugateGradient1D.CgMult(dfdx, newVelocities));
             
-            var dvs = ConjugateGradient3D.ConstrainedSolve(a, b, 1000, 0.001, constrainedIndices);
+            var dvs = ConjugateGradient1D.ConstrainedSolve(a, b, 20, 0.001, constrainedIndices);
 
             foreach (var (dv, index) in dvs.Select((v, i) => (v, i)))
             {
                 positions[index] += dt * (velocities[index] + dv);
                 velocities[index] += dt * dv;
+
+                if (constrainedIndices.Contains(index))
+                {
+                    Debug.Assert(velocities[index] == 0.0);
+                }
             }
         }
-        
+
         private void SetForces()
         {
-            // Gravitational force, also resets the force vector
+            // Clearing out forces
             foreach (var index in Enumerable.Range(0, forces.Count))
             {
                 forces[index] = gravity * masses[index];
             }
-            
-            // Spring force, should be added onto force vector
+
+            // Setting spring force
             foreach (var spring in springs)
             {
-                var springForce = GetSpringForce(positions[spring.firstIndex], positions[spring.secondIndex]);
-                forces[spring.firstIndex] += springForce;
-                forces[spring.secondIndex] -= springForce;
+                var springF = GetSpringForce(positions[spring.firstIndex], positions[spring.secondIndex]);
+                forces[spring.firstIndex] += springF;
+                forces[spring.secondIndex] -= springF;
             }
         }
-        
-        private double3 GetSpringForce(double3 position1, double3 position2)
-        {
-            var vectorBetween = position1 - position2;
-            var distance = math.distance(position1, position2);
-            var force = -k * (distance - l) * (vectorBetween / distance);
-            return force;
-        }
-        
-        private double3x3 SpringJdx(int firstIndex, int secondIndex)
+
+        private double SpringJdx(int firstIndex, int secondIndex)
         {
             var xij = positions[firstIndex] - positions[secondIndex];
-            var dotResult = math.dot(xij, xij);
+            var dotResult = xij * xij;
             Debug.Assert(dotResult > 0);
-            var outer = Double3.OuterProduct(xij, xij);
+            var outer = xij * xij;
             var xijs = outer / dotResult;
             var magnitude = Math.Sqrt(dotResult);
 
-            return (xijs + (double3x3.identity - xijs) * ((1 - l) / magnitude)) * k;
+            return (xijs + (Identity - xijs) * ((1 - l) / magnitude)) * k;
         }
-        
-        private double3x3 SpringJdv() => -kd * double3x3.identity;
-        
-        private List<List<double3x3>> MakeEmptyGridMatrix() => Enumerable
-            .Range(0, positions.Count)
-            .Select(_ => Enumerable.Range(0, positions.Count)
-                .Select(_ => double3x3.zero /* Set value of cells here */)
-                .ToList())
-            .ToList();
 
-        private List<double3> MakeEmptyGridVector() => Enumerable
-            .Range(0, positions.Count)
-            .Select(_ => double3.zero /* Set value of cells here */)
-            .ToList();
+        private double SpringJdv()
+        {
+            return -kd * Identity;
+        }
+
+        private double GetSpringForce(double pos1, double pos2)
+        {
+            var vectorBetween = pos1 - pos2;
+            var dist = Math.Abs(vectorBetween);
+            var force = -k * (dist - l) * (vectorBetween / dist);
+            return force;
+        }
     }
 }

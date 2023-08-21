@@ -38,6 +38,7 @@ namespace SimulationHelpers.Cloth
             Debug.Assert(cloth is not null);
 
             // Use the cloth poser to initialize the cloth simulation
+            Debug.Assert(clothPoser.lastPose.Count > 0);
             cloth.SetPositionsAndSprings(clothPoser.lastPose);
         }
 
