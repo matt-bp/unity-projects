@@ -1,7 +1,10 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using MassSpring.Integration;
 using SimulationHelpers.Posing;
 using SimulationHelpers.Visualization;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -16,11 +19,12 @@ namespace SimulationHelpers.Cloth
         [SerializeField] private InputActionReference toggleSimulation;
     
         #endregion
-        
+
+        [SerializeField] private int oneShotIterationCount = 1000;
         public bool isEnabled;
         private ClothPoser clothPoser;
         private Visualizer visualizer;
-        private ImplicitMassSpring3D cloth;
+        private ImplicitMassSpring1D cloth;
         /// <summary>
         /// Time, in seconds, that this simulation has been enabled.
         /// </summary>
@@ -34,20 +38,23 @@ namespace SimulationHelpers.Cloth
             visualizer = GetComponentInChildren<Visualizer>();
             Debug.Assert(visualizer is not null);
 
-            cloth = GetComponentInChildren<ImplicitMassSpring3D>();
+            cloth = GetComponentInChildren<ImplicitMassSpring1D>();
             Debug.Assert(cloth is not null);
 
             // Use the cloth poser to initialize the cloth simulation
             Debug.Assert(clothPoser.lastPose.Count > 0);
-            cloth.SetPositionsAndSprings(clothPoser.lastPose);
+            var positions = clothPoser.lastPose.Select(v => v.y).ToList();
+            var testPositions = new List<double> { positions[0], positions[2] };
+            cloth.SetPositionsAndSprings(testPositions);
         }
 
         private void Update()
         {
             if (resetSimulation.action.WasPerformedThisFrame())
             {
-                // Use the clothPoser as "initial positions" to set the cloth sim to
-                // cloth.SetPositionsAndSprings(initialPositions);
+                var positions = clothPoser.lastPose.Select(v => v.y).ToList();
+                var testPositions = new List<double> { positions[0], positions[2] };
+                cloth.SetPositionsAndSprings(testPositions);
             }
             
             if (toggleSimulation.action.WasPerformedThisFrame())
@@ -69,14 +76,14 @@ namespace SimulationHelpers.Cloth
         {
             Debug.Log("Running one shot simulation. NOT in real time!");
             
-            foreach(var _ in Enumerable.Range(0, 1000))
+            foreach(var _ in Enumerable.Range(0, oneShotIterationCount))
             {
                 cloth.StepSimulation(Time.deltaTime);
 
                 elapsed += Time.deltaTime;
                 
                 // Create a visualization for those new positions
-                visualizer.Visualize(cloth.Positions, elapsed, Time.deltaTime);
+                visualizer.Visualize(cloth.Positions.Select(v => math.double3(0, (float)v, 0)).ToList(), elapsed, Time.deltaTime);
             }
 
             isEnabled = false;
