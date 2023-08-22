@@ -25,8 +25,13 @@ namespace SimulationHelpers.Visualization
         private List<IRunStatistic> runStatistics = new();
         private readonly Guid runIdentifier = Guid.NewGuid();
         private int? expectedPositionCount;
-        
-        public override void Visualize(List<double3> positions, float elapsed, float dt)
+
+        public override void Clear()
+        {
+            runStatistics = new List<IRunStatistic>();
+        }
+
+        public override void Visualize(List<Vector3> positions, float elapsed, float dt)
         {
             if (expectedPositionCount is null) 
                 expectedPositionCount = positions.Count;

@@ -15,7 +15,7 @@ namespace SimulationHelpers.Cloth
     {
         #region Keyboard Shortcuts
     
-        [SerializeField] private InputActionReference resetSimulation;
+        [SerializeField] private InputActionReference resetAndStopSimulation;
         [SerializeField] private InputActionReference toggleSimulation;
     
         #endregion
@@ -50,24 +50,43 @@ namespace SimulationHelpers.Cloth
 
         private void Update()
         {
-            if (resetSimulation.action.WasPerformedThisFrame())
+            if (resetAndStopSimulation.action.WasPerformedThisFrame())
             {
                 var positions = clothPoser.lastPose.Select(v => v.y).ToList();
                 var testPositions = new List<double> { positions[0], positions[2] };
                 cloth.SetPositionsAndSprings(testPositions);
+                visualizer.Clear();
+                isEnabled = false;
             }
             
             if (toggleSimulation.action.WasPerformedThisFrame())
             {
+                if (!isEnabled)
+                {
+                    var positions = clothPoser.lastPose.Select(v => v.y).ToList();
+                    var testPositions = new List<double> { positions[0], positions[2] };
+                    cloth.SetPositionsAndSprings(testPositions);
+                }
+                
                 isEnabled = !isEnabled;
             }
 
             if (!isEnabled) return;
             
-            // RunSimulation();
+            RunSimulation();
             
-            OneShotSimulation();
+            // OneShotSimulation();
         }
+
+        private void RunSimulation()
+        {
+            cloth.StepSimulation(Time.deltaTime);
+
+            elapsed += Time.deltaTime;
+            
+            visualizer.Visualize(cloth.Positions.Select(v => new Vector3(0, (float)v, 0)).ToList(), elapsed, Time.deltaTime);
+        }
+        
         
         /// <summary>
         /// Runs the simulation with a fixed time step. Primarily used to test simulation parameters. Immediately creates a CSV report with run statistics.
@@ -83,7 +102,7 @@ namespace SimulationHelpers.Cloth
                 elapsed += Time.deltaTime;
                 
                 // Create a visualization for those new positions
-                visualizer.Visualize(cloth.Positions.Select(v => math.double3(0, (float)v, 0)).ToList(), elapsed, Time.deltaTime);
+                visualizer.Visualize(cloth.Positions.Select(v => new Vector3(0, (float)v, 0)).ToList(), elapsed, Time.deltaTime);
             }
 
             isEnabled = false;
