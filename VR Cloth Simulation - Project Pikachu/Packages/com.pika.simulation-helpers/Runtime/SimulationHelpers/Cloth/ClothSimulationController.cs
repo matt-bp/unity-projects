@@ -42,8 +42,7 @@ namespace SimulationHelpers.Cloth
             // Use the cloth poser to initialize the cloth simulation
             Debug.Assert(framePoser.lastPose.Count > 0);
             var positions = framePoser.lastPose.Select(v => v.xy).ToList();
-            var testPositions = new List<double2> { positions[0], positions[2] };
-            cloth.SetPositionsAndSprings(testPositions);
+            cloth.SetPositionsAndSprings(positions);
         }
 
         private void Update()
@@ -51,8 +50,7 @@ namespace SimulationHelpers.Cloth
             if (resetAndStopSimulation.action.WasPerformedThisFrame())
             {
                 var positions = framePoser.lastPose.Select(v => v.xy).ToList();
-                var testPositions = new List<double2> { positions[0], positions[2] };
-                cloth.SetPositionsAndSprings(testPositions);
+                cloth.SetPositionsAndSprings(positions);
                 visualizer.Clear();
                 isEnabled = false;
             }
@@ -62,8 +60,7 @@ namespace SimulationHelpers.Cloth
                 if (!isEnabled)
                 {
                     var positions = framePoser.lastPose.Select(v => v.xy).ToList();
-                    var testPositions = new List<double2> { positions[0], positions[2] };
-                    cloth.SetPositionsAndSprings(testPositions);
+                    cloth.SetPositionsAndSprings(positions);
                 }
                 
                 isEnabled = !isEnabled;
