@@ -138,7 +138,7 @@ namespace MassSpring.Integration
             var xij = positions[firstIndex] - positions[secondIndex];
             var dotResult = math.dot(xij, xij);
             Debug.Assert(dotResult > 0);
-            var outer = Double2.outerProduct(xij, xij);
+            var outer = Double2.OuterProduct(xij, xij);
             var xijs = outer / dotResult;
             var magnitude = Math.Sqrt(dotResult);
 

@@ -4,7 +4,7 @@ namespace LinearAlgebra
 {
     public class Double2
     {
-        public static double2x2 outerProduct(double2 column, double2 row)
+        public static double2x2 OuterProduct(double2 column, double2 row)
         {
             var result = double2x2.zero;
 
