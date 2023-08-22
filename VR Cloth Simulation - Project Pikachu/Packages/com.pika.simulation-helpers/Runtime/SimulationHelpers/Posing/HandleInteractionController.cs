@@ -68,7 +68,7 @@ namespace SimulationHelpers.Posing
                 }
 
                 // And have things that should follow it start updating
-                activeCollider.gameObject.GetComponent<ClothPoserUpdater>().Updating = true;
+                activeCollider.gameObject.GetComponent<FramePoserUpdater>().Updating = true;
             }
         }
 
@@ -87,7 +87,7 @@ namespace SimulationHelpers.Posing
                     Debug.Log($"Found an object, but it didn't have the {nameof(Follower)} component.");
                 }
 
-                activeCollider.gameObject.GetComponent<ClothPoserUpdater>().Updating = false;
+                activeCollider.gameObject.GetComponent<FramePoserUpdater>().Updating = false;
             }
 
             numActiveColliders = 0;

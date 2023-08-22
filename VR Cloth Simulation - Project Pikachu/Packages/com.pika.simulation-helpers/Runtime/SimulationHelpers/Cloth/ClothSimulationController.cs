@@ -23,7 +23,7 @@ namespace SimulationHelpers.Cloth
         public bool isOneShotSimulation;
         [SerializeField] private int oneShotIterationCount = 1000;
         public bool isEnabled;
-        private ClothPoser clothPoser;
+        [SerializeField] private FramePoser framePoser;
         private Visualizer visualizer;
         private ImplicitMassSpring2D cloth;
         /// <summary>
@@ -33,9 +33,6 @@ namespace SimulationHelpers.Cloth
 
         private void Start()
         {
-            clothPoser = GetComponentInChildren<ClothPoser>();
-            Debug.Assert(clothPoser is not null);
-            
             visualizer = GetComponentInChildren<Visualizer>();
             Debug.Assert(visualizer is not null);
 
@@ -43,8 +40,8 @@ namespace SimulationHelpers.Cloth
             Debug.Assert(cloth is not null);
 
             // Use the cloth poser to initialize the cloth simulation
-            Debug.Assert(clothPoser.lastPose.Count > 0);
-            var positions = clothPoser.lastPose.Select(v => v.xy).ToList();
+            Debug.Assert(framePoser.lastPose.Count > 0);
+            var positions = framePoser.lastPose.Select(v => v.xy).ToList();
             var testPositions = new List<double2> { positions[0], positions[2] };
             cloth.SetPositionsAndSprings(testPositions);
         }
@@ -53,7 +50,7 @@ namespace SimulationHelpers.Cloth
         {
             if (resetAndStopSimulation.action.WasPerformedThisFrame())
             {
-                var positions = clothPoser.lastPose.Select(v => v.xy).ToList();
+                var positions = framePoser.lastPose.Select(v => v.xy).ToList();
                 var testPositions = new List<double2> { positions[0], positions[2] };
                 cloth.SetPositionsAndSprings(testPositions);
                 visualizer.Clear();
@@ -64,7 +61,7 @@ namespace SimulationHelpers.Cloth
             {
                 if (!isEnabled)
                 {
-                    var positions = clothPoser.lastPose.Select(v => v.xy).ToList();
+                    var positions = framePoser.lastPose.Select(v => v.xy).ToList();
                     var testPositions = new List<double2> { positions[0], positions[2] };
                     cloth.SetPositionsAndSprings(testPositions);
                 }

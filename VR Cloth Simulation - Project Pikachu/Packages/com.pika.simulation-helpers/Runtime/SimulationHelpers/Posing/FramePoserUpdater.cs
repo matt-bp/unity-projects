@@ -1,11 +1,12 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace SimulationHelpers.Posing
 {
-    public class ClothPoserUpdater : MonoBehaviour
+    public class FramePoserUpdater : MonoBehaviour
     {
         public int vertexToUpdate;
-        public ClothPoser clothPoser;
+        [FormerlySerializedAs("clothPoser")] public FramePoser framePoser;
 
         [SerializeField] private bool updating;
         
@@ -18,7 +19,7 @@ namespace SimulationHelpers.Posing
             if (!updating) return;
 
             // Update 
-            clothPoser.UpdatePose(vertexToUpdate, transform.position);
+            framePoser.UpdatePose(vertexToUpdate, transform.position);
         }
     }
 }

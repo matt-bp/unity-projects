@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace SimulationHelpers.Posing
 {
-    public class ClothPoser : MonoBehaviour
+    public class FramePoser : MonoBehaviour
     {
         public List<double3> lastPose = new();
         [SerializeField] private MeshFilter meshFilter; 

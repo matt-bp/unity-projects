@@ -1,12 +1,13 @@
 using System.Collections.Generic;
 using SimulationHelpers.Geometry;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace SimulationHelpers.Posing
 {
     public class HandleCreator : MonoBehaviour
     {
-        [SerializeField] private ClothPoser clothPoser;
+        [FormerlySerializedAs("clothPoser")] [SerializeField] private FramePoser framePoser;
         [SerializeField] private GameObject handlePrefab;
         private List<Vector3> initialPositions;
         
@@ -17,7 +18,7 @@ namespace SimulationHelpers.Posing
             initialPositions = mesh.positions;
             Debug.Assert(mesh.positions.Count > 0);
             
-            clothPoser.StartNewPose(initialPositions.Count);
+            framePoser.StartNewPose(initialPositions.Count);
             
             for(var i = 0; i < initialPositions.Count; i++)
                 AddHandle(i);
@@ -30,12 +31,12 @@ namespace SimulationHelpers.Posing
             
             var handle = Instantiate(handlePrefab, worldPosition, Quaternion.identity);
 
-            if (handle.TryGetComponent(out ClothPoserUpdater update))
+            if (handle.TryGetComponent(out FramePoserUpdater update))
             {
-                update.clothPoser = clothPoser;
+                update.framePoser = framePoser;
                 update.vertexToUpdate = index;
                 
-                clothPoser.UpdatePose(index, worldPosition);
+                framePoser.UpdatePose(index, worldPosition);
             }
             else
             {
