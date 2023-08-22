@@ -20,6 +20,7 @@ namespace SimulationHelpers.Cloth
     
         #endregion
 
+        public bool isOneShotSimulation;
         [SerializeField] private int oneShotIterationCount = 1000;
         public bool isEnabled;
         private ClothPoser clothPoser;
@@ -72,10 +73,15 @@ namespace SimulationHelpers.Cloth
             }
 
             if (!isEnabled) return;
-            
-            // RunSimulation();
-            
-            OneShotSimulation();
+
+            if (isOneShotSimulation)
+            {
+                OneShotSimulation();
+            }
+            else
+            {
+                RunSimulation();
+            }
         }
 
         private void RunSimulation()
