@@ -24,7 +24,7 @@ namespace SimulationHelpers.Cloth
         public bool isEnabled;
         private ClothPoser clothPoser;
         private Visualizer visualizer;
-        private ImplicitMassSpring1D cloth;
+        private ImplicitMassSpring2D cloth;
         /// <summary>
         /// Time, in seconds, that this simulation has been enabled.
         /// </summary>
@@ -38,13 +38,13 @@ namespace SimulationHelpers.Cloth
             visualizer = GetComponentInChildren<Visualizer>();
             Debug.Assert(visualizer is not null);
 
-            cloth = GetComponentInChildren<ImplicitMassSpring1D>();
+            cloth = GetComponentInChildren<ImplicitMassSpring2D>();
             Debug.Assert(cloth is not null);
 
             // Use the cloth poser to initialize the cloth simulation
             Debug.Assert(clothPoser.lastPose.Count > 0);
-            var positions = clothPoser.lastPose.Select(v => v.y).ToList();
-            var testPositions = new List<double> { positions[0], positions[2] };
+            var positions = clothPoser.lastPose.Select(v => v.xy).ToList();
+            var testPositions = new List<double2> { positions[0], positions[2] };
             cloth.SetPositionsAndSprings(testPositions);
         }
 
@@ -52,8 +52,8 @@ namespace SimulationHelpers.Cloth
         {
             if (resetAndStopSimulation.action.WasPerformedThisFrame())
             {
-                var positions = clothPoser.lastPose.Select(v => v.y).ToList();
-                var testPositions = new List<double> { positions[0], positions[2] };
+                var positions = clothPoser.lastPose.Select(v => v.xy).ToList();
+                var testPositions = new List<double2> { positions[0], positions[2] };
                 cloth.SetPositionsAndSprings(testPositions);
                 visualizer.Clear();
                 isEnabled = false;
@@ -63,8 +63,8 @@ namespace SimulationHelpers.Cloth
             {
                 if (!isEnabled)
                 {
-                    var positions = clothPoser.lastPose.Select(v => v.y).ToList();
-                    var testPositions = new List<double> { positions[0], positions[2] };
+                    var positions = clothPoser.lastPose.Select(v => v.xy).ToList();
+                    var testPositions = new List<double2> { positions[0], positions[2] };
                     cloth.SetPositionsAndSprings(testPositions);
                 }
                 
@@ -73,9 +73,9 @@ namespace SimulationHelpers.Cloth
 
             if (!isEnabled) return;
             
-            RunSimulation();
+            // RunSimulation();
             
-            // OneShotSimulation();
+            OneShotSimulation();
         }
 
         private void RunSimulation()
@@ -84,7 +84,7 @@ namespace SimulationHelpers.Cloth
 
             elapsed += Time.deltaTime;
             
-            visualizer.Visualize(cloth.Positions.Select(v => new Vector3(0, (float)v, 0)).ToList(), elapsed, Time.deltaTime);
+            visualizer.Visualize(cloth.Positions.Select(v => new Vector3((float)v.x, (float)v.y, 0)).ToList(), elapsed, Time.deltaTime);
         }
         
         
@@ -102,7 +102,7 @@ namespace SimulationHelpers.Cloth
                 elapsed += Time.deltaTime;
                 
                 // Create a visualization for those new positions
-                visualizer.Visualize(cloth.Positions.Select(v => new Vector3(0, (float)v, 0)).ToList(), elapsed, Time.deltaTime);
+                visualizer.Visualize(cloth.Positions.Select(v => new Vector3((float)v.x, (float)v.y, 0)).ToList(), elapsed, Time.deltaTime);
             }
 
             isEnabled = false;

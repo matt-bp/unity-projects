@@ -28,6 +28,7 @@ namespace SimulationHelpers.Visualization
 
         public override void Clear()
         {
+            Debug.Log($"{nameof(GraphVisualizer)}: Resetting.");
             runStatistics = new List<IRunStatistic>();
         }
 
@@ -63,12 +64,12 @@ namespace SimulationHelpers.Visualization
         {
             if (runStatistics.Count == 0)
             {
-                Debug.Log("There are no statistics to write, skipping noop.");
+                Debug.Log($"{nameof(GraphVisualizer)}: There are no statistics to write, skipping noop.");
                 return;
             }
             
             var filename = $"{outputFolder}/stats-{runIdentifier}";
-            Debug.Log("Creating report: " + filename);
+            Debug.Log($"{nameof(GraphVisualizer)}: Creating report \"{filename}\"");
             RunStatisticWriter.Write(runStatistics, filename, "csv");
         }
 
