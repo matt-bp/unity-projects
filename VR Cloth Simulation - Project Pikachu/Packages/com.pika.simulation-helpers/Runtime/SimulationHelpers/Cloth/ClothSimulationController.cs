@@ -25,7 +25,7 @@ namespace SimulationHelpers.Cloth
         public bool isEnabled;
         [SerializeField] private FramePoser framePoser;
         private Visualizer visualizer;
-        private ImplicitMassSpring2D cloth;
+        private ImplicitMassSpring3D cloth;
         /// <summary>
         /// Time, in seconds, that this simulation has been enabled.
         /// </summary>
@@ -36,21 +36,19 @@ namespace SimulationHelpers.Cloth
             visualizer = GetComponentInChildren<Visualizer>();
             Debug.Assert(visualizer is not null);
 
-            cloth = GetComponentInChildren<ImplicitMassSpring2D>();
+            cloth = GetComponentInChildren<ImplicitMassSpring3D>();
             Debug.Assert(cloth is not null);
 
             // Use the cloth poser to initialize the cloth simulation
             Debug.Assert(framePoser.lastPose.Count > 0);
-            var positions = framePoser.lastPose.Select(v => v.xy).ToList();
-            cloth.SetPositionsAndSprings(positions);
+            cloth.SetPositionsAndSprings(framePoser.lastPose);
         }
 
         private void Update()
         {
             if (resetAndStopSimulation.action.WasPerformedThisFrame())
             {
-                var positions = framePoser.lastPose.Select(v => v.xy).ToList();
-                cloth.SetPositionsAndSprings(positions);
+                cloth.SetPositionsAndSprings(framePoser.lastPose);
                 visualizer.Clear();
                 isEnabled = false;
             }
@@ -59,8 +57,7 @@ namespace SimulationHelpers.Cloth
             {
                 if (!isEnabled)
                 {
-                    var positions = framePoser.lastPose.Select(v => v.xy).ToList();
-                    cloth.SetPositionsAndSprings(positions);
+                    cloth.SetPositionsAndSprings(framePoser.lastPose);
                 }
                 
                 isEnabled = !isEnabled;
@@ -84,7 +81,7 @@ namespace SimulationHelpers.Cloth
 
             elapsed += Time.deltaTime;
             
-            visualizer.Visualize(cloth.Positions.Select(v => new Vector3((float)v.x, (float)v.y, 0)).ToList(), elapsed, Time.deltaTime);
+            visualizer.Visualize(cloth.Positions.Select(v => new Vector3((float)v.x, (float)v.y, (float)v.z)).ToList(), elapsed, Time.deltaTime);
         }
         
         
@@ -102,7 +99,7 @@ namespace SimulationHelpers.Cloth
                 elapsed += Time.deltaTime;
                 
                 // Create a visualization for those new positions
-                visualizer.Visualize(cloth.Positions.Select(v => new Vector3((float)v.x, (float)v.y, 0)).ToList(), elapsed, Time.deltaTime);
+                visualizer.Visualize(cloth.Positions.Select(v => new Vector3((float)v.x, (float)v.y, (float)v.z)).ToList(), elapsed, Time.deltaTime);
             }
 
             isEnabled = false;
