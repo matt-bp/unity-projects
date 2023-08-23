@@ -64,7 +64,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 022d35ca4566b284496cd6e00a7d322a, type: 2}
+  - {fileID: 2100000, guid: ecf32a8f73150684b850587e3ad91047, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -112,7 +112,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   vertexToUpdate: 0
-  clothPoser: {fileID: 0}
+  framePoser: {fileID: 0}
   updating: 0
 --- !u!114 &4291719488629451236
 MonoBehaviour:
