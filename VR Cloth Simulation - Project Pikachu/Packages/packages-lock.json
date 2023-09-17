@@ -1,5 +1,11 @@
 {
   "dependencies": {
+    "com.pika.continuum-cloth": {
+      "version": "file:com.pika.continuum-cloth",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.pika.mass-spring": {
       "version": "file:com.pika.mass-spring",
       "depth": 0,

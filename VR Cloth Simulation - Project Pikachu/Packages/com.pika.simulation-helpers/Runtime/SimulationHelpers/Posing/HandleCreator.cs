@@ -14,9 +14,9 @@ namespace SimulationHelpers.Posing
 
         private void Start()
         {
-            var mesh = GetComponentInChildren<WorldSpaceMesh>();
-            initialPositions = mesh.positions;
-            Debug.Assert(mesh.positions.Count > 0);
+            IWorldSpaceMesh mesh = GetComponentInChildren<WorldSpaceMesh>();
+            initialPositions = mesh.GetPositions();
+            Debug.Assert(initialPositions.Count > 0);
             
             framePoser.StartNewPose(initialPositions.Count);
             

@@ -1,0 +1,20 @@
+{
+  "name": "com.pika.continuum-cloth",
+  "version": "0.1.0",
+  "displayName": "Pika Continuum Cloth",
+  "description": "Implmements 'Large Steps in Cloth Simulation', for implicit integration.",
+  "unity": "2021.3",
+  "unityRelease": "20f1",
+  "documentationUrl": "https://github.com/matt-bp/unity-projects",
+  "changelogUrl": "https://github.com/matt-bp/unity-projects",
+  "licenseUrl": "https://github.com/matt-bp/unity-projects",
+  "keywords": [
+    "math",
+    "continuum"
+  ],
+  "author": {
+    "name": "Matt Bishop",
+    "email": "mattsbishop1@gmail.com",
+    "url": "https://github.com/matt-bp"
+  }
+}
