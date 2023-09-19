@@ -77,7 +77,8 @@ namespace SimulationHelpers.Cloth
 
         private void RunSimulation()
         {
-            cloth.StepSimulation(Time.deltaTime);
+            if (Time.deltaTime < 0.02)
+                cloth.StepSimulation(Time.deltaTime);
 
             elapsed += Time.deltaTime;
             
