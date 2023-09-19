@@ -17,6 +17,18 @@ namespace Pika.Continuum.Cloth.UnitTests.Conditions
             Assert.That(math.length(result.wu), Is.EqualTo(1));
             Assert.That(math.length(result.wv), Is.EqualTo(1));
         }
+
+        [Test]
+        public void GetCondition_WithNoDeformation_ReturnsZero()
+        {
+            var (rest, world) = MakeMatchingTriangles();
+            var b = math.double2(1, 1);
+
+            var result = StretchCondition.GetCondition(rest, world, b);
+            
+            Assert.That(result.cu, Is.Zero);
+            Assert.That(result.cv, Is.Zero);
+        }
         
         #region Helpers
 
