@@ -27,5 +27,16 @@ namespace Conditions
 
             return (wu, wv);
         }
+
+        public static (double cu, double cv) GetCondition(RestSpaceTriangle restSpaceTriangle,
+            WorldSpaceTriangle worldSpaceTriangle, double2 b)
+        {
+            var (wu, wv) = GetDeformationMapDerivatives(restSpaceTriangle, worldSpaceTriangle);
+
+            var cu = (math.length(wu) - b.x) * restSpaceTriangle.Area();
+            var cv = (math.length(wv) - b.y) * restSpaceTriangle.Area();
+
+            return (cu, cv);
+        }
     }
 }
