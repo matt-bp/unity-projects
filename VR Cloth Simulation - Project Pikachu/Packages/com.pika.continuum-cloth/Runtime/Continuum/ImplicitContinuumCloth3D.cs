@@ -3,6 +3,7 @@ using SimulationHelpers.Geometry;
 using Unity.Mathematics;
 using UnityEngine;
 using System.Linq;
+using Conditions;
 using Triangles;
 
 namespace Continuum
@@ -11,7 +12,8 @@ namespace Continuum
     public class ImplicitContinuumCloth3D : MonoBehaviour
     {
         #region Simulation Constants
-        
+
+        [SerializeField] private double2 b = math.double2(1, 1);
         [SerializeField] private double k = 10;
         [SerializeField] private double kd = 0.0;
         [SerializeField] private double3 gravity = math.double3(0.0, -10.0, 0.0);
@@ -34,8 +36,8 @@ namespace Continuum
         private List<int> indices = new();
         private List<List<int>> triangleIndices = new();
 
-        private List<WorldSpaceTriangle> WorldSpaceTriangles = new();
-        private List<RestSpaceTriangle> RestSpaceTriangles = new();
+        private readonly List<WorldSpaceTriangle> worldSpaceTriangles = new();
+        private readonly List<RestSpaceTriangle> restSpaceTriangles = new();
         
         public void SetRestMesh(IWorldSpaceMesh meshFilter)
         {
@@ -55,12 +57,12 @@ namespace Continuum
                 var pos1 = positions[triangle[1]];
                 var pos2 = positions[triangle[2]];
                 
-                WorldSpaceTriangles.Add(new WorldSpaceTriangle(
+                worldSpaceTriangles.Add(new WorldSpaceTriangle(
                     pos0, 
                     pos1, 
                     pos2));
                 
-                RestSpaceTriangles.Add(new RestSpaceTriangle(
+                restSpaceTriangles.Add(new RestSpaceTriangle(
                     pos0.xy,
                     pos1.xy,
                     pos2.xy
@@ -82,16 +84,27 @@ namespace Continuum
 
         public void StepSimulation(double dt)
         {
-
+            // Clear out force vector
+            
             // Set entries in matrix A and matrix dfdx for stretch condition, this will look different because 
             //  I'm doing it all at once, and not multiplying matrices explicitly
-            foreach (var triangle in triangleIndices)
+            for(var i = 0; i < triangleIndices.Count; i++)
             {
+                // Compute condition
+                var stretchCondition = StretchCondition.GetCondition(restSpaceTriangles[i], worldSpaceTriangles[i], b);
                 
+                // Compute condition's first derivative
+                
+                // Compute force for triangle
+                
+                // Add it to each index in the triangle's force vector
+                
+                // Compute condition's second derivative
+                
+                // Compute force first derivative (Jacobian), and add it to large matrix
+                
+                // Compute derivative of damping force (Jacobian), and add it to large matrix
             }
-            
-            
-            // Add in damping force for stretch condition as well
             
             // M
             
