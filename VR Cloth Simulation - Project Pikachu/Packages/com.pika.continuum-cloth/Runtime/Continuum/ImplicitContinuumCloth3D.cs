@@ -31,7 +31,6 @@ namespace Continuum
         private List<double3> forces = new();
         private List<double3> positions = new();
         private List<double3> velocities = new();
-        private List<double> masses = new();
         [SerializeField] private List<int> constrainedIndices = new();
         private List<int> indices = new();
         private List<List<int>> triangleIndices = new();
@@ -85,35 +84,53 @@ namespace Continuum
         public void StepSimulation(double dt)
         {
             // Clear out force vector
+            // Gravitational force, also resets the force vector
+            foreach (var index in Enumerable.Range(0, forces.Count))
+            {
+                forces[index] = gravity * m;
+            }
             
             // Set entries in matrix A and matrix dfdx for stretch condition, this will look different because 
             //  I'm doing it all at once, and not multiplying matrices explicitly
             for(var i = 0; i < triangleIndices.Count; i++)
             {
                 // Compute condition
-                var stretchCondition = StretchCondition.GetCondition(restSpaceTriangles[i], worldSpaceTriangles[i], b);
+                var (cu, cv) = StretchCondition.GetCondition(restSpaceTriangles[i], worldSpaceTriangles[i], b);
                 
                 // Compute condition's first derivative
-                
+                var (dcu, dcv) =
+                    StretchCondition.GetConditionFirstDerivative(restSpaceTriangles[i], worldSpaceTriangles[i]);
+
                 // Compute force for triangle
-                
+                var force0 = -k * (dcu.dx0 * cu + dcv.dx0 * cv);
+                var force1 = -k * (dcu.dx1 * cu + dcv.dx1 * cv);
+                var force2 = -k * (dcu.dx2 * cu + dcv.dx2 * cv);
+
                 // Add it to each index in the triangle's force vector
-                
+                var index0 = triangleIndices[i][0];
+                var index1 = triangleIndices[i][1];
+                var index2 = triangleIndices[i][2];
+
+                forces[index0] += force0;
+                forces[index1] += force1;
+                forces[index2] += force2;
+
                 // Compute condition's second derivative
-                
+
                 // Compute force first derivative (Jacobian), and add it to large matrix
-                
+
                 // Compute derivative of damping force (Jacobian), and add it to large matrix
             }
             
             // M
             
-            // Set Forces
             // Set Current Force Vector (f_0)
             
             // Set v_0, with time steps and everything
             
             // Construct b vector from parts
+            
+            // Make sure that the global Jacobian matrix is symmetric
             
             // Solve for delta V
             

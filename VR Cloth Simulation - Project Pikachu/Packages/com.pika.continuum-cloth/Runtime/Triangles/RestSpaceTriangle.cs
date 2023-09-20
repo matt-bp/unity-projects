@@ -1,3 +1,4 @@
+using Conditions;
 using Unity.Mathematics;
 
 namespace Triangles
@@ -38,5 +39,19 @@ namespace Triangles
         {
             return (Du1, Du2, Dv1, Dv2);
         }
+
+        public WithRespectTo<double> Dwu() => new()
+        {
+                dx0 = (Dv1 - Dv2) / D(),
+                dx1 =  Dv2 / D(),
+                dx2 = -Dv1 / D()
+            };
+        
+        public WithRespectTo<double> Dwv() => new()
+        {
+            dx0 = (Du1 - Du2) / D(),
+            dx1 =  Du2 / D(),
+            dx2 = -Du1 / D()
+        };
     }
 }
