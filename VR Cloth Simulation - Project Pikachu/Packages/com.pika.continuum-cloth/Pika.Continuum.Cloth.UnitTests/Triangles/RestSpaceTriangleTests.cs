@@ -17,7 +17,7 @@ namespace Pika.Continuum.Cloth.UnitTests.Triangles
         }
 
         [Test]
-        public void D_WithTestTriangle_ReturnsOne()
+        public void D_WithTestTriangle_ReturnsCorrectResult()
         {
             var triangle = MakeTriangle();
 
@@ -36,6 +36,18 @@ namespace Pika.Continuum.Cloth.UnitTests.Triangles
             AssertOnlyDiagonalEntriesAreSet(result.dx0, -0.8);
             AssertOnlyDiagonalEntriesAreSet(result.dx1, 1.2);
             AssertOnlyDiagonalEntriesAreSet(result.dx2, -0.4);
+        }
+        
+        [Test]
+        public void Dwv_WithTestTriangle_Returns3x3Matrices()
+        {
+            var triangle = MakeTriangle();
+
+            var result = triangle.Dwv();
+
+            AssertOnlyDiagonalEntriesAreSet(result.dx0, -0.4);
+            AssertOnlyDiagonalEntriesAreSet(result.dx1, -0.4);
+            AssertOnlyDiagonalEntriesAreSet(result.dx2, 0.8);
         }
         
         #region Helpers

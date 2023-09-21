@@ -49,9 +49,9 @@ namespace Triangles
 
         public WithRespectTo<double3x3> Dwv() => new()
         {
-            dx0 = double3x3.identity * (Du1 - Du2) / D(),
-            dx1 = double3x3.identity * Du2 / D(),
-            dx2 = double3x3.identity * -Du1 / D()
+            dx0 = double3x3.identity * (Du2 - Du1) / D(),
+            dx1 = double3x3.identity * -Du2 / D(),
+            dx2 = double3x3.identity * Du1 / D()
         };
     }
 }
