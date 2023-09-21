@@ -38,25 +38,29 @@ namespace Conditions
 
             return (cu, cv);
         }
-
-
-
+        
         public static (WithRespectTo<double3> dcu, WithRespectTo<double3> dcv) GetConditionFirstDerivative(
             RestSpaceTriangle restSpaceTriangle, WorldSpaceTriangle worldSpaceTriangle)
         {
             var (wu, wv) = GetDeformationMapDerivatives(restSpaceTriangle, worldSpaceTriangle);
 
-            WithRespectTo<double3> Combine(double3 w, WithRespectTo<double> scalars)
+            WithRespectTo<double3> Combine(double3 w, WithRespectTo<double3x3> dw)
             {
                 return new WithRespectTo<double3>()
                 {
-                    dx0 = math.normalize(w) * scalars.dx0 * restSpaceTriangle.Area(),
-                    dx1 = math.normalize(w) * scalars.dx1 * restSpaceTriangle.Area(),
-                    dx2 = math.normalize(w) * scalars.dx2 * restSpaceTriangle.Area(),
+                    dx0 = math.mul(dw.dx0, math.normalize(w)) * restSpaceTriangle.Area(),
+                    dx1 = math.mul(dw.dx1, math.normalize(w)) * restSpaceTriangle.Area(),
+                    dx2 = math.mul(dw.dx2, math.normalize(w)) * restSpaceTriangle.Area(),
                 };
             }
 
             return (dcu: Combine(wu, restSpaceTriangle.Dwu()), dcv: Combine(wv, restSpaceTriangle.Dwv()));
+        }
+
+        public static void GetConditionSecondDerivative(RestSpaceTriangle restSpaceTriangle,
+            WorldSpaceTriangle worldSpaceTriangle)
+        {
+            
         }
     }
 }

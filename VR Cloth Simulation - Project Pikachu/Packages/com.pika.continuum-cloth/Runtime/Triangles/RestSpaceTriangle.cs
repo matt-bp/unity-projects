@@ -8,17 +8,17 @@ namespace Triangles
         private double2 UV0 { get; }
         private double2 UV1 { get; }
         private double2 UV2 { get; }
-        public double Du1 { get; }
-        public double Du2 { get; }
-        public double Dv1 { get; }
-        public double Dv2 { get; }
+        private double Du1 { get; }
+        private double Du2 { get; }
+        private double Dv1 { get; }
+        private double Dv2 { get; }
 
         public RestSpaceTriangle(double2 uv0, double2 uv1, double2 uv2)
         {
             UV0 = uv0;
             UV1 = uv1;
             UV2 = uv2;
-            
+
             Du1 = UV1.x - UV0.x;
             Du2 = UV2.x - UV0.x;
             Dv1 = UV1.y - UV0.y;
@@ -40,18 +40,18 @@ namespace Triangles
             return (Du1, Du2, Dv1, Dv2);
         }
 
-        public WithRespectTo<double> Dwu() => new()
+        public WithRespectTo<double3x3> Dwu() => new()
         {
-                dx0 = (Dv1 - Dv2) / D(),
-                dx1 =  Dv2 / D(),
-                dx2 = -Dv1 / D()
-            };
-        
-        public WithRespectTo<double> Dwv() => new()
+            dx0 = double3x3.identity * (Dv1 - Dv2) / D(),
+            dx1 = double3x3.identity * Dv2 / D(),
+            dx2 = double3x3.identity * -Dv1 / D()
+        };
+
+        public WithRespectTo<double3x3> Dwv() => new()
         {
-            dx0 = (Du1 - Du2) / D(),
-            dx1 =  Du2 / D(),
-            dx2 = -Du1 / D()
+            dx0 = double3x3.identity * (Du1 - Du2) / D(),
+            dx1 = double3x3.identity * Du2 / D(),
+            dx2 = double3x3.identity * -Du1 / D()
         };
     }
 }
