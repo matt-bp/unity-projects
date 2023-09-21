@@ -34,6 +34,8 @@ namespace Pika.Continuum.Cloth.UnitTests.Triangles
             var result = triangle.Dwu();
 
             AssertOnlyDiagonalEntriesAreSet(result.dx0, -0.8);
+            AssertOnlyDiagonalEntriesAreSet(result.dx1, 1.2);
+            AssertOnlyDiagonalEntriesAreSet(result.dx2, -0.4);
         }
         
         #region Helpers
