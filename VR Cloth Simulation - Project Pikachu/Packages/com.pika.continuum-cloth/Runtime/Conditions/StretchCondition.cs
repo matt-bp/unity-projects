@@ -91,10 +91,17 @@ namespace Conditions
         public double3 Wv { get; }
         public double3 WvNorm => math.normalize(Wv);
         public WithRespectTo<double3x3> Dwv { get; }
-        public double Cu { get; set; }
-        public double Cv { get; set; }
-        public WithRespectTo<double3> Dcu { get; set; }
-        public WithRespectTo<double3> Dcv { get; set; }
+        public double Cu { get; }
+        public double Cv { get; }
+        public WithRespectTo<double3> Dcu { get; }
+        public WithRespectTo<double3> Dcv { get; }
+        
+        public WithRespectTo<double3x3> D2CuDx0 { get; }
+        public WithRespectTo<double3x3> D2CuDx1 { get; }
+        public WithRespectTo<double3x3> D2CuDx2 { get; }
+        public WithRespectTo<double3x3> D2CvDx0 { get; }
+        public WithRespectTo<double3x3> D2CvDx1 { get; }
+        public WithRespectTo<double3x3> D2CvDx2 { get; }
 
         public StretchConditionQuantities(RestSpaceTriangle restSpaceTriangle, WorldSpaceTriangle worldSpaceTriangle,
             double2 b)
@@ -116,7 +123,52 @@ namespace Conditions
             var conditionFirstDerivative = StretchCondition.GetConditionFirstDerivative(Wu, Wv, Dwu, Dwv, A);
             Dcu = conditionFirstDerivative.dcu;
             Dcv = conditionFirstDerivative.dcv;
-
+            
+            var awu = A / math.length(Wu);
+            var identityMinusWu = double3x3.identity - Double3.OuterProduct(WuNorm, WuNorm);
+            D2CuDx0 = new WithRespectTo<double3x3>()
+            {
+                dx0 = awu * Dwu.dx0 * Dwu.dx0 * identityMinusWu,
+                dx1 = awu * Dwu.dx0 * Dwu.dx1 * identityMinusWu,
+                dx2 = awu * Dwu.dx0 * Dwu.dx2 * identityMinusWu,
+            };
+            
+            D2CuDx1 = new WithRespectTo<double3x3>()
+            {
+                dx0 = awu * Dwu.dx1 * Dwu.dx0 * identityMinusWu,
+                dx1 = awu * Dwu.dx1 * Dwu.dx1 * identityMinusWu,
+                dx2 = awu * Dwu.dx1 * Dwu.dx2 * identityMinusWu,
+            };
+            
+            D2CuDx2 = new WithRespectTo<double3x3>()
+            {
+                dx0 = awu * Dwu.dx1 * Dwu.dx0 * identityMinusWu,
+                dx1 = awu * Dwu.dx1 * Dwu.dx1 * identityMinusWu,
+                dx2 = awu * Dwu.dx1 * Dwu.dx2 * identityMinusWu,
+            };
+            
+            var awv = A / math.length(Wv);
+            var identityMinusWv = double3x3.identity - Double3.OuterProduct(WvNorm, WvNorm);
+            D2CvDx0 = new WithRespectTo<double3x3>()
+            {
+                dx0 = awv * Dwv.dx0 * Dwv.dx0 * identityMinusWv,
+                dx1 = awv * Dwv.dx0 * Dwv.dx1 * identityMinusWv,
+                dx2 = awv * Dwv.dx0 * Dwv.dx2 * identityMinusWv,
+            };
+            
+            D2CvDx1 = new WithRespectTo<double3x3>()
+            {
+                dx0 = awv * Dwv.dx1 * Dwv.dx0 * identityMinusWv,
+                dx1 = awv * Dwv.dx1 * Dwv.dx1 * identityMinusWv,
+                dx2 = awv * Dwv.dx1 * Dwv.dx2 * identityMinusWv,
+            };
+            
+            D2CvDx2 = new WithRespectTo<double3x3>()
+            {
+                dx0 = awv * Dwv.dx1 * Dwv.dx0 * identityMinusWv,
+                dx1 = awv * Dwv.dx1 * Dwv.dx1 * identityMinusWv,
+                dx2 = awv * Dwv.dx1 * Dwv.dx2 * identityMinusWv,
+            };
         }
     }
 }

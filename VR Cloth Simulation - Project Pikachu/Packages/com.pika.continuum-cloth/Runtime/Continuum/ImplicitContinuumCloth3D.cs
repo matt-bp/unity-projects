@@ -4,6 +4,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using System.Linq;
 using Conditions;
+using LinearAlgebra;
 using Triangles;
 
 namespace Continuum
@@ -94,33 +95,29 @@ namespace Continuum
             //  I'm doing it all at once, and not multiplying matrices explicitly
             for(var i = 0; i < triangleIndices.Count; i++)
             {
-                var stretchConditionQuantities =
+                var sq =
                     new StretchConditionQuantities(restSpaceTriangles[i], worldSpaceTriangles[i], b);
-                
-                // Compute condition
-                // var (cu, cv) = StretchCondition.GetCondition(stretchConditionQuantities, b);
-                
-                // // Compute condition's first derivative
-                // var (dcu, dcv) =
-                //     StretchCondition.GetConditionFirstDerivative(restSpaceTriangles[i], worldSpaceTriangles[i]);
-                //
-                // // Compute force for triangle
-                // var force0 = -k * (dcu.dx0 * cu + dcv.dx0 * cv);
-                // var force1 = -k * (dcu.dx1 * cu + dcv.dx1 * cv);
-                // var force2 = -k * (dcu.dx2 * cu + dcv.dx2 * cv);
-                //
-                // // Add it to each index in the triangle's force vector
-                // var index0 = triangleIndices[i][0];
-                // var index1 = triangleIndices[i][1];
-                // var index2 = triangleIndices[i][2];
-                //
-                // forces[index0] += force0;
-                // forces[index1] += force1;
-                // forces[index2] += force2;
 
-                // Compute condition's second derivative
+                // // Compute force for triangle
+                var force0 = -k * (sq.Dcu.dx0 * sq.Cu + sq.Dcv.dx0 * sq.Cv);
+                var force1 = -k * (sq.Dcu.dx1 * sq.Cu + sq.Dcv.dx1 * sq.Cv);
+                var force2 = -k * (sq.Dcu.dx2 * sq.Cu + sq.Dcv.dx2 * sq.Cv);
+
+                // // Add it to each index in the triangle's force vector
+                var index0 = triangleIndices[i][0];
+                var index1 = triangleIndices[i][1];
+                var index2 = triangleIndices[i][2];
+
+                forces[index0] += force0;
+                forces[index1] += force1;
+                forces[index2] += force2;
 
                 // Compute force first derivative (Jacobian), and add it to large matrix
+                var df0dx0 = -k * (Double3.OuterProduct(sq.Dcu.dx0, sq.Dcu.dx0) + sq.D2CuDx0.dx0 * sq.Cu + Double3.OuterProduct(sq.Dcv.dx0, sq.Dcv.dx0) + sq.D2CvDx0.dx0 * sq.Cv);
+                var df0dx1 = -k * Double3.OuterProduct(sq.Dcu.dx0, sq.Dcu.dx1) + sq.D2CuDx0.dx1 * sq.Cu + Double3.OuterProduct(sq.Dcv.dx0, sq.Dcv.dx1) + sq.D2CvDx0.dx1 * sq.Cv;
+                var df0dx2 = -k * Double3.OuterProduct(sq.Dcu.dx0, sq.Dcu.dx2) + sq.D2CuDx0.dx2 * sq.Cu + Double3.OuterProduct(sq.Dcv.dx0, sq.Dcv.dx2) + sq.D2CvDx0.dx2 * sq.Cv;
+
+
 
                 // Compute derivative of damping force (Jacobian), and add it to large matrix
             }
