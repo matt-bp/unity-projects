@@ -1,3 +1,4 @@
+using System;
 using LinearAlgebra;
 using Triangles;
 using Unity.Mathematics;
@@ -95,6 +96,14 @@ namespace Conditions
         public double Cv { get; }
         public WithRespectTo<double3> Dcu { get; }
         public WithRespectTo<double3> Dcv { get; }
+        /// <summary>
+        /// Time derivative of the condition in the U direction.
+        /// </summary>
+        public double CuDot { get; set; }
+        /// <summary>
+        /// Time derivative of the condition in the V direction.
+        /// </summary>
+        public double CvDot { get; set; }
         
         public WithRespectTo<double3x3> D2CuDx0 { get; }
         public WithRespectTo<double3x3> D2CuDx1 { get; }
@@ -104,7 +113,7 @@ namespace Conditions
         public WithRespectTo<double3x3> D2CvDx2 { get; }
 
         public StretchConditionQuantities(RestSpaceTriangle restSpaceTriangle, WorldSpaceTriangle worldSpaceTriangle,
-            double2 b)
+            double2 b, Tuple<double3, double3, double3> velocities)
         {
             A = restSpaceTriangle.Area();
             D = restSpaceTriangle.D();
@@ -123,6 +132,14 @@ namespace Conditions
             var conditionFirstDerivative = StretchCondition.GetConditionFirstDerivative(Wu, Wv, Dwu, Dwv, A);
             Dcu = conditionFirstDerivative.dcu;
             Dcv = conditionFirstDerivative.dcv;
+
+            CuDot = math.dot(Dcu.dx0, velocities.Item1) + 
+                    math.dot(Dcu.dx1, velocities.Item2) +
+                    math.dot(Dcu.dx2, velocities.Item3);
+            
+            CvDot = math.dot(Dcv.dx0, velocities.Item1) + 
+                    math.dot(Dcv.dx1, velocities.Item2) +
+                    math.dot(Dcv.dx2, velocities.Item3);
             
             var awu = A / math.length(Wu);
             var identityMinusWu = double3x3.identity - Double3.OuterProduct(WuNorm, WuNorm);
@@ -169,6 +186,8 @@ namespace Conditions
                 dx1 = awv * Dwv.dx1 * Dwv.dx1 * identityMinusWv,
                 dx2 = awv * Dwv.dx1 * Dwv.dx2 * identityMinusWv,
             };
+            
+            
         }
     }
 }
