@@ -2,8 +2,7 @@
 
 .idea
 .DS_Store
-Stats
-
+Stats*
 #
 # Get latest from https://github.com/github/gitignore/blob/main/Unity.gitignore
 #

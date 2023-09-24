@@ -1,3 +1,4 @@
+using System;
 using Conditions;
 using NUnit.Framework;
 using Triangles;
@@ -52,8 +53,9 @@ namespace Pika.Continuum.Cloth.UnitTests.Conditions
         private static StretchConditionQuantities MakeStretchQuantities()
         {
             var (rest, world) = MakeMatchingTriangles();
+            var velocities = Tuple.Create(double3.zero, double3.zero, double3.zero);
 
-            return new StretchConditionQuantities(rest, world, DefaultB);
+            return new StretchConditionQuantities(rest, world, DefaultB, velocities);
         }
 
         private static double2 DefaultB => math.double2(1, 1);
