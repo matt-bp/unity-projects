@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using SimulationHelpers.Geometry;
+using Geometry;
 using UnityEngine;
 using UnityEngine.Serialization;
 

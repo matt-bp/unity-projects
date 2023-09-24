@@ -6,6 +6,12 @@
       "source": "embedded",
       "dependencies": {}
     },
+    "com.pika.geometry": {
+      "version": "file:com.pika.geometry",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.pika.mass-spring": {
       "version": "file:com.pika.mass-spring",
       "depth": 0,

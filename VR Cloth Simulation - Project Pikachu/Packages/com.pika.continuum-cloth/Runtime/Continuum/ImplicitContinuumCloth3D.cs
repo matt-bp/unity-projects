@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
-using SimulationHelpers.Geometry;
 using Unity.Mathematics;
 using UnityEngine;
 using System.Linq;
 using Conditions;
 using DataStructures;
 using LinearAlgebra;
+using Geometry;
 using Solvers;
 using Triangles;
 
