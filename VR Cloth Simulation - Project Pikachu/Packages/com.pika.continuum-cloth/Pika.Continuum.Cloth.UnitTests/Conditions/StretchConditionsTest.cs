@@ -1,5 +1,6 @@
 using System;
 using Conditions;
+using LinearAlgebra;
 using NUnit.Framework;
 using Triangles;
 using Unity.Mathematics;
@@ -14,7 +15,7 @@ namespace Pika.Continuum.Cloth.UnitTests.Conditions
             var (rest, world) = MakeMatchingTriangles();
 
             var result = StretchCondition.GetDeformationMapDerivatives(rest, world);
-            
+
             Assert.That(math.length(result.wu), Is.EqualTo(1));
             Assert.That(math.length(result.wv), Is.EqualTo(1));
         }
@@ -28,11 +29,11 @@ namespace Pika.Continuum.Cloth.UnitTests.Conditions
             var b = DefaultB;
 
             var result = StretchCondition.GetCondition(wu, wv, a, b);
-            
+
             Assert.That(result.cu, Is.Zero);
             Assert.That(result.cv, Is.Zero);
         }
-        
+
         #region Helpers
 
         private static (RestSpaceTriangle, WorldSpaceTriangle) MakeMatchingTriangles()
@@ -43,9 +44,9 @@ namespace Pika.Continuum.Cloth.UnitTests.Conditions
 
             var restSpace = new RestSpaceTriangle(p0, p1, p2);
             var worldSpace = new WorldSpaceTriangle(
-                math.double3(p0, 0), 
-                math.double3(p1, 0),
-                math.double3(p2, 0));
+                new Double3(math.double3(p0, 0)),
+                new Double3(math.double3(p1, 0)),
+                new Double3(math.double3(p2, 0)));
 
             return (restSpace, worldSpace);
         }

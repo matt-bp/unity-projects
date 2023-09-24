@@ -29,6 +29,8 @@ namespace SimulationHelpers.Posing
             UpdateFramePose();
         }
 
+        public List<int> GetTriangleIndices() => meshFilter.mesh.triangles.ToList();
+
         private void UpdateFramePose()
         {
             meshFilter.mesh.vertices = lastPose.Select(v => meshFilter.gameObject.transform.InverseTransformPoint(new Vector3((float)v.x, (float)v.y, (float)v.z))).ToArray();

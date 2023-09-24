@@ -26,8 +26,8 @@ namespace SimulationHelpers.Cloth
         public bool isEnabled;
         [SerializeField] private FramePoser framePoser;
         private Visualizer visualizer;
-        private ImplicitMassSpring3D cloth;
-        // private ImplicitContinuumCloth3D cloth;
+        // private ImplicitMassSpring3D cloth;
+        private ImplicitContinuumCloth3D cloth;
         /// <summary>
         /// Time, in seconds, that this simulation has been enabled.
         /// </summary>
@@ -38,28 +38,31 @@ namespace SimulationHelpers.Cloth
             visualizer = GetComponentInChildren<Visualizer>();
             Debug.Assert(visualizer is not null);
 
-            cloth = GetComponentInChildren<ImplicitMassSpring3D>();
+            cloth = GetComponentInChildren<ImplicitContinuumCloth3D>();
             Debug.Assert(cloth is not null);
 
             // Use the cloth poser to initialize the cloth simulation
             Debug.Assert(framePoser.lastPose.Count > 0);
-            cloth.SetPositionsAndSprings(framePoser.lastPose);
+            cloth.SetWorldSpacePositions(framePoser.lastPose);
+            cloth.SetTriangles(framePoser.GetTriangleIndices());
         }
 
         private void Update()
         {
             if (resetAndStopSimulation.action.WasPerformedThisFrame())
             {
-                cloth.SetPositionsAndSprings(framePoser.lastPose);
+                Debug.Log("Resetting and stopping simulation");
+                cloth.SetWorldSpacePositions(framePoser.lastPose);
                 visualizer.Clear();
                 isEnabled = false;
             }
             
             if (toggleSimulation.action.WasPerformedThisFrame())
             {
+                Debug.Log("Toggling simulation");
                 if (!isEnabled)
                 {
-                    cloth.SetPositionsAndSprings(framePoser.lastPose);
+                    cloth.SetWorldSpacePositions(framePoser.lastPose);
                 }
                 
                 isEnabled = !isEnabled;
@@ -97,7 +100,7 @@ namespace SimulationHelpers.Cloth
             
             foreach(var _ in Enumerable.Range(0, oneShotIterationCount))
             {
-                cloth.StepSimulation(Time.deltaTime);
+                //cloth.StepSimulation(Time.deltaTime);
 
                 elapsed += Time.deltaTime;
                 

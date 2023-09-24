@@ -1,9 +1,24 @@
+using System;
 using Unity.Mathematics;
+using UnityEngine;
 
 namespace LinearAlgebra
 {
-    public static class Double3
+    [Serializable]
+    public class Double3
     {
+        [SerializeField] private double3 value;
+        public double3 Value
+        {
+            get => value;
+            set => this.value = value;
+        }
+
+        public Double3(double3 vector)
+        {
+            value = vector;
+        }
+        
         public static double3x3 OuterProduct(double3 column, double3 row)
         {
             var result = double3x3.zero;
@@ -22,5 +37,7 @@ namespace LinearAlgebra
             
             return result;
         }
+
+
     }
 }

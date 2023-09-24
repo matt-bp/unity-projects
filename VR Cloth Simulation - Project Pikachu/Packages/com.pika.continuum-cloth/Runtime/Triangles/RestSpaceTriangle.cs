@@ -1,13 +1,16 @@
+using System;
 using Conditions;
 using Unity.Mathematics;
+using UnityEngine;
 
 namespace Triangles
 {
+    [Serializable]
     public class RestSpaceTriangle
     {
-        private double2 UV0 { get; }
-        private double2 UV1 { get; }
-        private double2 UV2 { get; }
+        [SerializeField] private double2 uv0;
+        [SerializeField] private double2 uv1;
+        [SerializeField] private double2 uv2;
         private double Du1 { get; }
         private double Du2 { get; }
         private double Dv1 { get; }
@@ -15,14 +18,14 @@ namespace Triangles
 
         public RestSpaceTriangle(double2 uv0, double2 uv1, double2 uv2)
         {
-            UV0 = uv0;
-            UV1 = uv1;
-            UV2 = uv2;
+            this.uv0 = uv0;
+            this.uv1 = uv1;
+            this.uv2 = uv2;
 
-            Du1 = UV1.x - UV0.x;
-            Du2 = UV2.x - UV0.x;
-            Dv1 = UV1.y - UV0.y;
-            Dv2 = UV2.y - UV0.y;
+            Du1 = this.uv1.x - this.uv0.x;
+            Du2 = this.uv2.x - this.uv0.x;
+            Dv1 = this.uv1.y - this.uv0.y;
+            Dv2 = this.uv2.y - this.uv0.y;
         }
 
         public double Area()

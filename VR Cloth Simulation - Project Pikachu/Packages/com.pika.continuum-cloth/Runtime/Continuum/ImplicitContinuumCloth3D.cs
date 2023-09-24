@@ -34,49 +34,65 @@ namespace Continuum
 
         private GameObject restMesh;
         private List<double3> forces = new();
-        private List<double3> positions = new();
+        private List<Double3> positions = new();
         private List<double3> velocities = new();
         [SerializeField] private List<int> constrainedIndices = new();
-        private List<int> indices = new();
-        private List<List<int>> triangleIndices = new();
 
-        private readonly List<WorldSpaceTriangle> worldSpaceTriangles = new();
-        private readonly List<RestSpaceTriangle> restSpaceTriangles = new();
+        private List<Tuple<int, int, int>> triangleIndices = new();
+        [SerializeField] private List<WorldSpaceTriangle> worldSpaceTriangles = new();
+        [SerializeField] private List<RestSpaceTriangle> restSpaceTriangles = new();
 
-        public void SetRestMesh(IWorldSpaceMesh worldSpaceMesh)
+        public void SetTriangles(List<int> flatTriangleIndices)
         {
+            Debug.Assert(positions.Count > 0);
+            Debug.Assert(flatTriangleIndices.Count > 0);
+
+            worldSpaceTriangles = new List<WorldSpaceTriangle>();
+            restSpaceTriangles = new List<RestSpaceTriangle>();
+            
             // Make rest post out of filter
             // Need to create
             // [x] Indices
             // [x] World space triangles
             // [x] Rest space triangles
             // Does updating an array index value that was passed into a c# object, update it's contents? Like, is it a pointer?
-            indices = worldSpaceMesh.GetIndices();
-
-            triangleIndices = GetTriangles(indices).Select(x => x).ToList();
+            triangleIndices = GetTriangles(flatTriangleIndices).Select(x => Tuple.Create(x[0], x[1], x[2])).ToList();
 
             foreach (var triangle in triangleIndices)
             {
-                var pos0 = positions[triangle[0]];
-                var pos1 = positions[triangle[1]];
-                var pos2 = positions[triangle[2]];
+                var pos0 = positions[triangle.Item1];
+                var pos1 = positions[triangle.Item2];
+                var pos2 = positions[triangle.Item3];
 
                 worldSpaceTriangles.Add(new WorldSpaceTriangle(
-                    pos0,
-                    pos1,
-                    pos2));
+                    positions[triangle.Item1],
+                    positions[triangle.Item2],
+                    positions[triangle.Item3]));
 
                 restSpaceTriangles.Add(new RestSpaceTriangle(
-                    pos0.xy,
-                    pos1.xy,
-                    pos2.xy
+                    pos0.Value.xy,
+                    pos1.Value.xy,
+                    pos2.Value.xy
                 ));
             }
         }
 
-        public void SetWorldSpacePositions(IEnumerable<double3> worldSpacePositions)
+        public void SetWorldSpacePositions(List<double3> worldSpacePositions)
         {
-            positions = worldSpacePositions.Select(x => x).ToList();
+            if (!positions.Any())
+            {
+                Debug.Log("Creating a new positions array, first time");
+                positions = worldSpacePositions.Select(x => new Double3(x)).ToList();
+            }
+            else
+            {
+                Debug.Log("Updating the old positions array.");
+                for (var i = 0; i < positions.Count; i++)
+                {
+                    positions[i].Value = worldSpacePositions[i];
+                }
+            }
+
             forces = Grid<double3>.MakeVector(positions.Count, double3.zero);
 
             velocities = Grid<double3>.MakeVector(positions.Count, double3.zero);
@@ -87,7 +103,7 @@ namespace Continuum
             Debug.Log("Setup!");
         }
 
-        public List<double3> Positions => positions;
+        public List<double3> Positions => positions.Select(p => p.Value).ToList();
 
         public static IEnumerable<List<int>> GetTriangles(List<int> indicesList)
         {
@@ -115,9 +131,9 @@ namespace Continuum
             //  I'm doing it all at once, and not multiplying matrices explicitly
             for (var i = 0; i < triangleIndices.Count; i++)
             {
-                var index0 = triangleIndices[i][0];
-                var index1 = triangleIndices[i][1];
-                var index2 = triangleIndices[i][2];
+                var index0 = triangleIndices[i].Item1;
+                var index1 = triangleIndices[i].Item2;
+                var index2 = triangleIndices[i].Item3;
 
                 var trianglePointVelocities = Tuple.Create(velocities[index0], velocities[index1],
                     velocities[index2]);
@@ -284,7 +300,7 @@ namespace Continuum
             // Update positions and velocities from the new dvv that we just calculated.
             foreach (var (dv, index) in solvedDvs.Select((v, i) => (v, i)))
             {
-                positions[index] += dt * (velocities[index] + dv);
+                positions[index].Value += dt * (velocities[index] + dv);
                 velocities[index] += dt * dv;
             }
         }
