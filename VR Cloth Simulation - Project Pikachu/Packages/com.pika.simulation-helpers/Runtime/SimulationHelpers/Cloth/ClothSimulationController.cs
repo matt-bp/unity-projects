@@ -100,7 +100,7 @@ namespace SimulationHelpers.Cloth
             
             foreach(var _ in Enumerable.Range(0, oneShotIterationCount))
             {
-                //cloth.StepSimulation(Time.deltaTime);
+                cloth.StepSimulation(Time.deltaTime);
 
                 elapsed += Time.deltaTime;
                 

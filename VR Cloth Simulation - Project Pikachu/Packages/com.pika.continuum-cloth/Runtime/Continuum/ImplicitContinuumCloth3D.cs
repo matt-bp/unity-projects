@@ -6,7 +6,6 @@ using System.Linq;
 using Conditions;
 using DataStructures;
 using LinearAlgebra;
-using Geometry;
 using Solvers;
 using Triangles;
 
