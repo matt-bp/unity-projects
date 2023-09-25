@@ -8,6 +8,7 @@ using DataStructures;
 using LinearAlgebra;
 using Solvers;
 using Triangles;
+using UnityEngine.UIElements;
 
 namespace Continuum
 {
@@ -114,11 +115,10 @@ namespace Continuum
 
         #endregion
 
+        [SerializeField] private bool useExplicitIntegration;
+        
         public void StepSimulation(double dt)
         {
-            var a = Grid<double3x3>.MakeMatrix(positions.Count, double3x3.zero);
-            var dfdx = Grid<double3x3>.MakeMatrix(positions.Count, double3x3.zero);
-
             // Clear out force vector
             // Gravitational force, also resets the force vector
             foreach (var index in Enumerable.Range(0, forces.Count))
@@ -126,181 +126,235 @@ namespace Continuum
                 forces[index] = gravity * m;
             }
 
-            // Set entries in matrix A and matrix dfdx for stretch condition, this will look different because 
-            //  I'm doing it all at once, and not multiplying matrices explicitly
-            for (var i = 0; i < triangleIndices.Count; i++)
+            if (useExplicitIntegration)
             {
-                var index0 = triangleIndices[i].Item1;
-                var index1 = triangleIndices[i].Item2;
-                var index2 = triangleIndices[i].Item3;
-
-                var trianglePointVelocities = Tuple.Create(velocities[index0], velocities[index1],
-                    velocities[index2]);
-
-                var sq = new StretchConditionQuantities(restSpaceTriangles[i], worldSpaceTriangles[i], bControl,
-                    trianglePointVelocities);
-
-                // Compute force for triangle
-                var force0 = -k * (sq.Dcu.dx0 * sq.Cu + sq.Dcv.dx0 * sq.Cv);
-                var force1 = -k * (sq.Dcu.dx1 * sq.Cu + sq.Dcv.dx1 * sq.Cv);
-                var force2 = -k * (sq.Dcu.dx2 * sq.Cu + sq.Dcv.dx2 * sq.Cv);
-
-                // Add it to each index in the triangle's force vector
-
-                forces[index0] += force0;
-                forces[index1] += force1;
-                forces[index2] += force2;
-
-                // Compute force first derivative (Jacobian), and add it to large matrix
-                var df0dx0 = -k * (
-                    Double3.OuterProduct(sq.Dcu.dx0, sq.Dcu.dx0) + sq.D2CuDx0.dx0 * sq.Cu +
-                    Double3.OuterProduct(sq.Dcv.dx0, sq.Dcv.dx0) + sq.D2CvDx0.dx0 * sq.Cv
-                );
-                var df0dx1 = -k * (
-                    Double3.OuterProduct(sq.Dcu.dx0, sq.Dcu.dx1) + sq.D2CuDx0.dx1 * sq.Cu +
-                    Double3.OuterProduct(sq.Dcv.dx0, sq.Dcv.dx1) + sq.D2CvDx0.dx1 * sq.Cv
-                );
-                var df0dx2 = -k * (
-                    Double3.OuterProduct(sq.Dcu.dx0, sq.Dcu.dx2) + sq.D2CuDx0.dx2 * sq.Cu +
-                    Double3.OuterProduct(sq.Dcv.dx0, sq.Dcv.dx2) + sq.D2CvDx0.dx2 * sq.Cv
-                );
-
-                var df1dx0 = -k * (
-                    Double3.OuterProduct(sq.Dcu.dx1, sq.Dcu.dx0) + sq.D2CuDx1.dx0 * sq.Cu +
-                    Double3.OuterProduct(sq.Dcv.dx1, sq.Dcv.dx0) + sq.D2CvDx1.dx0 * sq.Cv
-                );
-                var df1dx1 = -k * (
-                    Double3.OuterProduct(sq.Dcu.dx1, sq.Dcu.dx1) + sq.D2CuDx1.dx1 * sq.Cu +
-                    Double3.OuterProduct(sq.Dcv.dx1, sq.Dcv.dx1) + sq.D2CvDx1.dx1 * sq.Cv
-                );
-                var df1dx2 = -k * (
-                    Double3.OuterProduct(sq.Dcu.dx1, sq.Dcu.dx2) + sq.D2CuDx1.dx2 * sq.Cu +
-                    Double3.OuterProduct(sq.Dcv.dx1, sq.Dcv.dx2) + sq.D2CvDx1.dx2 * sq.Cv
-                );
-
-                var df2dx0 = -k * (
-                    Double3.OuterProduct(sq.Dcu.dx2, sq.Dcu.dx0) + sq.D2CuDx2.dx0 * sq.Cu +
-                    Double3.OuterProduct(sq.Dcv.dx2, sq.Dcv.dx0) + sq.D2CvDx2.dx0 * sq.Cv
-                );
-                var df2dx1 = -k * (
-                    Double3.OuterProduct(sq.Dcu.dx2, sq.Dcu.dx1) + sq.D2CuDx2.dx1 * sq.Cu +
-                    Double3.OuterProduct(sq.Dcv.dx2, sq.Dcv.dx1) + sq.D2CvDx2.dx1 * sq.Cv
-                );
-                var df2dx2 = -k * (
-                    Double3.OuterProduct(sq.Dcu.dx2, sq.Dcu.dx2) + sq.D2CuDx2.dx2 * sq.Cu +
-                    Double3.OuterProduct(sq.Dcv.dx2, sq.Dcv.dx2) + sq.D2CvDx2.dx2 * sq.Cv
-                );
-
-                a[index0][index0] -= dt * dt * df0dx0;
-                a[index0][index1] += dt * dt * df0dx1;
-                a[index0][index2] += dt * dt * df0dx2;
-
-                a[index1][index0] += dt * dt * df1dx0;
-                a[index1][index1] -= dt * dt * df1dx1;
-                a[index1][index2] += dt * dt * df1dx2;
-
-                a[index2][index0] += dt * dt * df2dx0;
-                a[index2][index1] += dt * dt * df2dx1;
-                a[index2][index2] -= dt * dt * df2dx2;
-
-                // Compute damping force
-                var df0 = -kd * (sq.Dcu.dx0 * sq.CuDot + sq.Dcv.dx0 * sq.CvDot);
-                var df1 = -kd * (sq.Dcu.dx1 * sq.CuDot + sq.Dcv.dx1 * sq.CvDot);
-                var df2 = -kd * (sq.Dcu.dx1 * sq.CuDot + sq.Dcv.dx2 * sq.CvDot);
-
-                forces[index0] += df0;
-                forces[index1] += df1;
-                forces[index2] += df2;
-
-                // Compute damping force partial derivative with respect to position
-                var dd0 = new WithRespectTo<double3x3>()
+                for (var i = 0; i < triangleIndices.Count; i++)
                 {
-                    dx0 = -kd * (sq.D2CuDx0.dx0 * sq.CuDot + sq.D2CvDx0.dx0 * sq.CvDot),
-                    dx1 = -kd * (sq.D2CuDx0.dx1 * sq.CuDot + sq.D2CvDx0.dx1 * sq.CvDot),
-                    dx2 = -kd * (sq.D2CuDx0.dx2 * sq.CuDot + sq.D2CvDx0.dx2 * sq.CvDot)
-                };
-                var dd1 = new WithRespectTo<double3x3>()
+                    var index0 = triangleIndices[i].Item1;
+                    var index1 = triangleIndices[i].Item2;
+                    var index2 = triangleIndices[i].Item3;
+                    
+                    var trianglePointVelocities = Tuple.Create(velocities[index0], velocities[index1],
+                        velocities[index2]);
+
+                    var sq = new StretchConditionQuantities(restSpaceTriangles[i], worldSpaceTriangles[i], bControl,
+                        trianglePointVelocities);
+
+                    // Compute force for triangle
+                    var force0 = -k * (sq.Dcu.dx0 * sq.Cu + sq.Dcv.dx0 * sq.Cv);
+                    var force1 = -k * (sq.Dcu.dx1 * sq.Cu + sq.Dcv.dx1 * sq.Cv);
+                    var force2 = -k * (sq.Dcu.dx2 * sq.Cu + sq.Dcv.dx2 * sq.Cv);
+
+                    // Add it to each index in the triangle's force vector
+
+                    forces[index0] += force0;
+                    forces[index1] += force1;
+                    forces[index2] += force2;
+                
+                    // Compute damping force
+                    // var df0 = -kd * (sq.Dcu.dx0 * sq.CuDot + sq.Dcv.dx0 * sq.CvDot);
+                    // var df1 = -kd * (sq.Dcu.dx1 * sq.CuDot + sq.Dcv.dx1 * sq.CvDot);
+                    // var df2 = -kd * (sq.Dcu.dx1 * sq.CuDot + sq.Dcv.dx2 * sq.CvDot);
+                    var df0 = velocities[index0] * -kd;
+                    var df1 = velocities[index1] * -kd;
+                    var df2 = velocities[index2] * -kd;
+                    
+                    forces[index0] += df0;
+                    forces[index1] += df1;
+                    forces[index2] += df2;
+                }
+
+                for (var i = 0; i < forces.Count; i++)
                 {
-                    dx0 = -kd * (sq.D2CuDx1.dx0 * sq.CuDot + sq.D2CvDx1.dx0 * sq.CvDot),
-                    dx1 = -kd * (sq.D2CuDx1.dx1 * sq.CuDot + sq.D2CvDx1.dx1 * sq.CvDot),
-                    dx2 = -kd * (sq.D2CuDx1.dx2 * sq.CuDot + sq.D2CvDx1.dx2 * sq.CvDot)
-                };
-                var dd2 = new WithRespectTo<double3x3>()
-                {
-                    dx0 = -kd * (sq.D2CuDx2.dx0 * sq.CuDot + sq.D2CvDx2.dx0 * sq.CvDot),
-                    dx1 = -kd * (sq.D2CuDx2.dx1 * sq.CuDot + sq.D2CvDx2.dx1 * sq.CvDot),
-                    dx2 = -kd * (sq.D2CuDx2.dx2 * sq.CuDot + sq.D2CvDx2.dx2 * sq.CvDot)
-                };
-
-                dfdx[index0][index0] -= dt * dt * dd0.dx0;
-                dfdx[index0][index1] += dt * dt * dd0.dx1;
-                dfdx[index0][index2] += dt * dt * dd0.dx2;
-
-                dfdx[index1][index0] += dt * dt * dd1.dx0;
-                dfdx[index1][index1] -= dt * dt * dd1.dx1;
-                dfdx[index1][index2] += dt * dt * dd1.dx2;
-
-                dfdx[index2][index0] += dt * dt * dd2.dx0;
-                dfdx[index2][index1] += dt * dt * dd2.dx1;
-                dfdx[index2][index2] -= dt * dt * dd2.dx2;
-
-                // Compute damping force partial derivative with respect to velocity
-                var dd0V = new WithRespectToV<double3x3>()
-                {
-                    dv0 = -kd * (Double3.OuterProduct(sq.Dcu.dx0, sq.Dcu.dx0) + Double3.OuterProduct(sq.Dcv.dx0, sq.Dcv.dx0)),
-                    dv1 = -kd * (Double3.OuterProduct(sq.Dcu.dx0, sq.Dcu.dx1) + Double3.OuterProduct(sq.Dcv.dx0, sq.Dcv.dx1)),
-                    dv2 = -kd * (Double3.OuterProduct(sq.Dcu.dx0, sq.Dcu.dx2) + Double3.OuterProduct(sq.Dcv.dx0, sq.Dcv.dx2)),
-                };
-                var dd1V = new WithRespectToV<double3x3>()
-                {
-                    dv0 = -kd * (Double3.OuterProduct(sq.Dcu.dx1, sq.Dcu.dx0) + Double3.OuterProduct(sq.Dcv.dx1, sq.Dcv.dx0)),
-                    dv1 = -kd * (Double3.OuterProduct(sq.Dcu.dx1, sq.Dcu.dx1) + Double3.OuterProduct(sq.Dcv.dx1, sq.Dcv.dx1)),
-                    dv2 = -kd * (Double3.OuterProduct(sq.Dcu.dx1, sq.Dcu.dx2) + Double3.OuterProduct(sq.Dcv.dx1, sq.Dcv.dx2)),
-                };
-                var dd2V = new WithRespectToV<double3x3>()
-                {
-                    dv0 = -kd * (Double3.OuterProduct(sq.Dcu.dx2, sq.Dcu.dx0) + Double3.OuterProduct(sq.Dcv.dx2, sq.Dcv.dx0)),
-                    dv1 = -kd * (Double3.OuterProduct(sq.Dcu.dx2, sq.Dcu.dx1) + Double3.OuterProduct(sq.Dcv.dx2, sq.Dcv.dx1)),
-                    dv2 = -kd * (Double3.OuterProduct(sq.Dcu.dx2, sq.Dcu.dx2) + Double3.OuterProduct(sq.Dcv.dx2, sq.Dcv.dx2)),
-                };
-
-                // I'm adding incrementally into the A matrix, that is why this is happening below
-                a[index0][index0] -= dt * dd0V.dv0;
-                a[index0][index1] += dt * dd0V.dv1;
-                a[index0][index2] += dt * dd0V.dv2;
-
-                a[index1][index0] += dt * dd1V.dv0;
-                a[index1][index1] -= dt * dd1V.dv1;
-                a[index1][index2] += dt * dd1V.dv2;
-
-                a[index2][index0] += dt * dd2V.dv0;
-                a[index2][index1] += dt * dd2V.dv1;
-                a[index2][index2] -= dt * dd2V.dv2;
+                    if (constrainedIndices.Contains(i)) continue;
+                    
+                    var a = forces[i] / m;
+                    velocities[i] += dt * a;
+                    positions[i].Value += dt * velocities[i];
+                }
             }
-
-            // M
-            foreach (var index in Enumerable.Range(0, a.Count))
-                a[index][index] += double3x3.identity * m;
-
-            // Set Current Force Vector (f_0)
-            var f = forces.Select(f => dt * f).ToList();
-
-            // Set v_0, with time steps and everything
-            var v0 = ConjugateGradient3D.Mult(velocities, dt * dt);
-
-            // Construct b vector from parts
-            var b = ConjugateGradient3D.Add(f, ConjugateGradient3D.Mult(dfdx, v0));
-
-            // Make sure that the global Jacobian matrix is symmetric
-
-            // Solve for delta V
-            var solvedDvs = ConjugateGradient3D.ConstrainedSolve(a, b, 1000, 0.001, constrainedIndices);
-
-            // Update positions and velocities from the new dvv that we just calculated.
-            foreach (var (dv, index) in solvedDvs.Select((v, i) => (v, i)))
+            else
             {
-                positions[index].Value += dt * (velocities[index] + dv);
-                velocities[index] += dt * dv;
+                var a = Grid<double3x3>.MakeMatrix(positions.Count, double3x3.zero);
+                var dfdx = Grid<double3x3>.MakeMatrix(positions.Count, double3x3.zero);
+                
+                // Set entries in matrix A and matrix dfdx for stretch condition, this will look different because 
+                //  I'm doing it all at once, and not multiplying matrices explicitly
+                for (var i = 0; i < triangleIndices.Count; i++)
+                {
+                    var index0 = triangleIndices[i].Item1;
+                    var index1 = triangleIndices[i].Item2;
+                    var index2 = triangleIndices[i].Item3;
+
+                    var trianglePointVelocities = Tuple.Create(velocities[index0], velocities[index1],
+                        velocities[index2]);
+
+                    var sq = new StretchConditionQuantities(restSpaceTriangles[i], worldSpaceTriangles[i], bControl,
+                        trianglePointVelocities);
+
+                    // Compute force for triangle
+                    var force0 = -k * (sq.Dcu.dx0 * sq.Cu + sq.Dcv.dx0 * sq.Cv);
+                    var force1 = -k * (sq.Dcu.dx1 * sq.Cu + sq.Dcv.dx1 * sq.Cv);
+                    var force2 = -k * (sq.Dcu.dx2 * sq.Cu + sq.Dcv.dx2 * sq.Cv);
+
+                    // Add it to each index in the triangle's force vector
+
+                    forces[index0] += force0;
+                    forces[index1] += force1;
+                    forces[index2] += force2;
+
+                    // Compute force first derivative (Jacobian), and add it to large matrix
+                    var df0dx0 = -k * (
+                        Double3.OuterProduct(sq.Dcu.dx0, sq.Dcu.dx0) + sq.D2CuDx0.dx0 * sq.Cu +
+                        Double3.OuterProduct(sq.Dcv.dx0, sq.Dcv.dx0) + sq.D2CvDx0.dx0 * sq.Cv
+                    );
+                    var df0dx1 = -k * (
+                        Double3.OuterProduct(sq.Dcu.dx0, sq.Dcu.dx1) + sq.D2CuDx0.dx1 * sq.Cu +
+                        Double3.OuterProduct(sq.Dcv.dx0, sq.Dcv.dx1) + sq.D2CvDx0.dx1 * sq.Cv
+                    );
+                    var df0dx2 = -k * (
+                        Double3.OuterProduct(sq.Dcu.dx0, sq.Dcu.dx2) + sq.D2CuDx0.dx2 * sq.Cu +
+                        Double3.OuterProduct(sq.Dcv.dx0, sq.Dcv.dx2) + sq.D2CvDx0.dx2 * sq.Cv
+                    );
+
+                    var df1dx0 = -k * (
+                        Double3.OuterProduct(sq.Dcu.dx1, sq.Dcu.dx0) + sq.D2CuDx1.dx0 * sq.Cu +
+                        Double3.OuterProduct(sq.Dcv.dx1, sq.Dcv.dx0) + sq.D2CvDx1.dx0 * sq.Cv
+                    );
+                    var df1dx1 = -k * (
+                        Double3.OuterProduct(sq.Dcu.dx1, sq.Dcu.dx1) + sq.D2CuDx1.dx1 * sq.Cu +
+                        Double3.OuterProduct(sq.Dcv.dx1, sq.Dcv.dx1) + sq.D2CvDx1.dx1 * sq.Cv
+                    );
+                    var df1dx2 = -k * (
+                        Double3.OuterProduct(sq.Dcu.dx1, sq.Dcu.dx2) + sq.D2CuDx1.dx2 * sq.Cu +
+                        Double3.OuterProduct(sq.Dcv.dx1, sq.Dcv.dx2) + sq.D2CvDx1.dx2 * sq.Cv
+                    );
+
+                    var df2dx0 = -k * (
+                        Double3.OuterProduct(sq.Dcu.dx2, sq.Dcu.dx0) + sq.D2CuDx2.dx0 * sq.Cu +
+                        Double3.OuterProduct(sq.Dcv.dx2, sq.Dcv.dx0) + sq.D2CvDx2.dx0 * sq.Cv
+                    );
+                    var df2dx1 = -k * (
+                        Double3.OuterProduct(sq.Dcu.dx2, sq.Dcu.dx1) + sq.D2CuDx2.dx1 * sq.Cu +
+                        Double3.OuterProduct(sq.Dcv.dx2, sq.Dcv.dx1) + sq.D2CvDx2.dx1 * sq.Cv
+                    );
+                    var df2dx2 = -k * (
+                        Double3.OuterProduct(sq.Dcu.dx2, sq.Dcu.dx2) + sq.D2CuDx2.dx2 * sq.Cu +
+                        Double3.OuterProduct(sq.Dcv.dx2, sq.Dcv.dx2) + sq.D2CvDx2.dx2 * sq.Cv
+                    );
+
+                    a[index0][index0] -= dt * dt * df0dx0;
+                    a[index0][index1] += dt * dt * df0dx1;
+                    a[index0][index2] += dt * dt * df0dx2;
+
+                    a[index1][index0] += dt * dt * df1dx0;
+                    a[index1][index1] -= dt * dt * df1dx1;
+                    a[index1][index2] += dt * dt * df1dx2;
+
+                    a[index2][index0] += dt * dt * df2dx0;
+                    a[index2][index1] += dt * dt * df2dx1;
+                    a[index2][index2] -= dt * dt * df2dx2;
+
+                    // Compute damping force
+                    var df0 = -kd * (sq.Dcu.dx0 * sq.CuDot + sq.Dcv.dx0 * sq.CvDot);
+                    var df1 = -kd * (sq.Dcu.dx1 * sq.CuDot + sq.Dcv.dx1 * sq.CvDot);
+                    var df2 = -kd * (sq.Dcu.dx1 * sq.CuDot + sq.Dcv.dx2 * sq.CvDot);
+
+                    forces[index0] += df0;
+                    forces[index1] += df1;
+                    forces[index2] += df2;
+
+                    // Compute damping force partial derivative with respect to position
+                    var dd0 = new WithRespectTo<double3x3>()
+                    {
+                        dx0 = -kd * (sq.D2CuDx0.dx0 * sq.CuDot + sq.D2CvDx0.dx0 * sq.CvDot),
+                        dx1 = -kd * (sq.D2CuDx0.dx1 * sq.CuDot + sq.D2CvDx0.dx1 * sq.CvDot),
+                        dx2 = -kd * (sq.D2CuDx0.dx2 * sq.CuDot + sq.D2CvDx0.dx2 * sq.CvDot)
+                    };
+                    var dd1 = new WithRespectTo<double3x3>()
+                    {
+                        dx0 = -kd * (sq.D2CuDx1.dx0 * sq.CuDot + sq.D2CvDx1.dx0 * sq.CvDot),
+                        dx1 = -kd * (sq.D2CuDx1.dx1 * sq.CuDot + sq.D2CvDx1.dx1 * sq.CvDot),
+                        dx2 = -kd * (sq.D2CuDx1.dx2 * sq.CuDot + sq.D2CvDx1.dx2 * sq.CvDot)
+                    };
+                    var dd2 = new WithRespectTo<double3x3>()
+                    {
+                        dx0 = -kd * (sq.D2CuDx2.dx0 * sq.CuDot + sq.D2CvDx2.dx0 * sq.CvDot),
+                        dx1 = -kd * (sq.D2CuDx2.dx1 * sq.CuDot + sq.D2CvDx2.dx1 * sq.CvDot),
+                        dx2 = -kd * (sq.D2CuDx2.dx2 * sq.CuDot + sq.D2CvDx2.dx2 * sq.CvDot)
+                    };
+
+                    dfdx[index0][index0] -= dt * dt * dd0.dx0;
+                    dfdx[index0][index1] += dt * dt * dd0.dx1;
+                    dfdx[index0][index2] += dt * dt * dd0.dx2;
+
+                    dfdx[index1][index0] += dt * dt * dd1.dx0;
+                    dfdx[index1][index1] -= dt * dt * dd1.dx1;
+                    dfdx[index1][index2] += dt * dt * dd1.dx2;
+
+                    dfdx[index2][index0] += dt * dt * dd2.dx0;
+                    dfdx[index2][index1] += dt * dt * dd2.dx1;
+                    dfdx[index2][index2] -= dt * dt * dd2.dx2;
+
+                    // Compute damping force partial derivative with respect to velocity
+                    var dd0V = new WithRespectToV<double3x3>()
+                    {
+                        dv0 = -kd * (Double3.OuterProduct(sq.Dcu.dx0, sq.Dcu.dx0) + Double3.OuterProduct(sq.Dcv.dx0, sq.Dcv.dx0)),
+                        dv1 = -kd * (Double3.OuterProduct(sq.Dcu.dx0, sq.Dcu.dx1) + Double3.OuterProduct(sq.Dcv.dx0, sq.Dcv.dx1)),
+                        dv2 = -kd * (Double3.OuterProduct(sq.Dcu.dx0, sq.Dcu.dx2) + Double3.OuterProduct(sq.Dcv.dx0, sq.Dcv.dx2)),
+                    };
+                    var dd1V = new WithRespectToV<double3x3>()
+                    {
+                        dv0 = -kd * (Double3.OuterProduct(sq.Dcu.dx1, sq.Dcu.dx0) + Double3.OuterProduct(sq.Dcv.dx1, sq.Dcv.dx0)),
+                        dv1 = -kd * (Double3.OuterProduct(sq.Dcu.dx1, sq.Dcu.dx1) + Double3.OuterProduct(sq.Dcv.dx1, sq.Dcv.dx1)),
+                        dv2 = -kd * (Double3.OuterProduct(sq.Dcu.dx1, sq.Dcu.dx2) + Double3.OuterProduct(sq.Dcv.dx1, sq.Dcv.dx2)),
+                    };
+                    var dd2V = new WithRespectToV<double3x3>()
+                    {
+                        dv0 = -kd * (Double3.OuterProduct(sq.Dcu.dx2, sq.Dcu.dx0) + Double3.OuterProduct(sq.Dcv.dx2, sq.Dcv.dx0)),
+                        dv1 = -kd * (Double3.OuterProduct(sq.Dcu.dx2, sq.Dcu.dx1) + Double3.OuterProduct(sq.Dcv.dx2, sq.Dcv.dx1)),
+                        dv2 = -kd * (Double3.OuterProduct(sq.Dcu.dx2, sq.Dcu.dx2) + Double3.OuterProduct(sq.Dcv.dx2, sq.Dcv.dx2)),
+                    };
+
+                    // I'm adding incrementally into the A matrix, that is why this is happening below
+                    a[index0][index0] -= dt * dd0V.dv0;
+                    a[index0][index1] += dt * dd0V.dv1;
+                    a[index0][index2] += dt * dd0V.dv2;
+
+                    a[index1][index0] += dt * dd1V.dv0;
+                    a[index1][index1] -= dt * dd1V.dv1;
+                    a[index1][index2] += dt * dd1V.dv2;
+
+                    a[index2][index0] += dt * dd2V.dv0;
+                    a[index2][index1] += dt * dd2V.dv1;
+                    a[index2][index2] -= dt * dd2V.dv2;
+                }
+
+                // M
+                foreach (var index in Enumerable.Range(0, a.Count))
+                    a[index][index] += double3x3.identity * m;
+
+                // Set Current Force Vector (f_0)
+                var f0 = forces.Select(f => dt * f).ToList();
+
+                // Set v_0, with time steps and everything
+                var v0 = ConjugateGradient3D.Mult(velocities, dt * dt);
+
+                // Construct b vector from parts
+                var b = ConjugateGradient3D.Add(f0, ConjugateGradient3D.Mult(dfdx, v0));
+
+                // Make sure that the global Jacobian matrix is symmetric
+
+                // Solve for delta V
+                var solvedDvs = ConjugateGradient3D.ConstrainedSolve(a, b, 1000, 0.001, constrainedIndices);
+
+                // Update positions and velocities from the new dvv that we just calculated.
+                foreach (var (dv, index) in solvedDvs.Select((v, i) => (v, i)))
+                {
+                    positions[index].Value += dt * (velocities[index] + dv);
+                    velocities[index] += dt * dv;
+                }
+            
             }
         }
     }
