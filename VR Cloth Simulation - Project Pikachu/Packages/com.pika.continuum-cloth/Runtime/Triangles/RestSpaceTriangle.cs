@@ -5,8 +5,17 @@ using UnityEngine;
 
 namespace Triangles
 {
+    public interface IRestSpaceTriangle
+    {
+        public double Area();
+        public (double Du1, double Du2, double Dv1, double Dv2) GetDifferences();
+        public double D();
+        public WithRespectTo<double3x3> Dwu();
+        public WithRespectTo<double3x3> Dwv();
+    }
+    
     [Serializable]
-    public class RestSpaceTriangle
+    public class RestSpaceTriangle : IRestSpaceTriangle
     {
         [SerializeField] private double2 uv0;
         [SerializeField] private double2 uv1;

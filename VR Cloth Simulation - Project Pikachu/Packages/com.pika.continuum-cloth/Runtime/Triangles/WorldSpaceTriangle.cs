@@ -6,8 +6,13 @@ using UnityEngine.Serialization;
 
 namespace Triangles
 {
+    public interface IWorldSpaceTriangle
+    {
+        public (double3 dx1, double3 dx2) GetDifferences();
+    }
+    
     [Serializable]
-    public class WorldSpaceTriangle
+    public class WorldSpaceTriangle : IWorldSpaceTriangle
     {
         [SerializeField] private Double3 x0;
         [SerializeField] private Double3 x1;
