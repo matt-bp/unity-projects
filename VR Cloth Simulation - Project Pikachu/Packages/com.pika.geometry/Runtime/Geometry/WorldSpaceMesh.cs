@@ -15,29 +15,9 @@ namespace Geometry
     ///
     /// This computes the world position once, which can be used by other components at will.
     /// </summary>
-    public class WorldSpaceMesh : MonoBehaviour, IWorldSpaceMesh
+    public abstract class WorldSpaceMesh : MonoBehaviour
     {
-        private List<Vector3> positions;
-        private List<int> indices;
-
-        private void Awake()
-        {
-            var mesh = GetComponent<MeshFilter>().mesh;
-            positions = mesh.vertices.Select(v => transform.TransformPoint(v)).ToList();
-            Debug.Assert(positions.Count > 0);
-
-            indices = mesh.triangles.ToList();
-        }
-
-        public List<Vector3> GetPositions() => positions;
-        /// <summary>
-        /// I think this returns 3 numbers representing which positions create a triangle
-        /// </summary>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public List<int> GetIndices()
-        {
-            throw new System.NotImplementedException();
-        }
+        public abstract List<Vector3> GetPositions();
+        // public abstract List<int> GetIndices();
     }
 }

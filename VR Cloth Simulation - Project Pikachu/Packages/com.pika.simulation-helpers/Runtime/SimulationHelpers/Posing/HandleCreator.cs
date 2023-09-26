@@ -9,13 +9,14 @@ namespace SimulationHelpers.Posing
     {
         [FormerlySerializedAs("clothPoser")] [SerializeField] private FramePoser framePoser;
         [SerializeField] private GameObject handlePrefab;
+        [SerializeField] private WorldSpaceMesh initialMesh;
+        
         private List<Vector3> initialPositions;
         
 
         private void Start()
         {
-            IWorldSpaceMesh mesh = GetComponentInChildren<WorldSpaceMesh>();
-            initialPositions = mesh.GetPositions();
+            initialPositions = initialMesh.GetPositions();
             Debug.Assert(initialPositions.Count > 0);
             
             framePoser.StartNewPose(initialPositions.Count);
