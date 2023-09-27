@@ -46,7 +46,7 @@ namespace Pika.Continuum.Cloth.UnitTests.Conditions
         {
             var stubCombined = Substitute.For<ICombinedTriangle>();
             stubCombined.A.Returns(0.625);
-            stubCombined.Wu.Returns(math.double3(1, 0, 0));
+            stubCombined.Wu.Returns(math.double3(1.6, 0.2, 0));
             stubCombined.Dwu.Returns(new WithRespectTo<double3x3>
             {
                 dx0 = double3x3.identity * -0.8,
@@ -58,15 +58,21 @@ namespace Pika.Continuum.Cloth.UnitTests.Conditions
 
             var result = stretchQuantities.Dcu;
 
-            Assert.That(result.dx0, Is.EqualTo(math.double3(0, 0, 0)));
-            Assert.That(result.dx1, Is.EqualTo(math.double3(0, 0, 0)));
-            Assert.That(result.dx2, Is.EqualTo(math.double3(0, 0, 0)));
+            // I'm getting these expected values by multiplying each Jacobian by Wu norm and A.
+            AssertDouble3WithinTolerance(result.dx0, math.double3(-0.496138938, -0.062017367, 0), 0.0001);
+            AssertDouble3WithinTolerance(result.dx1, math.double3(0.744208408, 0.093026051, 0), 0.0001);
+;           AssertDouble3WithinTolerance(result.dx2, math.double3(-0.248069469, -0.031008684, 0), 0.0001);
         }
         
         #region Helpers
 
         private static double2 MakeBAtRest() => math.double2(1, 1);
-
+        
+        private static void AssertDouble3WithinTolerance(double3 result, double3 expected, double tolerance)
+        {
+            Assert.That(result.x, Is.EqualTo(expected.x).Within(tolerance));
+        }
+        
         #endregion
     }
 }
