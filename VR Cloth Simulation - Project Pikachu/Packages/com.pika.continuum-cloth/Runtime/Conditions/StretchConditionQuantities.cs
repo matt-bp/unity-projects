@@ -7,47 +7,42 @@ namespace Conditions.New
 {
     public class StretchConditionQuantities
     {
-        private double A => restSpaceTriangle.Area();
         private double2 B { get; }
-        private double3 Wu { get; }
-
-        public double Cu => GetCondition(Wu, A, B.x);
+        public double Cu => GetCondition(combinedTriangle.Wu, combinedTriangle.A, B.x);
         
-        private double D { get; }
+        // private double3 WuNorm => math.normalize(Wu);
+        // private WithRespectTo<double3x3> Dwu { get; }
+        // private double3 Wv { get; }
+        // private double3 WvNorm => math.normalize(Wv);
+        // private WithRespectTo<double3x3> Dwv { get; }
+        //
+        // public double Cv { get; }
+        // public WithRespectTo<double3> Dcu { get; }
+        // public WithRespectTo<double3> Dcv { get; }
+        //
+        // /// <summary>
+        // /// Time derivative of the condition in the U direction.
+        // /// </summary>
+        // public double CuDot { get; set; }
+        //
+        // /// <summary>
+        // /// Time derivative of the condition in the V direction.
+        // /// </summary>
+        // public double CvDot { get; set; }
+        //
+        // public WithRespectTo<double3x3> D2CuDx0 { get; }
+        // public WithRespectTo<double3x3> D2CuDx1 { get; }
+        // public WithRespectTo<double3x3> D2CuDx2 { get; }
+        // public WithRespectTo<double3x3> D2CvDx0 { get; }
+        // public WithRespectTo<double3x3> D2CvDx1 { get; }
+        // public WithRespectTo<double3x3> D2CvDx2 { get; }
 
-        private double3 WuNorm => math.normalize(Wu);
-        private WithRespectTo<double3x3> Dwu { get; }
-        private double3 Wv { get; }
-        private double3 WvNorm => math.normalize(Wv);
-        private WithRespectTo<double3x3> Dwv { get; }
+        private readonly ICombinedTriangle combinedTriangle;
 
-        public double Cv { get; }
-        public WithRespectTo<double3> Dcu { get; }
-        public WithRespectTo<double3> Dcv { get; }
-
-        /// <summary>
-        /// Time derivative of the condition in the U direction.
-        /// </summary>
-        public double CuDot { get; set; }
-
-        /// <summary>
-        /// Time derivative of the condition in the V direction.
-        /// </summary>
-        public double CvDot { get; set; }
-
-        public WithRespectTo<double3x3> D2CuDx0 { get; }
-        public WithRespectTo<double3x3> D2CuDx1 { get; }
-        public WithRespectTo<double3x3> D2CuDx2 { get; }
-        public WithRespectTo<double3x3> D2CvDx0 { get; }
-        public WithRespectTo<double3x3> D2CvDx1 { get; }
-        public WithRespectTo<double3x3> D2CvDx2 { get; }
-
-        private readonly IRestSpaceTriangle restSpaceTriangle;
-
-        public StretchConditionQuantities(IRestSpaceTriangle rest, IWorldSpaceTriangle worldSpaceTriangle,
+        public StretchConditionQuantities(ICombinedTriangle combined,
             double2 b, Tuple<double3, double3, double3> velocities)
         {
-            restSpaceTriangle = rest;
+            combinedTriangle = combined;
             B = b;
 
             // D = restSpaceTriangle.D();
@@ -157,5 +152,16 @@ namespace Conditions.New
         {
             return (math.length(w) - b) * a;
         }
+
+        // private static double3 GetDeformationMapDerivative(double3 dx1, double3 dx2, double d1, double d2, double d)
+                    // {
+                    //     var w = math.double3(
+                    //         dx1.x * d2 - dx2.x * d1,
+                    //         dx1.y * d2 - dx2.y * d1,
+                    //         dx1.z * d2 - dx2.z * d1
+                    //     );
+                    //     w /= d;
+                    //     return w;
+                    // }
     }
 }

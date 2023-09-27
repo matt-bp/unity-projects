@@ -28,14 +28,13 @@ namespace Pika.Continuum.Cloth.UnitTests.Conditions
             var b = math.double2(1, 1);
             
             
-            var mockedRest = Substitute.For<IRestSpaceTriangle>();
-            mockedRest.Area().Returns(area);
+            var stubCombined = Substitute.For<ICombinedTriangle>();
+            stubCombined.A.Returns(area);
+            stubCombined.Wu.Returns(math.double3(1, 0, 0));
 
-            var mockedWorld = Substitute.For<IWorldSpaceTriangle>();
-            
             var velocities = Tuple.Create(double3.zero, double3.zero, double3.zero);
 
-            return new StretchConditionQuantities(mockedRest, mockedWorld, b, velocities);
+            return new StretchConditionQuantities(stubCombined, b, velocities);
         }
 
         #endregion

@@ -10,6 +10,10 @@ namespace Triangles
         public double Area();
         public (double Du1, double Du2, double Dv1, double Dv2) GetDifferences();
         public double D();
+        double Du1 { get; }
+        double Du2 { get; }
+        double Dv1 { get; }
+        double Dv2 { get; }
         public WithRespectTo<double3x3> Dwu();
         public WithRespectTo<double3x3> Dwv();
     }
@@ -20,10 +24,10 @@ namespace Triangles
         [SerializeField] private double2 uv0;
         [SerializeField] private double2 uv1;
         [SerializeField] private double2 uv2;
-        private double Du1 { get; }
-        private double Du2 { get; }
-        private double Dv1 { get; }
-        private double Dv2 { get; }
+        public double Du1 { get; }
+        public double Du2 { get; }
+        public double Dv1 { get; }
+        public double Dv2 { get; }
 
         public RestSpaceTriangle(double2 uv0, double2 uv1, double2 uv2)
         {
