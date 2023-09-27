@@ -44,13 +44,9 @@ namespace Triangles
         {
             var dx1 = worldSpaceTriangle.Dx1;
             var dx2 = worldSpaceTriangle.Dx2;
+            var d = restSpaceTriangle.D();
 
-            var w = math.double3(
-                dx1.x * d2 - dx2.x * d1,
-                dx1.y * d2 - dx2.y * d1,
-                dx1.z * d2 - dx2.z * d1
-            );
-            w /= restSpaceTriangle.D();
+            var w = 1 / d * (dx1 * d2 - dx2 * d1);
             
             return w;
         }
