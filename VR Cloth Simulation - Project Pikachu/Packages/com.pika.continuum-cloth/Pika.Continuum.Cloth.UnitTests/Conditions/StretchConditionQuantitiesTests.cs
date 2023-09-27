@@ -11,32 +11,37 @@ namespace Pika.Continuum.Cloth.UnitTests.Conditions
     public class StretchConditionQuantitiesTests
     {
         [Test]
-        public void StretchConditionQuantities_CuOnRest_ReturnsZero()
+        public void Cu_OnRest_ReturnsZero()
         {
-            var stretchQuantities = MakeStretchQuantities();
+            var stubCombined = Substitute.For<ICombinedTriangle>();
+            stubCombined.A.Returns(0.625);
+            stubCombined.Wu.Returns(math.double3(1, 0, 0));
 
-            var cu = stretchQuantities.Cu;
+            var b = math.double2(1, 1);
+            var stretchQuantities = new StretchConditionQuantities(stubCombined, b);
+
+            var result = stretchQuantities.Cu;
             
-            Assert.That(cu, Is.Zero);
+            Assert.That(result, Is.Zero);
+        }
+        
+        [Test]
+        public void Cv_OnRest_ReturnsZero()
+        {
+            var stubCombined = Substitute.For<ICombinedTriangle>();
+            stubCombined.A.Returns(0.625);
+            stubCombined.Wv.Returns(math.double3(0, -1, 0));
+
+            var b = math.double2(1, 1);
+            var stretchQuantities = new StretchConditionQuantities(stubCombined, b);
+
+            var result = stretchQuantities.Cv;
+            
+            Assert.That(result, Is.Zero);
         }
         
         #region Helpers
-
-        private static StretchConditionQuantities MakeStretchQuantities()
-        {
-            const double area = 0.625;
-            var b = math.double2(1, 1);
-            
-            
-            var stubCombined = Substitute.For<ICombinedTriangle>();
-            stubCombined.A.Returns(area);
-            stubCombined.Wu.Returns(math.double3(1, 0, 0));
-
-            var velocities = Tuple.Create(double3.zero, double3.zero, double3.zero);
-
-            return new StretchConditionQuantities(stubCombined, b, velocities);
-        }
-
+        
         #endregion
     }
 }

@@ -6,6 +6,7 @@ namespace Triangles
     {
         public double A { get; }
         public double3 Wu { get; }
+        public double3 Wv { get; }
     }
     
     public class CombinedTriangle : ICombinedTriangle
@@ -15,10 +16,17 @@ namespace Triangles
         public double3 Wu => GetDeformationMapDerivative(
             worldSpaceTriangle.Dx1,
             worldSpaceTriangle.Dx2,
+            restSpaceTriangle.Dv1,
+            restSpaceTriangle.Dv2,
+            restSpaceTriangle.D());
+
+        public double3 Wv => GetDeformationMapDerivative(
+            worldSpaceTriangle.Dx1,
+            worldSpaceTriangle.Dx2,
             restSpaceTriangle.Du1,
             restSpaceTriangle.Du2,
             restSpaceTriangle.D());
-
+        
         private readonly IRestSpaceTriangle restSpaceTriangle;
         private readonly IWorldSpaceTriangle worldSpaceTriangle;
 
