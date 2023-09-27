@@ -35,7 +35,7 @@ namespace Pika.Continuum.Cloth.UnitTests.Triangles
 
             var result = combined.Wu;
             
-            Assert.That(result, Is.EqualTo(math.double3(2, 0.25, 0)));
+            Assert.That(result, Is.EqualTo(math.double3(1.6, 0.2, 0)));
         }
         
         #region Helpers
