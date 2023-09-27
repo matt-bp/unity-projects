@@ -28,7 +28,7 @@ namespace SimulationHelpers.Visualization
             particles = new List<GameObject>();
         }
 
-        public override void Visualize(List<Vector3> positions, float elapsed, float dt)
+        public override void Visualize(List<Vector3> positions, double elapsed, double dt)
         {
             if (particles.Count != positions.Count)
             {

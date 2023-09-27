@@ -32,7 +32,7 @@ namespace SimulationHelpers.Visualization
             runStatistics = new List<IRunStatistic>();
         }
 
-        public override void Visualize(List<Vector3> positions, float elapsed, float dt)
+        public override void Visualize(List<Vector3> positions, double elapsed, double dt)
         {
             if (expectedPositionCount is null) 
                 expectedPositionCount = positions.Count;

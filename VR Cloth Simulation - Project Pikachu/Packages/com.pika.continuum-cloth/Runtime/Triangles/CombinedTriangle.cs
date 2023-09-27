@@ -9,6 +9,7 @@ namespace Triangles
         public double3 Wu { get; }
         public double3 Wv { get; }
         public WithRespectTo<double3x3> Dwu { get; }
+        public WithRespectTo<double3x3> Dwv { get; }
     }
 
     public class CombinedTriangle : ICombinedTriangle
@@ -24,6 +25,7 @@ namespace Triangles
             restSpaceTriangle.Du2);
 
         public WithRespectTo<double3x3> Dwu => restSpaceTriangle.Dwu();
+        public WithRespectTo<double3x3> Dwv => restSpaceTriangle.Dwv();
 
         private readonly IRestSpaceTriangle restSpaceTriangle;
         private readonly IWorldSpaceTriangle worldSpaceTriangle;

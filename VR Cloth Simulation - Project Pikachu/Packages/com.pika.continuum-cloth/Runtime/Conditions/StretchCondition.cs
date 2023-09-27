@@ -11,7 +11,8 @@ namespace Conditions
             WorldSpaceTriangle worldSpaceTriangle)
         {
             var (du1, du2, dv1, dv2) = restSpaceTriangle.GetDifferences();
-            var (dx1, dx2) = worldSpaceTriangle.GetDifferences();
+            var dx1 = worldSpaceTriangle.Dx1;
+            var dx2 = worldSpaceTriangle.Dx2;
 
             var wu = math.double3(
                 dx1.x * dv2 - dx2.x * dv1,

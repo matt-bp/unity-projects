@@ -23,6 +23,7 @@ namespace SimulationHelpers.Cloth
 
         public bool isOneShotSimulation;
         [SerializeField] private int oneShotIterationCount = 1000;
+        [SerializeField] private double oneShotDt = 0.01668;
         public bool isEnabled;
         [SerializeField] private FramePoser framePoser;
         private Visualizer visualizer;
@@ -31,7 +32,7 @@ namespace SimulationHelpers.Cloth
         /// <summary>
         /// Time, in seconds, that this simulation has been enabled.
         /// </summary>
-        private float elapsed;
+        private double elapsed;
 
         private void Start()
         {
@@ -100,12 +101,12 @@ namespace SimulationHelpers.Cloth
             
             foreach(var _ in Enumerable.Range(0, oneShotIterationCount))
             {
-                cloth.StepSimulation(Time.deltaTime);
+                cloth.StepSimulation(oneShotDt);
 
-                elapsed += Time.deltaTime;
+                elapsed += oneShotDt;
                 
                 // Create a visualization for those new positions
-                visualizer.Visualize(cloth.Positions.Select(v => new Vector3((float)v.x, (float)v.y, (float)v.z)).ToList(), elapsed, Time.deltaTime);
+                visualizer.Visualize(cloth.Positions.Select(v => new Vector3((float)v.x, (float)v.y, (float)v.z)).ToList(), elapsed, oneShotDt);
             }
 
             isEnabled = false;

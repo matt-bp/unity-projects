@@ -12,7 +12,8 @@ namespace Conditions.New
         public double Cu => GetCondition(combinedTriangle.Wu, B.x);
         public double Cv => GetCondition(combinedTriangle.Wv, B.y);
         public WithRespectTo<double3> Dcu => GetConditionFirstDerivative(combinedTriangle.Wu, combinedTriangle.Dwu);
-
+        public WithRespectTo<double3> Dcv => GetConditionFirstDerivative(combinedTriangle.Wv, combinedTriangle.Dwv);
+        
         private readonly ICombinedTriangle combinedTriangle;
 
         public StretchConditionQuantities(ICombinedTriangle combined, double2 b)

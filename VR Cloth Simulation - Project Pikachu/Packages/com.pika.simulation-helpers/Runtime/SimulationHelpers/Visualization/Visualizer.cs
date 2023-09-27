@@ -6,7 +6,7 @@ namespace SimulationHelpers.Visualization
 {
     public class Visualizer : MonoBehaviour
     {
-        public virtual void Visualize(List<Vector3> positions, float elapsed, float dt)
+        public virtual void Visualize(List<Vector3> positions, double elapsed, double dt)
         {
             Debug.Assert(false);
         }
