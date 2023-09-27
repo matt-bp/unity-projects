@@ -21,6 +21,9 @@ namespace Pika.Continuum.Cloth.UnitTests.Triangles
             Assert.That(result, Is.EqualTo(0.625));
         }
 
+        /// <summary>
+        /// For this test, I had the 1th world position actually be (2.5, 1). So we get some change there.
+        /// </summary>
         [Test]
         public void Wu_OnTestTriangle_ReturnsMapDerivative()
         {
