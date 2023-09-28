@@ -16,13 +16,9 @@ namespace Triangles
     {
         public double A => restSpaceTriangle.Area();
 
-        public double3 Wu => GetDeformationMapDerivative(
-            restSpaceTriangle.Dv1,
-            restSpaceTriangle.Dv2);
+        public double3 Wu => GetDeformationMapDerivativeU();
 
-        public double3 Wv => GetDeformationMapDerivative(
-            restSpaceTriangle.Du1,
-            restSpaceTriangle.Du2);
+        public double3 Wv => GetDeformationMapDerivativeV();
 
         public WithRespectTo<double3x3> Dwu => restSpaceTriangle.Dwu();
         public WithRespectTo<double3x3> Dwv => restSpaceTriangle.Dwv();
@@ -42,13 +38,32 @@ namespace Triangles
         /// <param name="d1">First rest space delta (Example: Dv_1)</param>
         /// <param name="d2">Second rest space delta (Example: Dv_2)</param>
         /// <returns></returns>
-        private double3 GetDeformationMapDerivative(double d1, double d2)
+        private double3 GetDeformationMapDerivativeU()
         {
+            var dv1 = restSpaceTriangle.Dv1;
+            var dv2 = restSpaceTriangle.Dv2;
             var dx1 = worldSpaceTriangle.Dx1;
             var dx2 = worldSpaceTriangle.Dx2;
             var d = restSpaceTriangle.D();
 
-            var w = 1 / d * (dx1 * d2 - dx2 * d1);
+            var w = 1 / d * (dx1 * dv2 - dx2 * dv1);
+            
+            return w;
+        }
+        
+        /// <summary>
+        /// My own derivation for the V map derivative. It's not the same as U! I followed how the one for U was derived, and applied that to V, and they're different!
+        /// </summary>
+        /// <returns></returns>
+        private double3 GetDeformationMapDerivativeV()
+        {
+            var du1 = restSpaceTriangle.Du1;
+            var du2 = restSpaceTriangle.Du2;
+            var dx1 = worldSpaceTriangle.Dx1;
+            var dx2 = worldSpaceTriangle.Dx2;
+            var d = restSpaceTriangle.D();
+
+            var w = 1 / d * (-dx1 * du2 + dx2 * du1);
             
             return w;
         }

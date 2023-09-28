@@ -6,6 +6,7 @@ using Unity.Mathematics;
 using NSubstitute;
 using NUnit.Framework;
 using StretchConditionQuantities = Conditions.New.StretchConditionQuantities;
+using static Pika.Continuum.Cloth.UnitTests.PikaAssert;
 
 namespace Pika.Continuum.Cloth.UnitTests.Conditions
 {
@@ -63,15 +64,33 @@ namespace Pika.Continuum.Cloth.UnitTests.Conditions
             AssertDouble3WithinTolerance(result.dx1, math.double3(0.744208408, 0.093026051, 0), 0.0001);
 ;           AssertDouble3WithinTolerance(result.dx2, math.double3(-0.248069469, -0.031008684, 0), 0.0001);
         }
+
+        [Test]
+        public void Dcv_AtOneStepInSimulation_ReturnsExpectedResult()
+        {
+            var stubCombined = Substitute.For<ICombinedTriangle>();
+            stubCombined.A.Returns(0.625);
+            stubCombined.Wv.Returns(math.double3(0.5, 1.002782224, 0));
+            stubCombined.Dwv.Returns(new WithRespectTo<double3x3>
+            {
+                dx0 = double3x3.identity * -0.5,
+                dx1 = double3x3.identity * -0.5,
+                dx2 = double3x3.identity * 1
+            });
+            var b = MakeBAtRest();
+            var stretchQuantities = new StretchConditionQuantities(stubCombined, b);
+
+            var result = stretchQuantities.Dcv;
+
+            // I'm getting these expected values by multiplying each Jacobian by Wu norm and A.
+            // AssertDouble3WithinTolerance(result.dx0, math.double3(0, 0, 0), 0.0001);
+            // AssertDouble3WithinTolerance(result.dx1, math.double3(0, 0, 0), 0.0001);
+            AssertDouble3WithinTolerance(result.dx2, math.double3(0.5, 1.002782224, 0), 0.0001);
+        }
         
         #region Helpers
 
         private static double2 MakeBAtRest() => math.double2(1, 1);
-        
-        private static void AssertDouble3WithinTolerance(double3 result, double3 expected, double tolerance)
-        {
-            Assert.That(result.x, Is.EqualTo(expected.x).Within(tolerance));
-        }
         
         #endregion
     }

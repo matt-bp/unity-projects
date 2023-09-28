@@ -3,6 +3,7 @@ using NSubstitute;
 using NUnit.Framework;
 using Triangles;
 using Unity.Mathematics;
+using static Pika.Continuum.Cloth.UnitTests.PikaAssert;
 
 namespace Pika.Continuum.Cloth.UnitTests.Triangles
 {
@@ -40,9 +41,22 @@ namespace Pika.Continuum.Cloth.UnitTests.Triangles
             
             Assert.That(result, Is.EqualTo(math.double3(1.6, 0.2, 0)));
         }
-        
-        #region Helpers
-        
-        #endregion
+
+        [Test]
+        public void Wv_OnTestTriangle_ReturnsVMapDerivative()
+        {
+            var stubRest = Substitute.For<IRestSpaceTriangle>();
+            stubRest.Du1.Returns(1);
+            stubRest.Du2.Returns(0.5);
+            stubRest.D().Returns(1.25);
+            var stubWorld = Substitute.For<IWorldSpaceTriangle>();
+            stubWorld.Dx1.Returns(math.double3(1.5, 0.5, 0));
+            stubWorld.Dx2.Returns(math.double3(0.5, 1, 0));
+            var combined = new CombinedTriangle(stubRest, stubWorld);
+
+            var result = combined.Wv;
+            
+            AssertDouble3WithinTolerance(result, math.double3(-0.2, 0.6, 0), 0.0001);
+        }
     }
 }

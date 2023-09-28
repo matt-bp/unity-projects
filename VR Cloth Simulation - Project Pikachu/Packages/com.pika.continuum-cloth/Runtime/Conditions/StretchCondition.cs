@@ -10,7 +10,10 @@ namespace Conditions
         public static (double3 wu, double3 wv) GetDeformationMapDerivatives(RestSpaceTriangle restSpaceTriangle,
             WorldSpaceTriangle worldSpaceTriangle)
         {
-            var (du1, du2, dv1, dv2) = restSpaceTriangle.GetDifferences();
+            var du1 = restSpaceTriangle.Du1;
+            var du2 = restSpaceTriangle.Du2;
+            var dv1 = restSpaceTriangle.Dv1;
+            var dv2 = restSpaceTriangle.Dv2;
             var dx1 = worldSpaceTriangle.Dx1;
             var dx2 = worldSpaceTriangle.Dx2;
 

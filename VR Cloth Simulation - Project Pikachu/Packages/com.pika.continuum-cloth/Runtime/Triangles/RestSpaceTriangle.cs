@@ -8,7 +8,6 @@ namespace Triangles
     public interface IRestSpaceTriangle
     {
         public double Area();
-        public (double Du1, double Du2, double Dv1, double Dv2) GetDifferences();
         public double D();
         double Du1 { get; }
         double Du2 { get; }
@@ -50,11 +49,6 @@ namespace Triangles
         }
 
         public double D() => Du1 * Dv2 - Du2 * Dv1;
-
-        public (double Du1, double Du2, double Dv1, double Dv2) GetDifferences()
-        {
-            return (Du1, Du2, Dv1, Dv2);
-        }
 
         public WithRespectTo<double3x3> Dwu() => new()
         {
