@@ -70,22 +70,22 @@ namespace Pika.Continuum.Cloth.UnitTests.Conditions
         {
             var stubCombined = Substitute.For<ICombinedTriangle>();
             stubCombined.A.Returns(0.625);
-            stubCombined.Wv.Returns(math.double3(0.5, 1.002782224, 0));
+            stubCombined.Wv.Returns(math.double3(-0.2, 0.6, 0));
             stubCombined.Dwv.Returns(new WithRespectTo<double3x3>
             {
-                dx0 = double3x3.identity * -0.5,
-                dx1 = double3x3.identity * -0.5,
-                dx2 = double3x3.identity * 1
+                dx0 = double3x3.identity * -0.4,
+                dx1 = double3x3.identity * -0.4,
+                dx2 = double3x3.identity * 0.8
             });
             var b = MakeBAtRest();
             var stretchQuantities = new StretchConditionQuantities(stubCombined, b);
 
             var result = stretchQuantities.Dcv;
 
-            // I'm getting these expected values by multiplying each Jacobian by Wu norm and A.
-            // AssertDouble3WithinTolerance(result.dx0, math.double3(0, 0, 0), 0.0001);
-            // AssertDouble3WithinTolerance(result.dx1, math.double3(0, 0, 0), 0.0001);
-            AssertDouble3WithinTolerance(result.dx2, math.double3(0.5, 1.002782224, 0), 0.0001);
+            // I'm getting these expected values by multiplying each Jacobian by Wv norm and A.
+            AssertDouble3WithinTolerance(result.dx0, math.double3(0.079056942, -0.237170825, 0), 0.0001);
+            AssertDouble3WithinTolerance(result.dx1, math.double3(0.079056942, -0.237170825, 0), 0.0001);
+            AssertDouble3WithinTolerance(result.dx2, math.double3(-0.158113883, 0.474341649, 0), 0.0001);
         }
         
         #region Helpers
