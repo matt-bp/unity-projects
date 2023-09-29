@@ -336,13 +336,13 @@ MonoBehaviour:
   bControl:
     x: 1
     y: 1
-  k: 100
-  kd: 10
+  k: 20
+  kd: 2
   gravity:
     x: 0
     y: -10
     z: 0
-  m: 0.5
+  m: 0.1
   constrainedIndices: 0000000001000000
   worldSpaceTriangles: []
   restSpaceTriangles: []

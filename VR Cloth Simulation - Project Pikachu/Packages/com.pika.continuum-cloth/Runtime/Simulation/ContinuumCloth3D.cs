@@ -10,10 +10,10 @@ using Solvers;
 using Triangles;
 using UnityEngine.UIElements;
 
-namespace Continuum
+namespace Simulation
 {
-    [AddComponentMenu("Continuum Cloth/Integration/3D Implicit Continuum Cloth")]
-    public class ImplicitContinuumCloth3D : MonoBehaviour
+    [AddComponentMenu("Cloth Simulation/3D Continuum Cloth")]
+    public class ContinuumCloth3D : MonoBehaviour
     {
         #region Simulation Constants
 

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Continuum;
+using Simulation;
 using MassSpring.Integration;
 using SimulationHelpers.Posing;
 using SimulationHelpers.Visualization;
@@ -28,7 +28,7 @@ namespace SimulationHelpers.Cloth
         [SerializeField] private FramePoser framePoser;
         private Visualizer visualizer;
         // private ImplicitMassSpring3D cloth;
-        private ImplicitContinuumCloth3D cloth;
+        private ContinuumCloth3D cloth;
         /// <summary>
         /// Time, in seconds, that this simulation has been enabled.
         /// </summary>
@@ -39,7 +39,7 @@ namespace SimulationHelpers.Cloth
             visualizer = GetComponentInChildren<Visualizer>();
             Debug.Assert(visualizer is not null);
 
-            cloth = GetComponentInChildren<ImplicitContinuumCloth3D>();
+            cloth = GetComponentInChildren<ContinuumCloth3D>();
             Debug.Assert(cloth is not null);
 
             // Use the cloth poser to initialize the cloth simulation
