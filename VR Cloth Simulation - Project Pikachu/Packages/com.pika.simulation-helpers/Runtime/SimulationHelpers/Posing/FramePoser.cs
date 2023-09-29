@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Mathematics;
@@ -8,8 +9,8 @@ namespace SimulationHelpers.Posing
     public class FramePoser : MonoBehaviour
     {
         public List<double3> lastPose = new();
-        [SerializeField] private MeshFilter meshFilter; 
-
+        [SerializeField] private MeshFilter meshFilter;
+        
         public void StartNewPose(int particleCount)
         {
             lastPose = Enumerable.Range(0, particleCount).Select(_ => double3.zero).ToList();
