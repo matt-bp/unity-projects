@@ -337,7 +337,7 @@ MonoBehaviour:
     x: 1
     y: 1
   k: 100
-  kd: 2
+  kd: 10
   gravity:
     x: 0
     y: -10
@@ -1037,7 +1037,7 @@ MonoBehaviour:
   framePoser: {fileID: 1119569788}
   handlePrefab: {fileID: 2359737886397254119, guid: 507d0026628b4b74f864c66b60b721d0,
     type: 3}
-  initialMesh: {fileID: 634923250}
+  initialMesh: {fileID: 1828982821}
 --- !u!4 &473939445
 Transform:
   m_ObjectHideFlags: 0
@@ -1106,7 +1106,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1915693208}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &543240727
 MonoBehaviour:
@@ -1515,7 +1515,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lastPose: []
-  meshFilter: {fileID: 634923249}
+  meshFilter: {fileID: 1828982820}
 --- !u!4 &1119569789
 Transform:
   m_ObjectHideFlags: 0
@@ -2418,7 +2418,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1915693208}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1628742179
 MonoBehaviour:
@@ -2502,7 +2502,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!33 &1828982820
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -2776,8 +2776,8 @@ Transform:
   - {fileID: 1626282357}
   - {fileID: 896921687}
   - {fileID: 81647013}
-  - {fileID: 1628742178}
   - {fileID: 543240726}
+  - {fileID: 1628742178}
   m_Father: {fileID: 0}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2797,8 +2797,8 @@ MonoBehaviour:
     type: 3}
   toggleSimulation: {fileID: -3766293602763253937, guid: 16c750d8ac098de4cb6eac21ec5e07be,
     type: 3}
-  isOneShotSimulation: 0
-  oneShotIterationCount: 100000
+  isOneShotSimulation: 1
+  oneShotIterationCount: 1200
   oneShotDt: 0.01668
   isEnabled: 0
   framePoser: {fileID: 1119569788}

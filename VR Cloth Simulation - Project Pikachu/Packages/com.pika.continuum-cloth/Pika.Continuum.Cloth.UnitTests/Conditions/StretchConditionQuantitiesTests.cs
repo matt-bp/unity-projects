@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Conditions;
 using LinearAlgebra;
 using Triangles;
@@ -20,7 +21,7 @@ namespace Pika.Continuum.Cloth.UnitTests.Conditions
             stubCombined.Wu.Returns(math.double3(1, 0, 0));
 
             var b = MakeBAtRest();
-            var stretchQuantities = new StretchConditionQuantities(stubCombined, b);
+            var stretchQuantities = new StretchConditionQuantities(stubCombined, b, new List<double3>());
 
             var result = stretchQuantities.Cu;
             
@@ -35,7 +36,7 @@ namespace Pika.Continuum.Cloth.UnitTests.Conditions
             stubCombined.Wv.Returns(math.double3(0, -1, 0));
 
             var b = MakeBAtRest();
-            var stretchQuantities = new StretchConditionQuantities(stubCombined, b);
+            var stretchQuantities = new StretchConditionQuantities(stubCombined, b, new List<double3>());
 
             var result = stretchQuantities.Cv;
             
@@ -55,7 +56,7 @@ namespace Pika.Continuum.Cloth.UnitTests.Conditions
                 dx2 = double3x3.identity * -0.4
             });
             var b = MakeBAtRest();
-            var stretchQuantities = new StretchConditionQuantities(stubCombined, b);
+            var stretchQuantities = new StretchConditionQuantities(stubCombined, b, new List<double3>());
 
             var result = stretchQuantities.Dcu;
 
@@ -78,7 +79,7 @@ namespace Pika.Continuum.Cloth.UnitTests.Conditions
                 dx2 = double3x3.identity * 0.8
             });
             var b = MakeBAtRest();
-            var stretchQuantities = new StretchConditionQuantities(stubCombined, b);
+            var stretchQuantities = new StretchConditionQuantities(stubCombined, b, new List<double3>());
 
             var result = stretchQuantities.Dcv;
 

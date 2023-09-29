@@ -133,27 +133,30 @@ namespace Continuum
                     var index0 = triangleIndices[i].Item1;
                     var index1 = triangleIndices[i].Item2;
                     var index2 = triangleIndices[i].Item3;
+
+                    var v = new List<double3>()
+                    {
+                        velocities[index0],
+                        velocities[index1],
+                        velocities[index2]
+                    };
                     
-                    var sq = new Conditions.New.StretchConditionQuantities(new CombinedTriangle(restSpaceTriangles[i], worldSpaceTriangles[i]), bControl);
+                    var sq = new Conditions.New.StretchConditionQuantities(
+                        new CombinedTriangle(restSpaceTriangles[i], worldSpaceTriangles[i]), bControl, v);
                     
                     // Compute force for triangle
                     var force0 = -k * (sq.Dcu.dx0 * sq.Cu + sq.Dcv.dx0 * sq.Cv);
                     var force1 = -k * (sq.Dcu.dx1 * sq.Cu + sq.Dcv.dx1 * sq.Cv);
                     var force2 = -k * (sq.Dcu.dx2 * sq.Cu + sq.Dcv.dx2 * sq.Cv);
                     
-                    // Add it to each index in the triangle's force vector
-                    
                     forces[index0] += force0;
                     forces[index1] += force1;
                     forces[index2] += force2;
                     
                     // Compute damping force
-                    // var df0 = -kd * (sq.Dcu.dx0 * sq.CuDot + sq.Dcv.dx0 * sq.CvDot);
-                    // var df1 = -kd * (sq.Dcu.dx1 * sq.CuDot + sq.Dcv.dx1 * sq.CvDot);
-                    // var df2 = -kd * (sq.Dcu.dx1 * sq.CuDot + sq.Dcv.dx2 * sq.CvDot);
-                    var df0 = velocities[index0] * -kd;
-                    var df1 = velocities[index1] * -kd;
-                    var df2 = velocities[index2] * -kd;
+                    var df0 = -kd * (sq.Dcu.dx0 * sq.CuDot + sq.Dcv.dx0 * sq.CvDot);
+                    var df1 = -kd * (sq.Dcu.dx1 * sq.CuDot + sq.Dcv.dx1 * sq.CvDot);
+                    var df2 = -kd * (sq.Dcu.dx1 * sq.CuDot + sq.Dcv.dx2 * sq.CvDot);
                     
                     forces[index0] += df0;
                     forces[index1] += df1;
