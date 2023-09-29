@@ -24,5 +24,6 @@ namespace Geometry
         }
 
         public override List<Vector3> GetPositions() => mesh.vertices.Select(v => transform.TransformPoint(v)).ToList();
+        public override int[] GetTriangles() => mesh.triangles;
     }
 }

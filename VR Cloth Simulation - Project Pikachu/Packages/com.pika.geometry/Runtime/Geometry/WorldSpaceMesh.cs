@@ -7,7 +7,7 @@ namespace Geometry
     public interface IWorldSpaceMesh
     {
         public List<Vector3> GetPositions();
-        public List<int> GetIndices();
+        public int[] GetTriangles();
     }
     
     /// <summary>
@@ -18,6 +18,6 @@ namespace Geometry
     public abstract class WorldSpaceMesh : MonoBehaviour
     {
         public abstract List<Vector3> GetPositions();
-        // public abstract List<int> GetIndices();
+        public abstract int[] GetTriangles();
     }
 }
