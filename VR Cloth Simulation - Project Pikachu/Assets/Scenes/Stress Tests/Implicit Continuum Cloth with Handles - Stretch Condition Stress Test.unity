@@ -346,7 +346,7 @@ MonoBehaviour:
   constrainedIndices: 0000000001000000
   worldSpaceTriangles: []
   restSpaceTriangles: []
-  useExplicitIntegration: 1
+  useExplicitIntegration: 0
 --- !u!1 &243818997
 GameObject:
   m_ObjectHideFlags: 0
@@ -1106,7 +1106,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1915693208}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &543240727
 MonoBehaviour:
@@ -2418,7 +2418,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1915693208}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1628742179
 MonoBehaviour:
@@ -2776,8 +2776,8 @@ Transform:
   - {fileID: 1626282357}
   - {fileID: 896921687}
   - {fileID: 81647013}
-  - {fileID: 1628742178}
   - {fileID: 543240726}
+  - {fileID: 1628742178}
   m_Father: {fileID: 0}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2797,7 +2797,7 @@ MonoBehaviour:
     type: 3}
   toggleSimulation: {fileID: -3766293602763253937, guid: 16c750d8ac098de4cb6eac21ec5e07be,
     type: 3}
-  isOneShotSimulation: 0
+  isOneShotSimulation: 1
   oneShotIterationCount: 1200
   oneShotDt: 0.01668
   isEnabled: 0

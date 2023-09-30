@@ -6,7 +6,7 @@ using Triangles;
 using Unity.Mathematics;
 using NSubstitute;
 using NUnit.Framework;
-using StretchConditionQuantities = Conditions.New.StretchConditionQuantities;
+using StretchConditionQuantities = Conditions.StretchConditionQuantities;
 using static Pika.Continuum.Cloth.UnitTests.PikaAssert;
 
 namespace Pika.Continuum.Cloth.UnitTests.Conditions

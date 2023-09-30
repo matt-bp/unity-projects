@@ -5,10 +5,10 @@ using UnityEngine;
 using System.Linq;
 using Conditions;
 using DataStructures;
+using Forces;
 using LinearAlgebra;
 using Solvers;
 using Triangles;
-using UnityEngine.UIElements;
 
 namespace Simulation
 {
@@ -141,26 +141,19 @@ namespace Simulation
                         velocities[index2]
                     };
                     
-                    var sq = new Conditions.New.StretchConditionQuantities(
+                    var sq = new StretchConditionQuantities(
                         new CombinedTriangle(restSpaceTriangles[i], worldSpaceTriangles[i]), bControl, v);
+                    var stretchForces = new ConditionForces(k, kd, sq);
                     
-                    // Compute force for triangle
-                    var force0 = -k * (sq.Dcu.dx0 * sq.Cu + sq.Dcv.dx0 * sq.Cv);
-                    var force1 = -k * (sq.Dcu.dx1 * sq.Cu + sq.Dcv.dx1 * sq.Cv);
-                    var force2 = -k * (sq.Dcu.dx2 * sq.Cu + sq.Dcv.dx2 * sq.Cv);
-                    
-                    forces[index0] += force0;
-                    forces[index1] += force1;
-                    forces[index2] += force2;
+                    // Compute forces for triangle
+                    forces[index0] += stretchForces.GetForce(0);
+                    forces[index1] += stretchForces.GetForce(1);
+                    forces[index2] += stretchForces.GetForce(2);
                     
                     // Compute damping force
-                    var df0 = -kd * (sq.Dcu.dx0 * sq.CuDot + sq.Dcv.dx0 * sq.CvDot);
-                    var df1 = -kd * (sq.Dcu.dx1 * sq.CuDot + sq.Dcv.dx1 * sq.CvDot);
-                    var df2 = -kd * (sq.Dcu.dx1 * sq.CuDot + sq.Dcv.dx2 * sq.CvDot);
-                    
-                    forces[index0] += df0;
-                    forces[index1] += df1;
-                    forces[index2] += df2;
+                    forces[index0] += stretchForces.GetDampingForce(0);
+                    forces[index1] += stretchForces.GetDampingForce(1);
+                    forces[index2] += stretchForces.GetDampingForce(2);
                 }
 
                 for (var i = 0; i < forces.Count; i++)
@@ -192,7 +185,7 @@ namespace Simulation
                         velocities[index2]
                     };
                     
-                    var sq = new Conditions.New.StretchConditionQuantities(
+                    var sq = new Conditions.StretchConditionQuantities(
                         new CombinedTriangle(restSpaceTriangles[i], worldSpaceTriangles[i]), bControl, v);
 
                     // Compute force for triangle

@@ -4,14 +4,22 @@ using LinearAlgebra;
 using Triangles;
 using Unity.Mathematics;
 
-namespace Conditions.New
+namespace Conditions
 {
-    public class StretchConditionQuantities
+    public class StretchConditionQuantities: IConditionQuantities
     {
         private double A => combinedTriangle.A;
         private double2 B { get; }
         public double Cu => GetCondition(combinedTriangle.Wu, B.x);
         public double Cv => GetCondition(combinedTriangle.Wv, B.y);
+        
+        #region First Derivative
+        
+        /// <summary>
+        /// Partial derivative of the deformation map W with respect to each position.
+        ///
+        /// Check equation 7.23 (pg. 68)
+        /// </summary>
         public WithRespectTo<double3> Dcu => GetConditionFirstDerivative(combinedTriangle.Wu, combinedTriangle.Dwu);
         public WithRespectTo<double3> Dcv => GetConditionFirstDerivative(combinedTriangle.Wv, combinedTriangle.Dwv);
 
@@ -27,6 +35,7 @@ namespace Conditions.New
                                math.dot(Dcv.dx1, velocities[1]) + 
                                math.dot(Dcv.dx2, velocities[2]);
         
+        #endregion
         
         #region Second Derivative
 
