@@ -1,3 +1,5 @@
+using System;
+
 namespace Conditions
 {
     public class WithRespectTo<T>
@@ -6,6 +8,14 @@ namespace Conditions
         public T dx1 { get; set; }
         public T dx2 { get; set; }
 
+        public T this[int index] =>
+            index switch
+            {
+                0 => dx0,
+                1 => dx1,
+                2 => dx2,
+                _ => throw new ArgumentOutOfRangeException(nameof(index), $"Not expected index: {index}")
+            };
     }
 
     public class WithRespectToV<T>

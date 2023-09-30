@@ -185,11 +185,15 @@ namespace Simulation
                     var index1 = triangleIndices[i].Item2;
                     var index2 = triangleIndices[i].Item3;
 
-                    var trianglePointVelocities = Tuple.Create(velocities[index0], velocities[index1],
-                        velocities[index2]);
-
-                    var sq = new StretchConditionQuantities(restSpaceTriangles[i], worldSpaceTriangles[i], bControl,
-                        trianglePointVelocities);
+                    var v = new List<double3>()
+                    {
+                        velocities[index0],
+                        velocities[index1],
+                        velocities[index2]
+                    };
+                    
+                    var sq = new Conditions.New.StretchConditionQuantities(
+                        new CombinedTriangle(restSpaceTriangles[i], worldSpaceTriangles[i]), bControl, v);
 
                     // Compute force for triangle
                     var force0 = -k * (sq.Dcu.dx0 * sq.Cu + sq.Dcv.dx0 * sq.Cv);
@@ -258,7 +262,7 @@ namespace Simulation
                     var df0 = -kd * (sq.Dcu.dx0 * sq.CuDot + sq.Dcv.dx0 * sq.CvDot);
                     var df1 = -kd * (sq.Dcu.dx1 * sq.CuDot + sq.Dcv.dx1 * sq.CvDot);
                     var df2 = -kd * (sq.Dcu.dx1 * sq.CuDot + sq.Dcv.dx2 * sq.CvDot);
-
+                    
                     forces[index0] += df0;
                     forces[index1] += df1;
                     forces[index2] += df2;
@@ -337,10 +341,11 @@ namespace Simulation
                 var f0 = forces.Select(f => dt * f).ToList();
 
                 // Set v_0, with time steps and everything
-                var v0 = ConjugateGradient3D.Mult(velocities, dt * dt);
+                // I don't know if this needs dt, because we're already multiplying dfdx by dt^2 above
+                // var v0 = ConjugateGradient3D.Mult(velocities, dt * dt);
 
                 // Construct b vector from parts
-                var b = ConjugateGradient3D.Add(f0, ConjugateGradient3D.Mult(dfdx, v0));
+                var b = ConjugateGradient3D.Add(f0, ConjugateGradient3D.Mult(dfdx, velocities));
 
                 // Make sure that the global Jacobian matrix is symmetric
 
@@ -353,7 +358,6 @@ namespace Simulation
                     positions[index].Value += dt * (velocities[index] + dv);
                     velocities[index] += dt * dv;
                 }
-            
             }
         }
     }
