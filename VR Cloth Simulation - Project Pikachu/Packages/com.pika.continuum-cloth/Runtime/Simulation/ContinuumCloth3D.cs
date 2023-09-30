@@ -185,100 +185,40 @@ namespace Simulation
                         velocities[index2]
                     };
                     
-                    var sq = new Conditions.StretchConditionQuantities(
+                    var sq = new StretchConditionQuantities(
                         new CombinedTriangle(restSpaceTriangles[i], worldSpaceTriangles[i]), bControl, v);
-
+                    var cf = new ConditionForces(k, kd, sq);
+                    
                     // Compute force for triangle
-                    var force0 = -k * (sq.Dcu.dx0 * sq.Cu + sq.Dcv.dx0 * sq.Cv);
-                    var force1 = -k * (sq.Dcu.dx1 * sq.Cu + sq.Dcv.dx1 * sq.Cv);
-                    var force2 = -k * (sq.Dcu.dx2 * sq.Cu + sq.Dcv.dx2 * sq.Cv);
+                    forces[index0] += cf.GetForce(0);
+                    forces[index1] += cf.GetForce(1);
+                    forces[index2] += cf.GetForce(2);
 
-                    // Add it to each index in the triangle's force vector
+                    var df0 = cf.GetForceFirstPartialDerivative(0);
+                    var df1 = cf.GetForceFirstPartialDerivative(1);
+                    var df2 = cf.GetForceFirstPartialDerivative(2);
 
-                    forces[index0] += force0;
-                    forces[index1] += force1;
-                    forces[index2] += force2;
+                    a[index0][index0] -= dt * dt * df0.dx0;
+                    a[index0][index1] += dt * dt * df0.dx1;
+                    a[index0][index2] += dt * dt * df0.dx2;
 
-                    // Compute force first derivative (Jacobian), and add it to large matrix
-                    var df0dx0 = -k * (
-                        Double3.OuterProduct(sq.Dcu.dx0, sq.Dcu.dx0) + sq.D2CuDx0.dx0 * sq.Cu +
-                        Double3.OuterProduct(sq.Dcv.dx0, sq.Dcv.dx0) + sq.D2CvDx0.dx0 * sq.Cv
-                    );
-                    var df0dx1 = -k * (
-                        Double3.OuterProduct(sq.Dcu.dx0, sq.Dcu.dx1) + sq.D2CuDx0.dx1 * sq.Cu +
-                        Double3.OuterProduct(sq.Dcv.dx0, sq.Dcv.dx1) + sq.D2CvDx0.dx1 * sq.Cv
-                    );
-                    var df0dx2 = -k * (
-                        Double3.OuterProduct(sq.Dcu.dx0, sq.Dcu.dx2) + sq.D2CuDx0.dx2 * sq.Cu +
-                        Double3.OuterProduct(sq.Dcv.dx0, sq.Dcv.dx2) + sq.D2CvDx0.dx2 * sq.Cv
-                    );
+                    a[index1][index0] += dt * dt * df1.dx0;
+                    a[index1][index1] -= dt * dt * df1.dx1;
+                    a[index1][index2] += dt * dt * df1.dx2;
 
-                    var df1dx0 = -k * (
-                        Double3.OuterProduct(sq.Dcu.dx1, sq.Dcu.dx0) + sq.D2CuDx1.dx0 * sq.Cu +
-                        Double3.OuterProduct(sq.Dcv.dx1, sq.Dcv.dx0) + sq.D2CvDx1.dx0 * sq.Cv
-                    );
-                    var df1dx1 = -k * (
-                        Double3.OuterProduct(sq.Dcu.dx1, sq.Dcu.dx1) + sq.D2CuDx1.dx1 * sq.Cu +
-                        Double3.OuterProduct(sq.Dcv.dx1, sq.Dcv.dx1) + sq.D2CvDx1.dx1 * sq.Cv
-                    );
-                    var df1dx2 = -k * (
-                        Double3.OuterProduct(sq.Dcu.dx1, sq.Dcu.dx2) + sq.D2CuDx1.dx2 * sq.Cu +
-                        Double3.OuterProduct(sq.Dcv.dx1, sq.Dcv.dx2) + sq.D2CvDx1.dx2 * sq.Cv
-                    );
-
-                    var df2dx0 = -k * (
-                        Double3.OuterProduct(sq.Dcu.dx2, sq.Dcu.dx0) + sq.D2CuDx2.dx0 * sq.Cu +
-                        Double3.OuterProduct(sq.Dcv.dx2, sq.Dcv.dx0) + sq.D2CvDx2.dx0 * sq.Cv
-                    );
-                    var df2dx1 = -k * (
-                        Double3.OuterProduct(sq.Dcu.dx2, sq.Dcu.dx1) + sq.D2CuDx2.dx1 * sq.Cu +
-                        Double3.OuterProduct(sq.Dcv.dx2, sq.Dcv.dx1) + sq.D2CvDx2.dx1 * sq.Cv
-                    );
-                    var df2dx2 = -k * (
-                        Double3.OuterProduct(sq.Dcu.dx2, sq.Dcu.dx2) + sq.D2CuDx2.dx2 * sq.Cu +
-                        Double3.OuterProduct(sq.Dcv.dx2, sq.Dcv.dx2) + sq.D2CvDx2.dx2 * sq.Cv
-                    );
-
-                    a[index0][index0] -= dt * dt * df0dx0;
-                    a[index0][index1] += dt * dt * df0dx1;
-                    a[index0][index2] += dt * dt * df0dx2;
-
-                    a[index1][index0] += dt * dt * df1dx0;
-                    a[index1][index1] -= dt * dt * df1dx1;
-                    a[index1][index2] += dt * dt * df1dx2;
-
-                    a[index2][index0] += dt * dt * df2dx0;
-                    a[index2][index1] += dt * dt * df2dx1;
-                    a[index2][index2] -= dt * dt * df2dx2;
+                    a[index2][index0] += dt * dt * df2.dx0;
+                    a[index2][index1] += dt * dt * df2.dx1;
+                    a[index2][index2] -= dt * dt * df2.dx2;
 
                     // Compute damping force
-                    var df0 = -kd * (sq.Dcu.dx0 * sq.CuDot + sq.Dcv.dx0 * sq.CvDot);
-                    var df1 = -kd * (sq.Dcu.dx1 * sq.CuDot + sq.Dcv.dx1 * sq.CvDot);
-                    var df2 = -kd * (sq.Dcu.dx1 * sq.CuDot + sq.Dcv.dx2 * sq.CvDot);
-                    
-                    forces[index0] += df0;
-                    forces[index1] += df1;
-                    forces[index2] += df2;
+                    forces[index0] += cf.GetDampingForce(0);
+                    forces[index1] += cf.GetDampingForce(1);
+                    forces[index2] += cf.GetDampingForce(2);
 
                     // Compute damping force partial derivative with respect to position
-                    var dd0 = new WithRespectTo<double3x3>()
-                    {
-                        dx0 = -kd * (sq.D2CuDx0.dx0 * sq.CuDot + sq.D2CvDx0.dx0 * sq.CvDot),
-                        dx1 = -kd * (sq.D2CuDx0.dx1 * sq.CuDot + sq.D2CvDx0.dx1 * sq.CvDot),
-                        dx2 = -kd * (sq.D2CuDx0.dx2 * sq.CuDot + sq.D2CvDx0.dx2 * sq.CvDot)
-                    };
-                    var dd1 = new WithRespectTo<double3x3>()
-                    {
-                        dx0 = -kd * (sq.D2CuDx1.dx0 * sq.CuDot + sq.D2CvDx1.dx0 * sq.CvDot),
-                        dx1 = -kd * (sq.D2CuDx1.dx1 * sq.CuDot + sq.D2CvDx1.dx1 * sq.CvDot),
-                        dx2 = -kd * (sq.D2CuDx1.dx2 * sq.CuDot + sq.D2CvDx1.dx2 * sq.CvDot)
-                    };
-                    var dd2 = new WithRespectTo<double3x3>()
-                    {
-                        dx0 = -kd * (sq.D2CuDx2.dx0 * sq.CuDot + sq.D2CvDx2.dx0 * sq.CvDot),
-                        dx1 = -kd * (sq.D2CuDx2.dx1 * sq.CuDot + sq.D2CvDx2.dx1 * sq.CvDot),
-                        dx2 = -kd * (sq.D2CuDx2.dx2 * sq.CuDot + sq.D2CvDx2.dx2 * sq.CvDot)
-                    };
+                    var dd0 = cf.GetDampingForcePartialDerivativeWrtPosition(0);
+                    var dd1 = cf.GetDampingForcePartialDerivativeWrtPosition(1);
+                    var dd2 = cf.GetDampingForcePartialDerivativeWrtPosition(2);
 
                     dfdx[index0][index0] -= dt * dt * dd0.dx0;
                     dfdx[index0][index1] += dt * dt * dd0.dx1;
@@ -293,24 +233,9 @@ namespace Simulation
                     dfdx[index2][index2] -= dt * dt * dd2.dx2;
 
                     // Compute damping force partial derivative with respect to velocity
-                    var dd0V = new WithRespectToV<double3x3>()
-                    {
-                        dv0 = -kd * (Double3.OuterProduct(sq.Dcu.dx0, sq.Dcu.dx0) + Double3.OuterProduct(sq.Dcv.dx0, sq.Dcv.dx0)),
-                        dv1 = -kd * (Double3.OuterProduct(sq.Dcu.dx0, sq.Dcu.dx1) + Double3.OuterProduct(sq.Dcv.dx0, sq.Dcv.dx1)),
-                        dv2 = -kd * (Double3.OuterProduct(sq.Dcu.dx0, sq.Dcu.dx2) + Double3.OuterProduct(sq.Dcv.dx0, sq.Dcv.dx2)),
-                    };
-                    var dd1V = new WithRespectToV<double3x3>()
-                    {
-                        dv0 = -kd * (Double3.OuterProduct(sq.Dcu.dx1, sq.Dcu.dx0) + Double3.OuterProduct(sq.Dcv.dx1, sq.Dcv.dx0)),
-                        dv1 = -kd * (Double3.OuterProduct(sq.Dcu.dx1, sq.Dcu.dx1) + Double3.OuterProduct(sq.Dcv.dx1, sq.Dcv.dx1)),
-                        dv2 = -kd * (Double3.OuterProduct(sq.Dcu.dx1, sq.Dcu.dx2) + Double3.OuterProduct(sq.Dcv.dx1, sq.Dcv.dx2)),
-                    };
-                    var dd2V = new WithRespectToV<double3x3>()
-                    {
-                        dv0 = -kd * (Double3.OuterProduct(sq.Dcu.dx2, sq.Dcu.dx0) + Double3.OuterProduct(sq.Dcv.dx2, sq.Dcv.dx0)),
-                        dv1 = -kd * (Double3.OuterProduct(sq.Dcu.dx2, sq.Dcu.dx1) + Double3.OuterProduct(sq.Dcv.dx2, sq.Dcv.dx1)),
-                        dv2 = -kd * (Double3.OuterProduct(sq.Dcu.dx2, sq.Dcu.dx2) + Double3.OuterProduct(sq.Dcv.dx2, sq.Dcv.dx2)),
-                    };
+                    var dd0V = cf.GetDampingForcePartialDerivativeWrtVelocity(0);
+                    var dd1V = cf.GetDampingForcePartialDerivativeWrtVelocity(1);
+                    var dd2V = cf.GetDampingForcePartialDerivativeWrtVelocity(2);
 
                     // I'm adding incrementally into the A matrix, that is why this is happening below
                     a[index0][index0] -= dt * dd0V.dv0;

@@ -346,7 +346,7 @@ MonoBehaviour:
   constrainedIndices: 0000000001000000
   worldSpaceTriangles: []
   restSpaceTriangles: []
-  useExplicitIntegration: 1
+  useExplicitIntegration: 0
 --- !u!1 &243818997
 GameObject:
   m_ObjectHideFlags: 0
