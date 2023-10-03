@@ -1,16 +1,19 @@
+using System;
+using System.Collections.Generic;
 using Conditions;
+using DataStructures;
 using LinearAlgebra;
 using Unity.Mathematics;
 
 namespace Forces
 {
-    public class ConditionForces
+    public class StretchConditionForceCalculator : IConditionForceCalculator
     {
         private readonly IConditionQuantities cq;
         private readonly double k;
         private readonly double kd;
-        
-        public ConditionForces(double inK, double inKd, IConditionQuantities conditionQuantities)
+
+        public StretchConditionForceCalculator(double inK, double inKd, IConditionQuantities conditionQuantities)
         {
             cq = conditionQuantities;
             k = inK;

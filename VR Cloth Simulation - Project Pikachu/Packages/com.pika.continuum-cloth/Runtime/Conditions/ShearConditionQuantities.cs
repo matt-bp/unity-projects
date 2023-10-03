@@ -6,7 +6,7 @@ using Unity.Mathematics;
 
 namespace Conditions
 {
-    public class ShearConditionQuantities : IConditionQuantities
+    public class ShearConditionQuantities
     {
         private double A => combinedTriangle.A;
         public double C => GetCondition();
@@ -20,16 +20,6 @@ namespace Conditions
             dx2 = GetConditionFirstDerivative(2)
         };
 
-        public WithRespectTo<double3> Dcu => throw new NotImplementedException("Don't need this anymore, combine first derivative into one variable, not between u and v.");
-        public WithRespectTo<double3> Dcv => throw new NotImplementedException("Don't need this anymore, combine first derivative into one variable, not between u and v.");
-        public double CuDot => throw new NotImplementedException();
-        public double CvDot => throw new NotImplementedException();
-        public WithRespectTo<double3x3> D2CuDx0 => throw new NotImplementedException("Don't need this anymore, combine second derivative into one variable, not between u and v.");
-        public WithRespectTo<double3x3> D2CuDx1 => throw new NotImplementedException("Don't need this anymore, combine second derivative into one variable, not between u and v.");
-        public WithRespectTo<double3x3> D2CuDx2 => throw new NotImplementedException("Don't need this anymore, combine second derivative into one variable, not between u and v.");
-        public WithRespectTo<double3x3> D2CvDx0 => throw new NotImplementedException("Don't need this anymore, combine second derivative into one variable, not between u and v.");
-        public WithRespectTo<double3x3> D2CvDx1 => throw new NotImplementedException("Don't need this anymore, combine second derivative into one variable, not between u and v.");
-        public WithRespectTo<double3x3> D2CvDx2 => throw new NotImplementedException("Don't need this anymore, combine second derivative into one variable, not between u and v.");
         private readonly ICombinedTriangle combinedTriangle;
 
         public ShearConditionQuantities(ICombinedTriangle combined)
