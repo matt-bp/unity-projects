@@ -16,7 +16,7 @@ namespace Pika.Continuum.Cloth.UnitTests.Conditions
             stubCombined.A.Returns(0.625);
             stubCombined.Wu.Returns(math.double3(1, 0, 1));
             stubCombined.Wv.Returns(math.double3(1, 0, 1));
-            var stretchQuantities = new ShearConditionQuantities(stubCombined);
+            var stretchQuantities = new ShearConditionQuantities(stubCombined, new List<double3>());
 
             var result = stretchQuantities.C;
             

@@ -23,6 +23,13 @@ namespace Forces
         /// <returns></returns>
         public double3 GetDampingForce(int i);
 
+        /// <summary>
+        /// Gets the forces first partial derivative with respect to each particle.
+        ///
+        /// Check out equation 7.3 (pg. 60) for the general form.
+        /// </summary>
+        /// <param name="i">The particle we are taking the derivative with respect to.</param>
+        /// <returns></returns>
         public WithRespectTo<double3x3> GetForceFirstPartialDerivative(int i);
 
         /// <summary>

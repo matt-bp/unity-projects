@@ -20,6 +20,8 @@ namespace Simulation
         [SerializeField] private double2 bControl = math.double2(1, 1);
         [SerializeField] private double k = 10;
         [SerializeField] private double kd = 0.0;
+        [SerializeField] private double shearK = 10;
+        [SerializeField] private double shearKd = 0.0;
         [SerializeField] private double3 gravity = math.double3(0.0, -10.0, 0.0);
 
         /// <summary>
@@ -252,12 +254,19 @@ namespace Simulation
                         velocities[index1],
                         velocities[index2]
                     };
+
+                    var combined = new CombinedTriangle(restSpaceTriangles[i], worldSpaceTriangles[i]);
                     
                     var sq = new StretchConditionQuantities(
-                        new CombinedTriangle(restSpaceTriangles[i], worldSpaceTriangles[i]), bControl, v);
+                        combined, bControl, v);
                     var cf = new StretchConditionForceCalculator(k, kd, sq);
                     
                     SetForces(cf, triangleIndices[i]);
+
+                    var shearQ = new ShearConditionQuantities(combined, v);
+                    var scf = new ShearConditionForceCalculator(shearK, shearKd, shearQ);
+                    
+                    SetForces(scf, triangleIndices[i]);
                 }
 
                 // M
