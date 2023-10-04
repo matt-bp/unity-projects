@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Codice.Client.Commands.Matcher;
 using DataStructures;
-using Unity.Mathematics;
 using UnityEngine;
 using GridMatrix = System.Collections.Generic.List<System.Collections.Generic.List<double>>;
 using GridVector = System.Collections.Generic.List<double>;

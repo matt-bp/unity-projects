@@ -1,4 +1,5 @@
 using Conditions;
+using JetBrains.Annotations;
 using Unity.Mathematics;
 
 namespace Triangles
@@ -14,14 +15,47 @@ namespace Triangles
 
     public class CombinedTriangle : ICombinedTriangle
     {
-        public double A => restSpaceTriangle.Area();
+        private double? d;
+        private double D
+        {
+            get
+            {
+                return d ??= restSpaceTriangle.D();
+            }
+        }
+        
+        private double? a;
+        public double A
+        {
+            get
+            {
+                return a ??= restSpaceTriangle.Area();
+            }
+        }
 
         public double3 Wu => GetDeformationMapDerivativeU();
 
         public double3 Wv => GetDeformationMapDerivativeV();
 
-        public WithRespectTo<double3x3> Dwu => restSpaceTriangle.Dwu();
-        public WithRespectTo<double3x3> Dwv => restSpaceTriangle.Dwv();
+        [CanBeNull] private WithRespectTo<double3x3> dwu;
+
+        public WithRespectTo<double3x3> Dwu
+        {
+            get
+            {
+                return dwu ??= restSpaceTriangle.Dwu();
+            }   
+        }
+        
+        [CanBeNull] private WithRespectTo<double3x3> dwv;
+
+        public WithRespectTo<double3x3> Dwv
+        {
+            get
+            {
+                return dwv ??= restSpaceTriangle.Dwv();
+            }   
+        }
 
         private readonly IRestSpaceTriangle restSpaceTriangle;
         private readonly IWorldSpaceTriangle worldSpaceTriangle;
@@ -44,9 +78,8 @@ namespace Triangles
             var dv2 = restSpaceTriangle.Dv2;
             var dx1 = worldSpaceTriangle.Dx1;
             var dx2 = worldSpaceTriangle.Dx2;
-            var d = restSpaceTriangle.D();
 
-            var w = 1 / d * (dx1 * dv2 - dx2 * dv1);
+            var w = 1 / D * (dx1 * dv2 - dx2 * dv1);
             
             return w;
         }
@@ -61,9 +94,8 @@ namespace Triangles
             var du2 = restSpaceTriangle.Du2;
             var dx1 = worldSpaceTriangle.Dx1;
             var dx2 = worldSpaceTriangle.Dx2;
-            var d = restSpaceTriangle.D();
 
-            var w = 1 / d * (-dx1 * du2 + dx2 * du1);
+            var w = 1 / D * (-dx1 * du2 + dx2 * du1);
             
             return w;
         }

@@ -399,13 +399,73 @@ MonoBehaviour:
   k: 10
   kd: 2
   shearK: 10
-  shearKd: 0
+  shearKd: 2
+  gravity:
+    x: 0
+    y: -10
+    z: 0
+  m: 0.00001
+  constrainedIndices: 010000000b000000
+  worldSpaceTriangles: []
+  restSpaceTriangles: []
+  useExplicitIntegration: 0
+--- !u!1 &241719811
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 241719812}
+  - component: {fileID: 241719813}
+  m_Layer: 0
+  m_Name: 3D Continuum Cloth - Working with stretch and shear conditions
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &241719812
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 241719811}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1915693208}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &241719813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 241719811}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89622610099b4c638322ba04bdccd69e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bControl:
+    x: 1
+    y: 1
+  k: 2000
+  kd: 2
+  shearK: 10
+  shearKd: 2
   gravity:
     x: 0
     y: -10
     z: 0
   m: 0.01
-  constrainedIndices: 00000000
+  constrainedIndices: 010000000b000000
   worldSpaceTriangles: []
   restSpaceTriangles: []
   useExplicitIntegration: 0
@@ -982,6 +1042,66 @@ MonoBehaviour:
     m_Reference: {fileID: 7779212132400271959, guid: c348712bda248c246b8c49b3db54643f,
       type: 3}
   m_ButtonPressPoint: 0.5
+--- !u!1 &385251176
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 385251177}
+  - component: {fileID: 385251178}
+  m_Layer: 0
+  m_Name: 3D Continuum Cloth - Exploding Cloth w Shear
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &385251177
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 385251176}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1915693208}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &385251178
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 385251176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89622610099b4c638322ba04bdccd69e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bControl:
+    x: 1
+    y: 1
+  k: 10
+  kd: 2
+  shearK: 10
+  shearKd: 2
+  gravity:
+    x: 0
+    y: -10
+    z: 0
+  m: 0.00001
+  constrainedIndices: 010000000b000000
+  worldSpaceTriangles: []
+  restSpaceTriangles: []
+  useExplicitIntegration: 0
 --- !u!1 &431019148
 GameObject:
   m_ObjectHideFlags: 0
@@ -1025,12 +1145,12 @@ GameObject:
   - component: {fileID: 431803159}
   - component: {fileID: 431803160}
   m_Layer: 0
-  m_Name: Import Test
+  m_Name: Low Subdivision Big
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &431803159
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1058,14 +1178,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 431803158}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.2237202, y: 0.31341636, z: 2.291561}
+  m_LocalRotation: {x: 0, y: 0.010733539, z: 0, w: 0.9999424}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 473939445}
   m_RootOrder: 6
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 1.23, z: 0}
 --- !u!1 &448389903
 GameObject:
   m_ObjectHideFlags: 0
@@ -1152,7 +1272,7 @@ MonoBehaviour:
   framePoser: {fileID: 1119569788}
   handlePrefab: {fileID: 2359737886397254119, guid: 507d0026628b4b74f864c66b60b721d0,
     type: 3}
-  initialMesh: {fileID: 1828982821}
+  initialMesh: {fileID: 431803159}
 --- !u!4 &473939445
 Transform:
   m_ObjectHideFlags: 0
@@ -1160,7 +1280,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 473939443}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1685,7 +1805,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lastPose: []
-  meshFilter: {fileID: 1828982820}
+  meshFilter: {fileID: 431803160}
 --- !u!4 &1119569789
 Transform:
   m_ObjectHideFlags: 0
@@ -2672,7 +2792,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!33 &1828982820
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -2949,6 +3069,8 @@ Transform:
   - {fileID: 1628742178}
   - {fileID: 543240726}
   - {fileID: 57537455}
+  - {fileID: 241719812}
+  - {fileID: 385251177}
   m_Father: {fileID: 0}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
