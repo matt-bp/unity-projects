@@ -108,6 +108,7 @@ namespace Simulation
         }
 
         public List<double3> Positions => positions.Select(p => p.Value).ToList();
+        public List<double3> Velocities => velocities.ToList();
 
         public static IEnumerable<List<int>> GetTriangles(List<int> indicesList)
         {

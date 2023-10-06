@@ -510,6 +510,66 @@ MonoBehaviour:
   - {x: -0.5, y: 0.5, z: 0}
   - {x: 0.5, y: 0.5, z: 0}
   newTriangles: 000000000100000002000000
+--- !u!1 &87860426
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 87860427}
+  - component: {fileID: 87860428}
+  m_Layer: 0
+  m_Name: 3D Continuum Cloth - Two Triangle Shared Vertex
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &87860427
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 87860426}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1915693208}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &87860428
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 87860426}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89622610099b4c638322ba04bdccd69e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  useExplicitIntegration: 0
+  bControl:
+    x: 1
+    y: 1
+  k: 10
+  kd: 5
+  shearK: 10
+  shearKd: 5
+  gravity:
+    x: 0
+    y: -10
+    z: 0
+  m: 0.001
+  constrainedIndices: 0000000003000000
+  worldSpaceTriangles: []
+  restSpaceTriangles: []
 --- !u!1 &213178563
 GameObject:
   m_ObjectHideFlags: 0
@@ -521,7 +581,7 @@ GameObject:
   - component: {fileID: 213178564}
   - component: {fileID: 213178565}
   m_Layer: 0
-  m_Name: 3D Continuum Cloth - Explicit Working, Implicit Not Working
+  m_Name: 3D Continuum Cloth - Explicit Working, Implicit Not Working (LBS)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -567,7 +627,7 @@ MonoBehaviour:
     y: -10
     z: 0
   m: 0.001
-  constrainedIndices: 010000000b000000
+  constrainedIndices: 0000000003000000
   worldSpaceTriangles: []
   restSpaceTriangles: []
 --- !u!1 &241719811
@@ -1311,7 +1371,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &431803159
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1433,7 +1493,7 @@ MonoBehaviour:
   framePoser: {fileID: 1119569788}
   handlePrefab: {fileID: 2359737886397254119, guid: 507d0026628b4b74f864c66b60b721d0,
     type: 3}
-  initialMesh: {fileID: 431803159}
+  initialMesh: {fileID: 1024528475}
 --- !u!4 &473939445
 Transform:
   m_ObjectHideFlags: 0
@@ -1526,7 +1586,7 @@ MonoBehaviour:
     type: 3}
   resetStatistics: {fileID: 1540606437978052394, guid: 16c750d8ac098de4cb6eac21ec5e07be,
     type: 3}
-  outputFolder: ./StatsContinuum
+  outputFolder: ./Stats
 --- !u!1 &634923246
 GameObject:
   m_ObjectHideFlags: 0
@@ -1742,7 +1802,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1024528472
 Transform:
   m_ObjectHideFlags: 0
@@ -2174,7 +2234,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lastPose: []
-  meshFilter: {fileID: 431803160}
+  meshFilter: {fileID: 1024528474}
 --- !u!4 &1119569789
 Transform:
   m_ObjectHideFlags: 0
@@ -3441,6 +3501,7 @@ Transform:
   - {fileID: 241719812}
   - {fileID: 385251177}
   - {fileID: 213178564}
+  - {fileID: 87860427}
   m_Father: {fileID: 0}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

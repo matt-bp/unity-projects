@@ -88,7 +88,11 @@ namespace SimulationHelpers.Cloth
 
             elapsed += Time.deltaTime;
             
-            visualizer.Visualize(cloth.Positions.Select(v => new Vector3((float)v.x, (float)v.y, (float)v.z)).ToList(), elapsed, Time.deltaTime);
+            visualizer.Visualize(
+                cloth.Positions.Select(v => new Vector3((float)v.x, (float)v.y, (float)v.z)).ToList(), 
+                cloth.Velocities.Select(v => new Vector3((float)v.x, (float)v.y, (float)v.z)).ToList(),
+                elapsed, 
+                Time.deltaTime);
         }
         
         
@@ -106,7 +110,11 @@ namespace SimulationHelpers.Cloth
                 elapsed += oneShotDt;
                 
                 // Create a visualization for those new positions
-                visualizer.Visualize(cloth.Positions.Select(v => new Vector3((float)v.x, (float)v.y, (float)v.z)).ToList(), elapsed, oneShotDt);
+                visualizer.Visualize(
+                    cloth.Positions.Select(v => new Vector3((float)v.x, (float)v.y, (float)v.z)).ToList(), 
+                    cloth.Velocities.Select(v => new Vector3((float)v.x, (float)v.y, (float)v.z)).ToList(),
+                    elapsed,
+                    oneShotDt);
             }
 
             isEnabled = false;

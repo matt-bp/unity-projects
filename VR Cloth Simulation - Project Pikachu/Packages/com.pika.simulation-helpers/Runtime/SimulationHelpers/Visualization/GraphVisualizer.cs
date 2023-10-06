@@ -32,10 +32,9 @@ namespace SimulationHelpers.Visualization
             runStatistics = new List<IRunStatistic>();
         }
 
-        public override void Visualize(List<Vector3> positions, double elapsed, double dt)
+        public override void Visualize(List<Vector3> positions, List<Vector3> velocities, double elapsed, double dt)
         {
-            if (expectedPositionCount is null) 
-                expectedPositionCount = positions.Count;
+            expectedPositionCount ??= positions.Count;
             
             Debug.Assert(positions.Count == expectedPositionCount);
             
@@ -43,7 +42,8 @@ namespace SimulationHelpers.Visualization
             {
                 Elapsed = elapsed,
                 DeltaTime = dt,
-                Positions = positions
+                Positions = positions,
+                Velocities = velocities
             });
         }
 
