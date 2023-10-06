@@ -14,8 +14,8 @@ namespace Triangles
         double Du2 { get; }
         double Dv1 { get; }
         double Dv2 { get; }
-        public WithRespectTo<double3x3> Dwu();
-        public WithRespectTo<double3x3> Dwv();
+        public WithRespectTo<double> Dwu();
+        public WithRespectTo<double> Dwv();
     }
     
     [Serializable]
@@ -51,18 +51,18 @@ namespace Triangles
 
         public double D() => Du1 * Dv2 - Du2 * Dv1;
 
-        public WithRespectTo<double3x3> Dwu() => new()
+        public WithRespectTo<double> Dwu() => new()
         {
-            dx0 = double3x3.identity * (Dv1 - Dv2) / D(),
-            dx1 = double3x3.identity * Dv2 / D(),
-            dx2 = double3x3.identity * -Dv1 / D()
+            dx0 = (Dv1 - Dv2) / D(),
+            dx1 = Dv2 / D(),
+            dx2 = -Dv1 / D()
         };
 
-        public WithRespectTo<double3x3> Dwv() => new()
+        public WithRespectTo<double> Dwv() => new()
         {
-            dx0 = double3x3.identity * (Du2 - Du1) / D(),
-            dx1 = double3x3.identity * -Du2 / D(),
-            dx2 = double3x3.identity * Du1 / D()
+            dx0 = (Du2 - Du1) / D(),
+            dx1 = -Du2 / D(),
+            dx2 = Du1 / D()
         };
     }
 }

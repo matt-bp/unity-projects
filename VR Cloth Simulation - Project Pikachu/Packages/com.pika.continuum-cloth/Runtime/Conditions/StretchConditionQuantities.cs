@@ -64,13 +64,13 @@ namespace Conditions
             return (math.length(w) - b) * A;
         }
 
-        private WithRespectTo<double3> GetConditionFirstDerivative(double3 w, WithRespectTo<double3x3> dw)
+        private WithRespectTo<double3> GetConditionFirstDerivative(double3 w, WithRespectTo<double> dw)
         {
             return new WithRespectTo<double3>
             {
-                dx0 = math.mul(dw.dx0, math.normalize(w)) * A,
-                dx1 = math.mul(dw.dx1, math.normalize(w)) * A,
-                dx2 = math.mul(dw.dx2, math.normalize(w)) * A,
+                dx0 = math.mul(dw.dx0 * double3x3.identity, math.normalize(w)) * A,
+                dx1 = math.mul(dw.dx1 * double3x3.identity, math.normalize(w)) * A,
+                dx2 = math.mul(dw.dx2 * double3x3.identity, math.normalize(w)) * A,
             };
         }
 

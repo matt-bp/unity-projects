@@ -49,11 +49,11 @@ namespace Pika.Continuum.Cloth.UnitTests.Conditions
             var stubCombined = Substitute.For<ICombinedTriangle>();
             stubCombined.A.Returns(0.625);
             stubCombined.Wu.Returns(math.double3(1.6, 0.2, 0));
-            stubCombined.Dwu.Returns(new WithRespectTo<double3x3>
+            stubCombined.Dwu.Returns(new WithRespectTo<double>
             {
-                dx0 = double3x3.identity * -0.8,
-                dx1 = double3x3.identity * 1.2,
-                dx2 = double3x3.identity * -0.4
+                dx0 = -0.8,
+                dx1 = 1.2,
+                dx2 = -0.4
             });
             var b = MakeBAtRest();
             var stretchQuantities = new StretchConditionQuantities(stubCombined, b, new List<double3>());
@@ -72,11 +72,11 @@ namespace Pika.Continuum.Cloth.UnitTests.Conditions
             var stubCombined = Substitute.For<ICombinedTriangle>();
             stubCombined.A.Returns(0.625);
             stubCombined.Wv.Returns(math.double3(-0.2, 0.6, 0));
-            stubCombined.Dwv.Returns(new WithRespectTo<double3x3>
+            stubCombined.Dwv.Returns(new WithRespectTo<double>
             {
-                dx0 = double3x3.identity * -0.4,
-                dx1 = double3x3.identity * -0.4,
-                dx2 = double3x3.identity * 0.8
+                dx0 = -0.4,
+                dx1 = -0.4,
+                dx2 = 0.8
             });
             var b = MakeBAtRest();
             var stretchQuantities = new StretchConditionQuantities(stubCombined, b, new List<double3>());

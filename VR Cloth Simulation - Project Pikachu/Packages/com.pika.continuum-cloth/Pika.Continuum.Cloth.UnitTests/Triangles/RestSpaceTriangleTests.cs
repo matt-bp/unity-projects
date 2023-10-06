@@ -1,3 +1,4 @@
+using Conditions;
 using NUnit.Framework;
 using Triangles;
 using Unity.Mathematics;
@@ -32,10 +33,10 @@ namespace Pika.Continuum.Cloth.UnitTests.Triangles
             var triangle = MakeTriangle();
 
             var result = triangle.Dwu();
-
-            AssertOnlyDiagonalEntriesAreSet(result.dx0, -0.8);
-            AssertOnlyDiagonalEntriesAreSet(result.dx1, 1.2);
-            AssertOnlyDiagonalEntriesAreSet(result.dx2, -0.4);
+            
+            Assert.That(result.dx0, Is.EqualTo(-0.8));
+            Assert.That(result.dx1, Is.EqualTo(1.2));
+            Assert.That(result.dx2, Is.EqualTo(-0.4));
         }
         
         [Test]
@@ -45,9 +46,9 @@ namespace Pika.Continuum.Cloth.UnitTests.Triangles
 
             var result = triangle.Dwv();
 
-            AssertOnlyDiagonalEntriesAreSet(result.dx0, -0.4);
-            AssertOnlyDiagonalEntriesAreSet(result.dx1, -0.4);
-            AssertOnlyDiagonalEntriesAreSet(result.dx2, 0.8);
+            Assert.That(result.dx0, Is.EqualTo(-0.4));
+            Assert.That(result.dx1, Is.EqualTo(-0.4));
+            Assert.That(result.dx2, Is.EqualTo(0.8));
         }
         
         #region Helpers
@@ -58,21 +59,6 @@ namespace Pika.Continuum.Cloth.UnitTests.Triangles
                 math.double2(1, 0.5), 
                 math.double2(2, 1), 
                 math.double2(1.5, 2));
-        }
-
-        private static void AssertOnlyDiagonalEntriesAreSet(double3x3 mat, double value)
-        {
-            Assert.That(mat[0][0], Is.EqualTo(value));
-            Assert.That(mat[0][1], Is.EqualTo(0));
-            Assert.That(mat[0][2], Is.EqualTo(0));
-            
-            Assert.That(mat[1][0], Is.EqualTo(0));
-            Assert.That(mat[1][1], Is.EqualTo(value));
-            Assert.That(mat[1][2], Is.EqualTo(0));
-            
-            Assert.That(mat[2][0], Is.EqualTo(0));
-            Assert.That(mat[2][1], Is.EqualTo(0));
-            Assert.That(mat[2][2], Is.EqualTo(value));
         }
         
         #endregion

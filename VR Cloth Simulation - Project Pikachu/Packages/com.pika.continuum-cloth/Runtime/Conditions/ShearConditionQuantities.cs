@@ -49,20 +49,24 @@ namespace Conditions
             combinedTriangle = combined;
             velocities = v;
         }
-        
+
         /// <summary>
-        /// Gets the partial derivative of the condition with respect to a particle i.
+        /// <para>Gets the partial derivative of the condition with respect to a particle i.</para>
+        /// <para>Check out equation 7.30 (pg. 71).</para>
         /// </summary>
         /// <param name="i">ith particle to perform the partial derivative with respect to.</param>
         /// <returns></returns>
-        private double3 GetConditionFirstDerivative(int i) => A *
-                                                              (math.mul(combinedTriangle.Dwu[i], combinedTriangle.Wv) +
-                                                               math.mul(combinedTriangle.Wu, combinedTriangle.Dwv[i]));
+        private double3 GetConditionFirstDerivative(int i)
+        {
+            var dwuxdxix = combinedTriangle.Dwu[i];
+            var dwvxdxix = combinedTriangle.Dwv[i];
+            return A * (dwuxdxix * combinedTriangle.Wu + combinedTriangle.Wv * dwvxdxix);
+        }
 
         /// <summary>
         /// Should be the identity matrix multiplied by a scalar.
         ///
-        /// Check out equation 7.32 (pg. 710.
+        /// Check out equation 7.32 (pg. 71).
         /// </summary>
         /// <param name="i">ith particle to perform the partial derivative.</param>
         /// <returns>Second derivative of the condition function with respect to i and all particles j.</returns>

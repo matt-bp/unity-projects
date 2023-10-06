@@ -9,8 +9,8 @@ namespace Triangles
         public double A { get; }
         public double3 Wu { get; }
         public double3 Wv { get; }
-        public WithRespectTo<double3x3> Dwu { get; }
-        public WithRespectTo<double3x3> Dwv { get; }
+        public WithRespectTo<double> Dwu { get; }
+        public WithRespectTo<double> Dwv { get; }
     }
 
     public class CombinedTriangle : ICombinedTriangle
@@ -37,9 +37,9 @@ namespace Triangles
 
         public double3 Wv => GetDeformationMapDerivativeV();
 
-        [CanBeNull] private WithRespectTo<double3x3> dwu;
+        [CanBeNull] private WithRespectTo<double> dwu;
 
-        public WithRespectTo<double3x3> Dwu
+        public WithRespectTo<double> Dwu
         {
             get
             {
@@ -47,9 +47,9 @@ namespace Triangles
             }   
         }
         
-        [CanBeNull] private WithRespectTo<double3x3> dwv;
+        [CanBeNull] private WithRespectTo<double> dwv;
 
-        public WithRespectTo<double3x3> Dwv
+        public WithRespectTo<double> Dwv
         {
             get
             {
