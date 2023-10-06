@@ -1,4 +1,3 @@
-using LinearAlgebra;
 using NSubstitute;
 using NUnit.Framework;
 using Triangles;

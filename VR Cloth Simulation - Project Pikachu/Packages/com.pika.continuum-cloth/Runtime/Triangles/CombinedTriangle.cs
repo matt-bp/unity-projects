@@ -85,7 +85,8 @@ namespace Triangles
         }
         
         /// <summary>
-        /// My own derivation for the V map derivative. It's not the same as U! I followed how the one for U was derived, and applied that to V, and they're different!
+        /// <para>My own derivation for the V map derivative. It's not the same as U! I followed how the one for U was derived, and applied that to V, and they're different!</para>
+        /// <para>For the derivation, look at equation 7.16, we have to work out the inverse of th matrix (I think that's right?) to see what values we multiply to get $W_v$.</para>
         /// </summary>
         /// <returns></returns>
         private double3 GetDeformationMapDerivativeV()

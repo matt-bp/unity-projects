@@ -15,6 +15,8 @@ namespace Simulation
     [AddComponentMenu("Cloth Simulation/3D Continuum Cloth")]
     public class ContinuumCloth3D : MonoBehaviour
     {
+        [SerializeField] private bool useExplicitIntegration;
+        
         #region Simulation Constants
 
         [SerializeField] private double2 bControl = math.double2(1, 1);
@@ -116,8 +118,6 @@ namespace Simulation
         }
 
         #endregion
-
-        [SerializeField] private bool useExplicitIntegration;
         
         public void StepSimulation(double dt)
         {
@@ -142,9 +142,9 @@ namespace Simulation
                         velocities[index1],
                         velocities[index2]
                     };
-                    
-                    var sq = new StretchConditionQuantities(
-                        new CombinedTriangle(restSpaceTriangles[i], worldSpaceTriangles[i]), bControl, v);
+
+                    var ct = new CombinedTriangle(restSpaceTriangles[i], worldSpaceTriangles[i]);
+                    var sq = new StretchConditionQuantities(ct, bControl, v);
                     var stretchForces = new StretchConditionForceCalculator(k, kd, sq);
                     
                     // Compute forces for triangle
@@ -156,6 +156,19 @@ namespace Simulation
                     forces[index0] += stretchForces.GetDampingForce(0);
                     forces[index1] += stretchForces.GetDampingForce(1);
                     forces[index2] += stretchForces.GetDampingForce(2);
+
+                    var shearQ = new ShearConditionQuantities(ct, v);
+                    var shearForces = new ShearConditionForceCalculator(shearK, shearKd, shearQ);
+                    
+                    // Compute forces for triangle
+                    forces[index0] += shearForces.GetForce(0);
+                    forces[index1] += shearForces.GetForce(1);
+                    forces[index2] += shearForces.GetForce(2);
+                    
+                    // Compute damping force
+                    forces[index0] += shearForces.GetDampingForce(0);
+                    forces[index1] += shearForces.GetDampingForce(1);
+                    forces[index2] += shearForces.GetDampingForce(2);
                 }
 
                 for (var i = 0; i < forces.Count; i++)

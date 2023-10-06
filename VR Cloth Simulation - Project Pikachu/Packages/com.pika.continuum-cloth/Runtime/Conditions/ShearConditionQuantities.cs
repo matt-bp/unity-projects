@@ -8,6 +8,11 @@ namespace Conditions
     public class ShearConditionQuantities
     {
         private double A => combinedTriangle.A;
+        /// <summary>
+        /// <para>This scalar is essentially the dot product of the u axis with the v axis in world space.</para>
+        /// <para>If no shear is occurring, the axes are perpendicular and the condition function is zero.</para>
+        /// <para>If shear is occurring, the condition function is equivalent to the cosine of the angle between them, weighted by the triangle’s area in u / v space.</para>
+        /// </summary>
         public double C => GetCondition();
         public WithRespectTo<double3> Dc => new()
         {
