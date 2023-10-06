@@ -365,7 +365,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &81647013
 Transform:
   m_ObjectHideFlags: 0
@@ -397,16 +397,16 @@ MonoBehaviour:
   bControl:
     x: 1
     y: 1
-  k: 10
-  kd: 2
+  k: 100
+  kd: 10
   shearK: 10
-  shearKd: 2
+  shearKd: 5
   gravity:
     x: 0
-    y: 0
+    y: -10
     z: 0
-  m: 0.1
-  constrainedIndices: 00000000
+  m: 0.001
+  constrainedIndices: 010000000b000000
   worldSpaceTriangles: []
   restSpaceTriangles: []
 --- !u!1 &81761536
@@ -510,6 +510,66 @@ MonoBehaviour:
   - {x: -0.5, y: 0.5, z: 0}
   - {x: 0.5, y: 0.5, z: 0}
   newTriangles: 000000000100000002000000
+--- !u!1 &213178563
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 213178564}
+  - component: {fileID: 213178565}
+  m_Layer: 0
+  m_Name: 3D Continuum Cloth - Explicit Working, Implicit Not Working
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &213178564
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 213178563}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1915693208}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &213178565
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 213178563}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89622610099b4c638322ba04bdccd69e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  useExplicitIntegration: 1
+  bControl:
+    x: 1
+    y: 1
+  k: 100
+  kd: 10
+  shearK: 10
+  shearKd: 5
+  gravity:
+    x: 0
+    y: -10
+    z: 0
+  m: 0.001
+  constrainedIndices: 010000000b000000
+  worldSpaceTriangles: []
+  restSpaceTriangles: []
 --- !u!1 &241719811
 GameObject:
   m_ObjectHideFlags: 0
@@ -1187,7 +1247,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89622610099b4c638322ba04bdccd69e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useExplicitIntegration: 0
+  useExplicitIntegration: 1
   bControl:
     x: 1
     y: 1
@@ -3380,6 +3440,7 @@ Transform:
   - {fileID: 57537455}
   - {fileID: 241719812}
   - {fileID: 385251177}
+  - {fileID: 213178564}
   m_Father: {fileID: 0}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
