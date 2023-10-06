@@ -57,5 +57,49 @@ namespace Pika.Continuum.Cloth.UnitTests.Triangles
             
             AssertDouble3WithinTolerance(result, math.double3(-0.2, 0.6, 0), 0.0001);
         }
+
+        /// <summary>
+        /// This is a test triangle with the following points:
+        /// (-0.5, 0.5), (0.5, 0.5), (0.5, -0.5).
+        /// The rest and world space triangles match each other.
+        /// </summary>
+        [Test]
+        public void Wu_OnSimpleTriangle_ReturnsMapDerivative()
+        {
+            var stubRest = Substitute.For<IRestSpaceTriangle>();
+            stubRest.Dv1.Returns(0);
+            stubRest.Dv2.Returns(1);
+            stubRest.D().Returns(1);
+            var stubWorld = Substitute.For<IWorldSpaceTriangle>();
+            stubWorld.Dx1.Returns(math.double3(1, 0, 0));
+            stubWorld.Dx2.Returns(math.double3(1, 1, 0));
+            var combined = new CombinedTriangle(stubRest, stubWorld);
+
+            var result = combined.Wu;
+            
+            Assert.That(result, Is.EqualTo(math.double3(1, 0, 0)));
+        }
+        
+        /// <summary>
+        /// This is a test triangle with the following points:
+        /// (-0.5, 0.5), (0.5, 0.5), (0.5, -0.5).
+        /// The rest and world space triangles match each other.
+        /// </summary>
+        [Test]
+        public void Wv_OnSimpleTriangle_ReturnsMapDerivative()
+        {
+            var stubRest = Substitute.For<IRestSpaceTriangle>();
+            stubRest.Du1.Returns(1);
+            stubRest.Du2.Returns(1);
+            stubRest.D().Returns(1);
+            var stubWorld = Substitute.For<IWorldSpaceTriangle>();
+            stubWorld.Dx1.Returns(math.double3(1, 0, 0));
+            stubWorld.Dx2.Returns(math.double3(1, 1, 0));
+            var combined = new CombinedTriangle(stubRest, stubWorld);
+
+            var result = combined.Wv;
+            
+            Assert.That(result, Is.EqualTo(math.double3(0, 1, 0)));
+        }
     }
 }

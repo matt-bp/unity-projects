@@ -12,8 +12,9 @@ namespace Conditions
         /// <para>This scalar is essentially the dot product of the u axis with the v axis in world space.</para>
         /// <para>If no shear is occurring, the axes are perpendicular and the condition function is zero.</para>
         /// <para>If shear is occurring, the condition function is equivalent to the cosine of the angle between them, weighted by the triangle’s area in u / v space.</para>
+        /// <para>Check out equation 7.28 (pg. 70).</para>
         /// </summary>
-        public double C => GetCondition();
+        public double C => A * math.dot(combinedTriangle.Wu, combinedTriangle.Wv);
         public WithRespectTo<double3> Dc => new()
         {
             dx0 = GetConditionFirstDerivative(0),
@@ -48,12 +49,23 @@ namespace Conditions
             combinedTriangle = combined;
             velocities = v;
         }
-
-        private double GetCondition() => A * math.dot(combinedTriangle.Wu, combinedTriangle.Wv);
+        
+        /// <summary>
+        /// Gets the partial derivative of the condition with respect to a particle i.
+        /// </summary>
+        /// <param name="i">ith particle to perform the partial derivative with respect to.</param>
+        /// <returns></returns>
         private double3 GetConditionFirstDerivative(int i) => A *
                                                               (math.mul(combinedTriangle.Dwu[i], combinedTriangle.Wv) +
                                                                math.mul(combinedTriangle.Wu, combinedTriangle.Dwv[i]));
 
+        /// <summary>
+        /// Should be the identity matrix multiplied by a scalar.
+        ///
+        /// Check out equation 7.32 (pg. 710.
+        /// </summary>
+        /// <param name="i">ith particle to perform the partial derivative.</param>
+        /// <returns>Second derivative of the condition function with respect to i and all particles j.</returns>
         private WithRespectTo<double3x3> GetConditionSecondDerivative(int i)
         {
             return new WithRespectTo<double3x3>()
