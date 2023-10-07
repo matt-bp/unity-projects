@@ -81,14 +81,26 @@ namespace Conditions
         /// <returns>Second derivative of the condition function with respect to i and all particles j.</returns>
         private WithRespectTo<double3x3> GetConditionSecondDerivative(int i)
         {
+            var dwuxdxix = combinedTriangle.Dwu[i];
+            var dwvxdxix = combinedTriangle.Dwv[i];
+
+            var dwuxdx0x = combinedTriangle.Dwu.dx0;
+            var dwuxdx1x = combinedTriangle.Dwu.dx1;
+            var dwuxdx2x = combinedTriangle.Dwu.dx2;
+            
+            var dwvxdx0x = combinedTriangle.Dwv.dx0;
+            var dwvxdx1x = combinedTriangle.Dwv.dx1;
+            var dwvxdx2x = combinedTriangle.Dwv.dx2;
+
+            var d2cdxix0 = dwuxdxix * dwvxdx0x + dwuxdx0x * dwvxdxix;
+            var d2cdxix1 = dwuxdxix * dwvxdx1x + dwuxdx1x * dwvxdxix;
+            var d2cdxix2 = dwuxdxix * dwvxdx2x + dwuxdx2x * dwvxdxix;
+            
             return new WithRespectTo<double3x3>()
             {
-                dx0 = combinedTriangle.Dwu[i] * combinedTriangle.Dwv.dx0 +
-                      combinedTriangle.Dwu.dx0 * combinedTriangle.Dwv[i],
-                dx1 = combinedTriangle.Dwu[i] * combinedTriangle.Dwv.dx1 +
-                      combinedTriangle.Dwu.dx1 * combinedTriangle.Dwv[i],
-                dx2 = combinedTriangle.Dwu[i] * combinedTriangle.Dwv.dx2 +
-                      combinedTriangle.Dwu.dx2 * combinedTriangle.Dwv[i]
+                dx0 = d2cdxix0 * double3x3.identity,
+                dx1 = d2cdxix1 * double3x3.identity,
+                dx2 = d2cdxix2 * double3x3.identity
             };
         }
     }

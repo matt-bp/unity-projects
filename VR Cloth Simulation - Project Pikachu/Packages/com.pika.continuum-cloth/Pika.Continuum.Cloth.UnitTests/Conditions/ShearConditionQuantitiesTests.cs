@@ -48,22 +48,22 @@ namespace Pika.Continuum.Cloth.UnitTests.Conditions
         [Test]
         public void Dc_OnSimpleRest_ReturnsChangeInCondition()
         {
-            const double D = 1;
+            const double d = 1;
             var stubCombined = Substitute.For<ICombinedTriangle>();
             stubCombined.A.Returns(0.5);
             stubCombined.Wu.Returns(math.double3(1, 0, 0));
             stubCombined.Wv.Returns(math.double3(0, 1, 0));
             stubCombined.Dwu.Returns(new WithRespectTo<double>
             {
-                dx0 = -1 / D, // dv1 - dv2
-                dx1 = 1 / D, // dv2
-                dx2 = 0 / D // -dv1
+                dx0 = -1 / d, // dv1 - dv2
+                dx1 = 1 / d, // dv2
+                dx2 = 0 / d // -dv1
             });
             stubCombined.Dwv.Returns(new WithRespectTo<double>
             {
-                dx0 = 0 / D, // du2 - du1
-                dx1 = -1 / D, // -du2
-                dx2 = 1 / D // du1
+                dx0 = 0 / d, // du2 - du1
+                dx1 = -1 / d, // -du2
+                dx2 = 1 / d // du1
             });
             
             var stretchQuantities = new ShearConditionQuantities(stubCombined, new List<double3>());
@@ -129,6 +129,8 @@ namespace Pika.Continuum.Cloth.UnitTests.Conditions
             AssertDouble3X3HasSameShapeAsIdentity(result.dx2.dx0);
             AssertDouble3X3HasSameShapeAsIdentity(result.dx2.dx1);
             AssertDouble3X3HasSameShapeAsIdentity(result.dx2.dx2);
+            
+            Assert.Fail(); // Need to actually test the calculations based on the simple rest triangle.
         }
         
         #region Helpers
@@ -146,6 +148,9 @@ namespace Pika.Continuum.Cloth.UnitTests.Conditions
             Assert.That(mat[2][0], Is.Zero);
             Assert.That(mat[2][1], Is.Zero);
             Assert.That(mat[2][2], Is.Not.Zero);
+            
+            Assert.That(mat[0][0], Is.EqualTo(mat[1][1]));
+            Assert.That(mat[1][1], Is.EqualTo(mat[2][2]));
         }
         
         #endregion
