@@ -74,6 +74,12 @@ namespace Pika.Continuum.Cloth.UnitTests.Conditions
             Assert.That(result.dx1, Is.EqualTo(math.double3(0.5, -0.5, 0)));
             Assert.That(result.dx2, Is.EqualTo(math.double3(0, 0.5, 0)));
         }
+        
+        [Test]
+        public void CDot_OnSimpleRest_ReturnsTimeDerivative()
+        {
+            Assert.Fail();
+        }
 
         [Test]
         public void D2C_OnSimpleRest_ReturnsIdentityMultipliedByAScalar()
