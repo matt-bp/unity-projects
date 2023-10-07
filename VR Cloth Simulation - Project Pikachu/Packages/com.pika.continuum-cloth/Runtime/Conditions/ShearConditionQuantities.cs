@@ -15,12 +15,21 @@ namespace Conditions
         /// <para>Check out equation 7.28 (pg. 70).</para>
         /// </summary>
         public double C => A * math.dot(combinedTriangle.Wu, combinedTriangle.Wv);
-        public WithRespectTo<double3> Dc => new()
+        public virtual WithRespectTo<double3> Dc => new()
         {
             dx0 = GetConditionFirstDerivative(0),
             dx1 = GetConditionFirstDerivative(1),
             dx2 = GetConditionFirstDerivative(2)
         };
+        
+        /// <summary>
+        /// <para>Calculates the time derivative of the condition function.</para>
+        ///
+        /// <para>This is essentially a summation of the dot product of each conditions
+        /// function's first derivative with respect to a
+        /// particle with that particles current velocity.</para>
+        /// <para>Check equation 7.7 (pg. 61).</para>
+        /// </summary>
         public double CDot => math.dot(Dc.dx0, velocities[0]) + 
                               math.dot(Dc.dx1, velocities[1]) + 
                               math.dot(Dc.dx2, velocities[2]);

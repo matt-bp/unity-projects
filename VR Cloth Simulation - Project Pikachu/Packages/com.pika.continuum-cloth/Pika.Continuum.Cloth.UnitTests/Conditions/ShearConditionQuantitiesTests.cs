@@ -78,7 +78,24 @@ namespace Pika.Continuum.Cloth.UnitTests.Conditions
         [Test]
         public void CDot_OnSimpleRest_ReturnsTimeDerivative()
         {
-            Assert.Fail();
+            var dc = new WithRespectTo<double3>()
+            {
+                dx0 = math.double3(-0.5, 0, 0),
+                dx1 = math.double3(0.5, -0.5, 0),
+                dx2 = math.double3(0, 0,0.5),
+            };
+            var v = new List<double3>
+            {
+                double3.zero + 1,
+                double3.zero + 1,
+                double3.zero + 2,
+            };
+            var mockStretchQuantities = Substitute.For<ShearConditionQuantities>(null, v);
+            mockStretchQuantities.Dc.Returns(dc);
+
+            var result = mockStretchQuantities.CDot;
+            
+            Assert.That(result, Is.EqualTo(0.5));
         }
 
         [Test]
