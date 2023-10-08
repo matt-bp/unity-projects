@@ -113,7 +113,7 @@ namespace Pika.Continuum.Cloth.UnitTests.Conditions
         }
 
         [Test]
-        public void D2C_OnSimpleRest_ReturnsIdentityMultipliedByAScalar()
+        public void D2C_WithContrivedDwuDwv_ReturnsIdentityMultipliedByAScalar()
         {
             var stubCombined = Substitute.For<ICombinedTriangle>();
             stubCombined.Dwu.Returns(new WithRespectTo<double>()
@@ -134,22 +134,24 @@ namespace Pika.Continuum.Cloth.UnitTests.Conditions
 
             AssertDouble3X3HasSameShapeAsIdentity(result.dx0.dx0);
             Assert.That(result.dx0.dx0[0][0], Is.EqualTo(12));
-            
             AssertDouble3X3HasSameShapeAsIdentity(result.dx0.dx1);
             Assert.That(result.dx0.dx1[0][0], Is.EqualTo(120));
-            
             AssertDouble3X3HasSameShapeAsIdentity(result.dx0.dx2);
             Assert.That(result.dx0.dx2[0][0], Is.EqualTo(1200));
             
             AssertDouble3X3HasSameShapeAsIdentity(result.dx1.dx0);
             Assert.That(result.dx1.dx0[0][0], Is.EqualTo(120));
-            
             AssertDouble3X3HasSameShapeAsIdentity(result.dx1.dx1);
+            Assert.That(result.dx1.dx1[0][0], Is.EqualTo(1200));
             AssertDouble3X3HasSameShapeAsIdentity(result.dx1.dx2);
+            Assert.That(result.dx1.dx2[0][0], Is.EqualTo(12000));
             
             AssertDouble3X3HasSameShapeAsIdentity(result.dx2.dx0);
+            Assert.That(result.dx2.dx0[0][0], Is.EqualTo(1200));
             AssertDouble3X3HasSameShapeAsIdentity(result.dx2.dx1);
+            Assert.That(result.dx2.dx1[0][0], Is.EqualTo(12000));
             AssertDouble3X3HasSameShapeAsIdentity(result.dx2.dx2);
+            Assert.That(result.dx2.dx2[0][0], Is.EqualTo(120000));
         }
         
         #region Helpers
