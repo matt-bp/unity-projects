@@ -305,8 +305,8 @@ namespace Simulation
                 // Update positions and velocities from the new dvv that we just calculated.
                 foreach (var (dv, index) in solvedDvs.Select((v, i) => (v, i)))
                 {
-                    positions[index].Value += dt * (velocities[index] + dv);
-                    velocities[index] += dt * dv;
+                    velocities[index] += dv;
+                    positions[index].Value += dt * velocities[index];
                 }
             }
         }
