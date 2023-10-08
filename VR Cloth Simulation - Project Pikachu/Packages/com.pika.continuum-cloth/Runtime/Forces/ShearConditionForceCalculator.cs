@@ -7,11 +7,11 @@ namespace Forces
 {
     public class ShearConditionForceCalculator : IConditionForceCalculator
     {
-        private readonly ShearConditionQuantities cq;
+        private readonly IShearConditionQuantities cq;
         private readonly double k;
         private readonly double kd;
 
-        public ShearConditionForceCalculator(double inK, double inKd, ShearConditionQuantities conditionQuantities)
+        public ShearConditionForceCalculator(double inK, double inKd, IShearConditionQuantities conditionQuantities)
         {
             cq = conditionQuantities;
             k = inK;

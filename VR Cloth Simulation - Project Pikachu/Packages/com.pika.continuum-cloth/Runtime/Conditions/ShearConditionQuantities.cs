@@ -5,7 +5,15 @@ using Unity.Mathematics;
 
 namespace Conditions
 {
-    public class ShearConditionQuantities
+    public interface IShearConditionQuantities
+    {
+        public double C { get; }
+        public WithRespectTo<double3> Dc { get; }
+        public double CDot { get; }
+        public WithRespectTo<WithRespectTo<double3x3>> D2C { get; }
+    }
+    
+    public class ShearConditionQuantities : IShearConditionQuantities
     {
         private double A => combinedTriangle.A;
         /// <summary>
