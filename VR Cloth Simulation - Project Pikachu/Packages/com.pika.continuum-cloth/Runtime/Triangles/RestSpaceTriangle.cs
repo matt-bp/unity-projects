@@ -14,7 +14,21 @@ namespace Triangles
         double Du2 { get; }
         double Dv1 { get; }
         double Dv2 { get; }
+        /// <summary>
+        /// <para>Derivative of Wu with respect to each particle of the triangle moving.</para>
+        /// <para>Since all of our positions data is linear, the only things left after taking the partial derivative will be quantities from the rest triangle.</para>
+        /// <para>Used in the condition's partial derivative with respect to particle's positions.</para>
+        /// <para>Defined by equation 7.23 (pg. 68).</para>
+        /// </summary>
+        /// <returns></returns>
         public WithRespectTo<double> Dwu();
+        /// <summary>
+        /// <para>Derivative of Wv with respect to each particle of the triangle moving.</para>
+        /// <para>Since all of our positions data is linear, the only things left after taking the partial derivative will be quantities from the rest triangle.</para>
+        /// <para>Used in the condition's partial derivative with respect to particle's positions.</para>
+        /// <para>Defined by equation 7.25 on page 69.</para>
+        /// </summary>
+        /// <returns></returns>
         public WithRespectTo<double> Dwv();
     }
     
@@ -50,7 +64,7 @@ namespace Triangles
         }
 
         public double D() => Du1 * Dv2 - Du2 * Dv1;
-
+        
         public WithRespectTo<double> Dwu() => new()
         {
             dx0 = (Dv1 - Dv2) / D(),

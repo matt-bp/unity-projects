@@ -26,6 +26,20 @@ namespace Pika.Continuum.Cloth.UnitTests.Conditions
             
             Assert.That(result, Is.EqualTo(0));
         }
+
+        [Test]
+        public void C_OnSimpleRestStretched_ReturnsNoShear()
+        {
+            var stubCombined = Substitute.For<ICombinedTriangle>();
+            stubCombined.A.Returns(0.5);
+            stubCombined.Wu.Returns(math.double3(2, 0, 0));
+            stubCombined.Wv.Returns(math.double3(0, 1, 0));
+            var stretchQuantities = new ShearConditionQuantities(stubCombined, new List<double3>());
+
+            var result = stretchQuantities.C;
+            
+            Assert.That(result, Is.EqualTo(0));
+        }
         
         [Test]
         public void C_OnOffsetRest_ReturnsDotMultipliedByArea()
@@ -70,9 +84,9 @@ namespace Pika.Continuum.Cloth.UnitTests.Conditions
 
             var result = stretchQuantities.Dc;
             
-            Assert.That(result.dx0, Is.EqualTo(math.double3(-0.5, 0, 0)));
-            Assert.That(result.dx1, Is.EqualTo(math.double3(0.5, -0.5, 0)));
-            Assert.That(result.dx2, Is.EqualTo(math.double3(0, 0.5, 0)));
+            Assert.That(result.dx0, Is.EqualTo(math.double3(0, -0.5, 0)));
+            Assert.That(result.dx1, Is.EqualTo(math.double3(-0.5, 0.5, 0)));
+            Assert.That(result.dx2, Is.EqualTo(math.double3(0.5, 0, 0)));
         }
         
         [Test]
@@ -105,32 +119,37 @@ namespace Pika.Continuum.Cloth.UnitTests.Conditions
             stubCombined.Dwu.Returns(new WithRespectTo<double>()
             {
                dx0 = 2,
-               dx1 = 2,
-               dx2 = 2
+               dx1 = 20,
+               dx2 = 200
             });
             stubCombined.Dwv.Returns(new WithRespectTo<double>()
             {
-                dx0 = 2,
-                dx1 = 2,
-                dx2 = 2
+                dx0 = 3,
+                dx1 = 30,
+                dx2 = 300
             });
             var stretchQuantities = new ShearConditionQuantities(stubCombined, new List<double3>());
 
             var result = stretchQuantities.D2C;
 
             AssertDouble3X3HasSameShapeAsIdentity(result.dx0.dx0);
+            Assert.That(result.dx0.dx0[0][0], Is.EqualTo(12));
+            
             AssertDouble3X3HasSameShapeAsIdentity(result.dx0.dx1);
+            Assert.That(result.dx0.dx1[0][0], Is.EqualTo(120));
+            
             AssertDouble3X3HasSameShapeAsIdentity(result.dx0.dx2);
+            Assert.That(result.dx0.dx2[0][0], Is.EqualTo(1200));
             
             AssertDouble3X3HasSameShapeAsIdentity(result.dx1.dx0);
+            Assert.That(result.dx1.dx0[0][0], Is.EqualTo(120));
+            
             AssertDouble3X3HasSameShapeAsIdentity(result.dx1.dx1);
             AssertDouble3X3HasSameShapeAsIdentity(result.dx1.dx2);
             
             AssertDouble3X3HasSameShapeAsIdentity(result.dx2.dx0);
             AssertDouble3X3HasSameShapeAsIdentity(result.dx2.dx1);
             AssertDouble3X3HasSameShapeAsIdentity(result.dx2.dx2);
-            
-            Assert.Fail(); // Need to actually test the calculations based on the simple rest triangle.
         }
         
         #region Helpers

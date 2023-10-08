@@ -61,7 +61,7 @@ namespace Conditions
 
         /// <summary>
         /// <para>Gets the partial derivative of the condition with respect to a particle i.</para>
-        /// <para>Check out equation 7.30 (pg. 71).</para>
+        /// <para>Check out equation 7.31 (pg. 71).</para>
         /// </summary>
         /// <param name="i">ith particle to perform the partial derivative with respect to.</param>
         /// <returns></returns>
@@ -69,7 +69,7 @@ namespace Conditions
         {
             var dwuxdxix = combinedTriangle.Dwu[i];
             var dwvxdxix = combinedTriangle.Dwv[i];
-            return A * (dwuxdxix * combinedTriangle.Wu + combinedTriangle.Wv * dwvxdxix);
+            return A * (dwuxdxix * combinedTriangle.Wv + combinedTriangle.Wu * dwvxdxix);
         }
 
         /// <summary>
