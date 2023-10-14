@@ -172,6 +172,8 @@ namespace Simulation
                     forces[index2] += shearForces.GetDampingForce(2);
                 }
 
+                // Iterate over edge sharing triangles (need to have constructed this list before)
+                
                 for (var i = 0; i < forces.Count; i++)
                 {
                     if (constrainedIndices.Contains(i)) continue;

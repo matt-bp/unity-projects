@@ -24,4 +24,22 @@ namespace Conditions
         public T dv1 { get; set; }
         public T dv2 { get; set; }
     }
+    
+    public class WithRespectTo4<T>
+    {
+        public T Dx0 { get; set; }
+        public T Dx1 { get; set; }
+        public T Dx2 { get; set; }
+        public T Dx3 { get; set; }
+
+        public T this[int index] =>
+            index switch
+            {
+                0 => Dx0,
+                1 => Dx1,
+                2 => Dx2,
+                3 => Dx3,
+                _ => throw new ArgumentOutOfRangeException(nameof(index), $"Not expected index: {index}")
+            };
+    }
 }
