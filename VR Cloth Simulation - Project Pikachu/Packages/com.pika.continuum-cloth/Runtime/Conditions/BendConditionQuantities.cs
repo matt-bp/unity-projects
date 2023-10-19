@@ -1,33 +1,73 @@
+using TensorAlgebra;
 using Unity.Mathematics;
 
 namespace Conditions
 {
     public interface IBendConditionQuantities
     {
+        /// <summary>
+        /// <para>Check out equation 7.34 Stuyck pg. 72.</para>
+        /// <returns>The angle between triangle normals.</returns>
+        /// </summary>
         public double C { get; }
+
+        /// <summary>
+        /// <para>Check out equation 7.35 Stuyck pg. 72.</para>
+        /// <returns>The first derivative of the bend condition function with respect to the two triangle's 4 vertices.</returns>
+        /// </summary>
+        public WithRespectTo4<double3> Dc { get; }
     }
-    
+
     public class BendConditionQuantities : IBendConditionQuantities
     {
+        private double3 X0 { get; }
+        private double3 X1 { get; }
+        private double3 X2 { get; }
+        private double3 X3 { get; }
+        private double3 Na => math.cross(X2 - X0, X1 - X0);
+        private double3 NaHat => math.normalize(Na);
+        private double3 Nb => math.cross(X1 - X3, X2 - X3);
+        private double3 NbHat => math.normalize(Nb);
+        private double3 E => X1 - X2;
+
+        private WithRespectTo4<double3x3> DnaHat => new()
+        {
+            dx0 = 1 / math.length(Na) * Dna.dx0
+        };
+
+        private WithRespectTo4<double3x3> Dna => new()
+        {
+            dx0 = double3x3.zero
+        };
+
+        public BendConditionQuantities(double3 x0, double3 x1, double3 x2, double3 x3)
+        {
+            X0 = x0;
+            X1 = x1;
+            X2 = x2;
+            X3 = x3;
+        }
+
         public double C
         {
             get
             {
-                var cosTheta = math.dot(Na, Nb);
-                var sinTheta = math.dot(math.cross(Na, Nb), E);
+                var cosTheta = math.dot(NaHat, NbHat);
+                var sinTheta = math.dot(math.cross(NaHat, NbHat), E);
                 return math.atan2(sinTheta, cosTheta);
             }
         }
 
-        private double3 Na { get; }
-        private double3 Nb { get; }
-        private double3 E { get; }
-
-        public BendConditionQuantities(double3 x0, double3 x1, double3 x2, double3 x3)
+        public WithRespectTo4<double3> Dc => new()
         {
-            Na = math.normalize(math.cross(x2 - x0, x1 - x0));
-            Nb = math.normalize(math.cross(x1 - x3, x2 - x3));
-            E = x1 - x2;
+            dx0 = GetConditionFirstDerivative(0),
+        };
+
+        private double3 GetConditionFirstDerivative(int i)
+        {
+            var dcos = DnaHat[i].Dot(NbHat) + NaHat.Dot(DnaHat[i]);
+
+            return dcos;
         }
     }
 }
