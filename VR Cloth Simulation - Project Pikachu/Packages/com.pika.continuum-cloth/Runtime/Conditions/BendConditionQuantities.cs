@@ -59,9 +59,9 @@ namespace Conditions
 
         private double3 GetConditionFirstDerivative(int i)
         {
-            var dcos = DnaHat[i].Dot(NbHat) + NaHat.Dot(DnaHat[i]);
+            var dCos = DnaHat[i].Dot(NbHat) + NaHat.Dot(DnaHat[i]);
 
-            return dcos;
+            return Cos * dCos;
         }
     }
 }
