@@ -29,6 +29,8 @@ namespace Conditions
         private double3 Nb => math.cross(X1 - X3, X2 - X3);
         private double3 NbHat => math.normalize(Nb);
         private double3 E => X1 - X2;
+        private double Cos => math.dot(NaHat, NbHat);
+        private double Sin => math.dot(math.cross(NaHat, NbHat), E);
 
         private WithRespectTo4<double3x3> DnaHat => new()
         {
@@ -48,15 +50,7 @@ namespace Conditions
             X3 = x3;
         }
 
-        public double C
-        {
-            get
-            {
-                var cosTheta = math.dot(NaHat, NbHat);
-                var sinTheta = math.dot(math.cross(NaHat, NbHat), E);
-                return math.atan2(sinTheta, cosTheta);
-            }
-        }
+        public double C => math.atan2(Sin, Cos);
 
         public WithRespectTo4<double3> Dc => new()
         {
