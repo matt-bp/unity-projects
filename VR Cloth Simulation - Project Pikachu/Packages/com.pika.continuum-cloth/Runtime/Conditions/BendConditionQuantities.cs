@@ -32,12 +32,12 @@ namespace Conditions
 
         private WithRespectTo4<double3x3> DnaHat => new()
         {
-            dx0 = 1 / math.length(Na) * Dna.dx0
+            Dx0 = 1 / math.length(Na) * Dna.Dx0
         };
 
         private WithRespectTo4<double3x3> Dna => new()
         {
-            dx0 = double3x3.zero
+            Dx0 = double3x3.zero
         };
 
         public BendConditionQuantities(double3 x0, double3 x1, double3 x2, double3 x3)
@@ -60,7 +60,7 @@ namespace Conditions
 
         public WithRespectTo4<double3> Dc => new()
         {
-            dx0 = GetConditionFirstDerivative(0),
+            Dx0 = GetConditionFirstDerivative(0),
         };
 
         private double3 GetConditionFirstDerivative(int i)
