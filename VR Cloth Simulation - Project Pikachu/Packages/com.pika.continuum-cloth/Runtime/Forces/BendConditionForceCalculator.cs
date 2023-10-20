@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using Conditions;
 using Unity.Mathematics;
 
@@ -18,10 +19,7 @@ namespace Forces
 
         public double3 GetForce(int i) => -k * cq.Dc[i] * cq.C;
 
-        public double3 GetDampingForce(int i)
-        {
-            throw new System.NotImplementedException();
-        }
+        public double3 GetDampingForce(int i) => -kd * cq.Dc[i] * cq.CDot;
 
         public WithRespectTo<double3x3> GetForceFirstPartialDerivative(int i)
         {

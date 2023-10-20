@@ -54,12 +54,6 @@ namespace Simulation
             worldSpaceTriangles = new List<WorldSpaceTriangle>();
             restSpaceTriangles = new List<RestSpaceTriangle>();
             
-            // Make rest post out of filter
-            // Need to create
-            // [x] Indices
-            // [x] World space triangles
-            // [x] Rest space triangles
-            // Does updating an array index value that was passed into a c# object, update it's contents? Like, is it a pointer?
             triangleIndices = GetTriangles(flatTriangleIndices).Select(x => Tuple.Create(x[0], x[1], x[2])).ToList();
 
             foreach (var triangle in triangleIndices)
@@ -79,6 +73,8 @@ namespace Simulation
                     pos2.Value.xy
                 ));
             }
+            
+            // TODO: Find triangles that share an edge, and add those indices to a list (4 grouped indices in the list).
         }
 
         public void SetWorldSpacePositions(List<double3> worldSpacePositions)

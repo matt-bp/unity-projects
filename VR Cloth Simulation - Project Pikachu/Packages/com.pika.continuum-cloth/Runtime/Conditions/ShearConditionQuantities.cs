@@ -7,28 +7,14 @@ namespace Conditions
 {
     public interface IShearConditionQuantities
     {
-        public double C { get; }
-        public WithRespectTo<double3> Dc { get; }
-        public double CDot { get; }
-        public WithRespectTo<WithRespectTo<double3x3>> D2C { get; }
-    }
-    
-    public class ShearConditionQuantities : IShearConditionQuantities
-    {
-        private double A => combinedTriangle.A;
         /// <summary>
         /// <para>This scalar is essentially the dot product of the u axis with the v axis in world space.</para>
         /// <para>If no shear is occurring, the axes are perpendicular and the condition function is zero.</para>
         /// <para>If shear is occurring, the condition function is equivalent to the cosine of the angle between them, weighted by the triangle’s area in u / v space.</para>
         /// <para>Check out equation 7.28 (pg. 70).</para>
         /// </summary>
-        public double C => A * math.dot(combinedTriangle.Wu, combinedTriangle.Wv);
-        public virtual WithRespectTo<double3> Dc => new()
-        {
-            dx0 = GetConditionFirstDerivative(0),
-            dx1 = GetConditionFirstDerivative(1),
-            dx2 = GetConditionFirstDerivative(2)
-        };
+        public double C { get; }
+        public WithRespectTo<double3> Dc { get; }
         
         /// <summary>
         /// <para>Calculates the time derivative of the condition function.</para>
@@ -38,6 +24,21 @@ namespace Conditions
         /// particle with that particles current velocity.</para>
         /// <para>Check equation 7.7 (pg. 61).</para>
         /// </summary>
+        public double CDot { get; }
+        public WithRespectTo<WithRespectTo<double3x3>> D2C { get; }
+    }
+    
+    public class ShearConditionQuantities : IShearConditionQuantities
+    {
+        private double A => combinedTriangle.A;
+        public double C => A * math.dot(combinedTriangle.Wu, combinedTriangle.Wv);
+        public virtual WithRespectTo<double3> Dc => new()
+        {
+            dx0 = GetConditionFirstDerivative(0),
+            dx1 = GetConditionFirstDerivative(1),
+            dx2 = GetConditionFirstDerivative(2)
+        };
+        
         public double CDot => math.dot(Dc.dx0, velocities[0]) + 
                               math.dot(Dc.dx1, velocities[1]) + 
                               math.dot(Dc.dx2, velocities[2]);

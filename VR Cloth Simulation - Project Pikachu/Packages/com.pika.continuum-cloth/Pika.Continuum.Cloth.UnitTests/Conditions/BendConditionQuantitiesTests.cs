@@ -1,5 +1,5 @@
+using System.Collections.Generic;
 using Conditions;
-using LinearAlgebra;
 using NUnit.Framework;
 using Unity.Mathematics;
 
@@ -59,7 +59,7 @@ namespace Pika.Continuum.Cloth.UnitTests.Conditions
             var x2 = math.double3(1, 1, 1);
             var x3 = math.double3(-1, 1, 2);
 
-            var bq = new BendConditionQuantities(x0, x1, x2, x3);
+            var bq = new BendConditionQuantities(x0, x1, x2, x3, new List<double3>());
 
             return bq;
         }
@@ -71,7 +71,7 @@ namespace Pika.Continuum.Cloth.UnitTests.Conditions
             var x2 = math.double3(1, 1, 1);
             var x3 = math.double3(-1, -1, 2);
 
-            var bq = new BendConditionQuantities(x0, x1, x2, x3);
+            var bq = new BendConditionQuantities(x0, x1, x2, x3, new List<double3>());
 
             return bq;
         }

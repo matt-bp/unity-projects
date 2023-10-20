@@ -19,6 +19,11 @@ namespace Conditions
         /// <returns>The first derivative of the bend condition function with respect to the two triangle's 4 vertices.</returns>
         /// </summary>
         public WithRespectTo4<double3> Dc { get; }
+        
+        /// <summary>
+        /// <para>Check equation 7.7 (pg. 61).</para>
+        /// </summary>
+        public double CDot { get; }
     }
 
     public class BendConditionQuantities : IBendConditionQuantities
@@ -27,6 +32,7 @@ namespace Conditions
         private double3 X1 { get; }
         private double3 X2 { get; }
         private double3 X3 { get; }
+        private List<double3> Velocities { get; }
         private double3 Na => math.cross(X2 - X0, X1 - X0);
         private double3 NaHat => math.normalize(Na);
         private double3 Nb => math.cross(X1 - X3, X2 - X3);
@@ -34,27 +40,42 @@ namespace Conditions
         private double3 E => X1 - X2;
         private double3 EHat => math.normalize(E);
         private double Cos => math.dot(NaHat, NbHat);
-        private double Sin => math.dot(math.cross(NaHat, NbHat), E);
+        private double Sin => math.dot(math.cross(NaHat, NbHat), EHat);
 
+        #region Na Derivatives
+        
         private Tuple<double3, double3, double3, double3> Qa =>
             Tuple.Create(X2 - X1, X0 - X2, X1 - X0, math.double3(0));
         private WithRespectTo4<double3x3> Dna => MakeDn(Qa);
         private WithRespectTo4<double3x3> DnaHat => MakeDHat(Na, Dna);
+        
+        #endregion
+        
+        #region Nb Derivatives
+        
         private Tuple<double3, double3, double3, double3> Qb =>
             Tuple.Create(math.double3(0), X2 - X3, X3 - X1, X1 - X2);
         private WithRespectTo4<double3x3> Dnb => MakeDn(Qb);
         private WithRespectTo4<double3x3> DnbHat => MakeDHat(Nb, Dnb);
+        
+        #endregion
+        
+        #region E Derivatives
+        
         private static Tuple<double3, double3, double3, double3> Qe =>
             Tuple.Create(math.double3(0), math.double3(1), math.double3(-1), math.double3(0));
         private static WithRespectTo4<double3x3> De => MakeDn(Qe);
         private WithRespectTo4<double3x3> DeHat => MakeDHat(E, De);
+        
+        #endregion
 
-        public BendConditionQuantities(double3 x0, double3 x1, double3 x2, double3 x3)
+        public BendConditionQuantities(double3 x0, double3 x1, double3 x2, double3 x3, List<double3> v)
         {
             X0 = x0;
             X1 = x1;
             X2 = x2;
             X3 = x3;
+            Velocities = v;
         }
 
         public double C => math.atan2(Sin, Cos);
@@ -66,6 +87,11 @@ namespace Conditions
             Dx2 = GetConditionFirstDerivative(2),
             Dx3 = GetConditionFirstDerivative(3),
         };
+
+        public double CDot => math.dot(Dc.Dx0, Velocities[0]) +
+                              math.dot(Dc.Dx1, Velocities[1]) +
+                              math.dot(Dc.Dx2, Velocities[2]) +
+                              math.dot(Dc.Dx3, Velocities[3]);
 
         private double3 GetConditionFirstDerivative(int i)
         {
