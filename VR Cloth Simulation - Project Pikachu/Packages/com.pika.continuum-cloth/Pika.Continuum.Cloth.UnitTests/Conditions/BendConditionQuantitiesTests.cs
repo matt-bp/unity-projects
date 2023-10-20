@@ -45,6 +45,9 @@ namespace Pika.Continuum.Cloth.UnitTests.Conditions
             var result = bq.Dc;
 
             Assert.That(result.Dx0, Is.EqualTo(double3.zero));
+            Assert.That(result.Dx1, Is.EqualTo(double3.zero));
+            Assert.That(result.Dx2, Is.EqualTo(double3.zero));
+            Assert.That(result.Dx3, Is.EqualTo(double3.zero));
         }
         
         #region Helpers

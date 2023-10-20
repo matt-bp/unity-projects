@@ -38,14 +38,16 @@ namespace Conditions
 
         private Tuple<double3, double3, double3, double3> Qa =>
             Tuple.Create(X2 - X1, X0 - X2, X1 - X0, math.double3(0));
-
-        private Tuple<double3, double3, double3, double3> Qb =>
-            Tuple.Create(math.double3(0), X2 - X3, X3 - X1, X1 - X2);
-
         private WithRespectTo4<double3x3> Dna => MakeDn(Qa);
         private WithRespectTo4<double3x3> DnaHat => MakeDHat(Na, Dna);
+        private Tuple<double3, double3, double3, double3> Qb =>
+            Tuple.Create(math.double3(0), X2 - X3, X3 - X1, X1 - X2);
         private WithRespectTo4<double3x3> Dnb => MakeDn(Qb);
         private WithRespectTo4<double3x3> DnbHat => MakeDHat(Nb, Dnb);
+        private static Tuple<double3, double3, double3, double3> Qe =>
+            Tuple.Create(math.double3(0), math.double3(1), math.double3(-1), math.double3(0));
+        private static WithRespectTo4<double3x3> De => MakeDn(Qe);
+        private WithRespectTo4<double3x3> DeHat => MakeDHat(E, De);
 
         public BendConditionQuantities(double3 x0, double3 x1, double3 x2, double3 x3)
         {
@@ -72,18 +74,20 @@ namespace Conditions
                 math.dot(DnaHat[i][element], NbHat) + math.dot(NaHat, DnbHat[i][element]);
 
             var dCos = math.double3(
-                MakeDCosByElement(0), // s = 0 (X)
-                MakeDCosByElement(1), // s = 1 (Y)
-                MakeDCosByElement(2) // s = 2 (Z)
+                MakeDCosByElement(0),   // s = 0 (X)
+                MakeDCosByElement(1),   // s = 1 (Y)
+                MakeDCosByElement(2)    // s = 2 (Z)
             );
 
             // See equation 49 by Pritchard (pg. 5).
-            double MakeDSinByElement(int element) => 0; // TODO: Pick up here tomorrow
+            double MakeDSinByElement(int element) =>
+                math.dot(math.cross(DnaHat[i][element], NbHat) + math.cross(NaHat, DnbHat[i][element]), EHat) +
+                math.dot(math.cross(NaHat, NbHat), DeHat[i][element]);
 
             var dSin = math.double3(
-                MakeDSinByElement(0),
-                MakeDSinByElement(1),
-                MakeDSinByElement(2)
+                MakeDSinByElement(0),   // s = 0 (X)
+                MakeDSinByElement(1),   // s = 1 (Y)
+                MakeDSinByElement(2)    // s = 2 (Z)
             );
 
             return Cos * dSin - Sin * dCos;
