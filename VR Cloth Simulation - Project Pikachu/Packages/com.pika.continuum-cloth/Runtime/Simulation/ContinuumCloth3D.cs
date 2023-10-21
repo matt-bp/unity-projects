@@ -10,6 +10,7 @@ using Geometry;
 using LinearAlgebra;
 using Solvers;
 using Triangles;
+using TrianglePair = Geometry.TrianglePair;
 
 namespace Simulation
 {
@@ -76,7 +77,7 @@ namespace Simulation
             }
             
             // TODO: Find triangles that share an edge, and add those indices to a list (4 grouped indices in the list).
-            var quads = Quad.MakeFromSharedEdges(triangleIndices);
+            var quads = TrianglePair.MakeFromSharedEdges(triangleIndices);
             
             // Create triangle pairs
         }
