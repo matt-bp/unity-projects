@@ -18,7 +18,7 @@ namespace Simulation
     public class ContinuumCloth3D : MonoBehaviour
     {
         [SerializeField] private bool useExplicitIntegration;
-        
+
         #region Simulation Constants
 
         [SerializeField] private double2 bControl = math.double2(1, 1);
@@ -26,6 +26,8 @@ namespace Simulation
         [SerializeField] private double kd = 0.0;
         [SerializeField] private double shearK = 10;
         [SerializeField] private double shearKd = 0.0;
+        [SerializeField] private double bendK = 5;
+        [SerializeField] private double bendKd = 1;
         [SerializeField] private double3 gravity = math.double3(0.0, -10.0, 0.0);
 
         /// <summary>
@@ -47,6 +49,7 @@ namespace Simulation
         private List<(int, int, int)> triangleIndices = new();
         [SerializeField] private List<WorldSpaceTriangle> worldSpaceTriangles = new();
         [SerializeField] private List<RestSpaceTriangle> restSpaceTriangles = new();
+        private List<(int, int, int, int)> trianglePairIndices = new();
 
         public void SetTriangles(List<int> flatTriangleIndices)
         {
@@ -55,7 +58,7 @@ namespace Simulation
 
             worldSpaceTriangles = new List<WorldSpaceTriangle>();
             restSpaceTriangles = new List<RestSpaceTriangle>();
-            
+
             triangleIndices = GetTriangles(flatTriangleIndices).Select(x => (x[0], x[1], x[2])).ToList();
 
             foreach (var triangle in triangleIndices)
@@ -75,11 +78,8 @@ namespace Simulation
                     pos2.Value.xy
                 ));
             }
-            
-            // TODO: Find triangles that share an edge, and add those indices to a list (4 grouped indices in the list).
-            var quads = TrianglePair.MakeFromSharedEdges(triangleIndices);
-            
-            // Create triangle pairs
+
+            trianglePairIndices = TrianglePair.MakeFromSharedEdges(triangleIndices);
         }
 
         public void SetWorldSpacePositions(List<double3> worldSpacePositions)
@@ -104,8 +104,8 @@ namespace Simulation
 
             Debug.Assert(positions.Count == forces.Count);
             Debug.Assert(positions.Count == velocities.Count);
-            
-            Debug.Log("Setup!");
+
+            Debug.Log("Finished setting world space positions!");
         }
 
         public List<double3> Positions => positions.Select(p => p.Value).ToList();
@@ -120,7 +120,7 @@ namespace Simulation
         }
 
         #endregion
-        
+
         public void StepSimulation(double dt)
         {
             // Clear out force vector
@@ -148,12 +148,12 @@ namespace Simulation
                     var ct = new CombinedTriangle(restSpaceTriangles[i], worldSpaceTriangles[i]);
                     var sq = new StretchConditionQuantities(ct, bControl, v);
                     var stretchForces = new StretchConditionForceCalculator(k, kd, sq);
-                    
+
                     // Compute forces for triangle
                     forces[index0] += stretchForces.GetForce(0);
                     forces[index1] += stretchForces.GetForce(1);
                     forces[index2] += stretchForces.GetForce(2);
-                    
+
                     // Compute damping force
                     forces[index0] += stretchForces.GetDampingForce(0);
                     forces[index1] += stretchForces.GetDampingForce(1);
@@ -161,25 +161,54 @@ namespace Simulation
 
                     var shearQ = new ShearConditionQuantities(ct, v);
                     var shearForces = new ShearConditionForceCalculator(shearK, shearKd, shearQ);
-                    
+
                     // Compute forces for triangle
                     forces[index0] += shearForces.GetForce(0);
                     forces[index1] += shearForces.GetForce(1);
                     forces[index2] += shearForces.GetForce(2);
-                    
+
                     // Compute damping force
                     forces[index0] += shearForces.GetDampingForce(0);
                     forces[index1] += shearForces.GetDampingForce(1);
                     forces[index2] += shearForces.GetDampingForce(2);
                 }
 
-                // Iterate over edge sharing triangles (need to have constructed this list before)
-                // Iterate over triangle pairs and compute bend forces
-                
+                foreach (var pair in trianglePairIndices)
+                {
+                    var (index0, index1, index2, index3) = pair;
+                    
+                    var v = new List<double3>()
+                    {
+                        velocities[index0],
+                        velocities[index1],
+                        velocities[index2],
+                        velocities[index3]
+                    };
+                    
+                    var bendQ = new BendConditionQuantities(
+                        positions[index0].Value, 
+                        positions[index1].Value, 
+                        positions[index2].Value, 
+                        positions[index3].Value, v);
+                    var bendForces = new BendConditionForceCalculator(bendK, bendKd, bendQ);
+                    
+                    // Compute forces for triangle
+                    forces[index0] += bendForces.GetForce(0);
+                    forces[index1] += bendForces.GetForce(1);
+                    forces[index2] += bendForces.GetForce(2);
+                    forces[index3] += bendForces.GetForce(3);
+
+                    // Compute damping force
+                    forces[index0] += bendForces.GetDampingForce(0);
+                    forces[index1] += bendForces.GetDampingForce(1);
+                    forces[index2] += bendForces.GetDampingForce(2);
+                    forces[index3] += bendForces.GetDampingForce(3);
+                }
+
                 for (var i = 0; i < forces.Count; i++)
                 {
                     if (constrainedIndices.Contains(i)) continue;
-                    
+
                     var a = forces[i] / m;
                     velocities[i] += dt * a;
                     positions[i].Value += dt * velocities[i];
@@ -195,7 +224,7 @@ namespace Simulation
                     var index0 = indices.Item1;
                     var index1 = indices.Item2;
                     var index2 = indices.Item3;
-                    
+
                     // Compute force for triangle
                     forces[index0] += cfc.GetForce(0);
                     forces[index1] += cfc.GetForce(1);
@@ -257,7 +286,7 @@ namespace Simulation
                     a[index2][index1] += dt * dd2V.dv1;
                     a[index2][index2] -= dt * dd2V.dv2;
                 }
-                
+
                 // Set entries in matrix A and matrix dfdx for stretch condition, this will look different because 
                 //  I'm doing it all at once, and not multiplying matrices explicitly
                 for (var i = 0; i < triangleIndices.Count; i++)
@@ -274,16 +303,16 @@ namespace Simulation
                     };
 
                     var combined = new CombinedTriangle(restSpaceTriangles[i], worldSpaceTriangles[i]);
-                    
+
                     var sq = new StretchConditionQuantities(
                         combined, bControl, v);
                     var cf = new StretchConditionForceCalculator(k, kd, sq);
-                    
+
                     SetForces(cf, triangleIndices[i]);
 
                     var shearQ = new ShearConditionQuantities(combined, v);
                     var scf = new ShearConditionForceCalculator(shearK, shearKd, shearQ);
-                    
+
                     SetForces(scf, triangleIndices[i]);
                 }
 
