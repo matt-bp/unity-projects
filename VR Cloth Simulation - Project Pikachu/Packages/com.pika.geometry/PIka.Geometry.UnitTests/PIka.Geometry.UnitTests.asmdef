@@ -1,0 +1,6 @@
+{
+    "name": "PIka.Geometry.UnitTests",
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ]
+}

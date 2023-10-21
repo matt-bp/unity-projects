@@ -6,6 +6,7 @@ using System.Linq;
 using Conditions;
 using DataStructures;
 using Forces;
+using Geometry;
 using LinearAlgebra;
 using Solvers;
 using Triangles;
@@ -42,7 +43,7 @@ namespace Simulation
         private List<double3> velocities = new();
         [SerializeField] private List<int> constrainedIndices = new();
 
-        private List<Tuple<int, int, int>> triangleIndices = new();
+        private List<(int, int, int)> triangleIndices = new();
         [SerializeField] private List<WorldSpaceTriangle> worldSpaceTriangles = new();
         [SerializeField] private List<RestSpaceTriangle> restSpaceTriangles = new();
 
@@ -54,7 +55,7 @@ namespace Simulation
             worldSpaceTriangles = new List<WorldSpaceTriangle>();
             restSpaceTriangles = new List<RestSpaceTriangle>();
             
-            triangleIndices = GetTriangles(flatTriangleIndices).Select(x => Tuple.Create(x[0], x[1], x[2])).ToList();
+            triangleIndices = GetTriangles(flatTriangleIndices).Select(x => (x[0], x[1], x[2])).ToList();
 
             foreach (var triangle in triangleIndices)
             {
@@ -75,6 +76,9 @@ namespace Simulation
             }
             
             // TODO: Find triangles that share an edge, and add those indices to a list (4 grouped indices in the list).
+            var quads = Quad.MakeFromSharedEdges(triangleIndices);
+            
+            // Create triangle pairs
         }
 
         public void SetWorldSpacePositions(List<double3> worldSpacePositions)
@@ -169,6 +173,7 @@ namespace Simulation
                 }
 
                 // Iterate over edge sharing triangles (need to have constructed this list before)
+                // Iterate over triangle pairs and compute bend forces
                 
                 for (var i = 0; i < forces.Count; i++)
                 {
@@ -184,7 +189,7 @@ namespace Simulation
                 var a = Grid<double3x3>.MakeMatrix(positions.Count, double3x3.zero);
                 var dfdx = Grid<double3x3>.MakeMatrix(positions.Count, double3x3.zero);
 
-                void SetForces(IConditionForceCalculator cfc, Tuple<int, int, int> indices)
+                void SetForces(IConditionForceCalculator cfc, (int, int, int) indices)
                 {
                     var index0 = indices.Item1;
                     var index1 = indices.Item2;
