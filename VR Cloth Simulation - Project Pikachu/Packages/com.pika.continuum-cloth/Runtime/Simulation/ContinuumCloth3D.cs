@@ -7,10 +7,11 @@ using Conditions;
 using DataStructures;
 using Forces;
 using Geometry;
+using Geometry.Indices;
 using LinearAlgebra;
 using Solvers;
 using Triangles;
-using TrianglePair = Geometry.TrianglePair;
+using TrianglePair = Geometry.Indices.TrianglePair;
 
 namespace Simulation
 {
@@ -59,7 +60,7 @@ namespace Simulation
             worldSpaceTriangles = new List<WorldSpaceTriangle>();
             restSpaceTriangles = new List<RestSpaceTriangle>();
 
-            triangleIndices = GetTriangles(flatTriangleIndices).Select(x => (x[0], x[1], x[2])).ToList();
+            triangleIndices = Triangle.GetTrianglesFromFlatList(flatTriangleIndices).ToList();
 
             foreach (var triangle in triangleIndices)
             {
@@ -111,13 +112,7 @@ namespace Simulation
         public List<double3> Positions => positions.Select(p => p.Value).ToList();
         public List<double3> Velocities => velocities.ToList();
 
-        public static IEnumerable<List<int>> GetTriangles(List<int> indicesList)
-        {
-            for (var i = 0; i < indicesList.Count; i += 3)
-            {
-                yield return indicesList.Skip(i).Take(3).ToList();
-            }
-        }
+
 
         #endregion
 

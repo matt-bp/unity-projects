@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Geometry
+namespace Geometry.Indices
 {
     public static class TrianglePair
     {

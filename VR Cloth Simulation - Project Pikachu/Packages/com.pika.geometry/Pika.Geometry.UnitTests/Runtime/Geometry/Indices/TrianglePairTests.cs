@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using Geometry;
+using Geometry.Indices;
 using NUnit.Framework;
 
-namespace PIka.Geometry.UnitTests.Runtime.Geometry
+namespace Pika.Geometry.UnitTests.Runtime.Geometry.Indices
 {
     public class TrianglePairTests
     {
