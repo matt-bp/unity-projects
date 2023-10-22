@@ -117,6 +117,7 @@ namespace Conditions
             );
 
             return Cos * dSin - Sin * dCos;
+            // return Sin * dCos; // Temporary, making sure I'm calculating this part correctly.
         }
 
         private static WithRespectTo4<double3x3> MakeDn(Tuple<double3, double3, double3, double3> auxiliary) => new()

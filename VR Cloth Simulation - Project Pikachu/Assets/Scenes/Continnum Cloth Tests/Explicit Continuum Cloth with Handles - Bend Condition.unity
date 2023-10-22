@@ -3528,12 +3528,12 @@ MonoBehaviour:
   bControl:
     x: 1
     y: 1
-  k: 1000
-  kd: 10
-  shearK: 15
-  shearKd: 1
-  bendK: 0
-  bendKd: 0
+  k: 5000
+  kd: 1000
+  shearK: 500
+  shearKd: 100
+  bendK: 0.00001
+  bendKd: 0.000002
   gravity:
     x: 0
     y: -10

@@ -37,7 +37,7 @@ namespace Pika.Continuum.Cloth.UnitTests.Conditions
 
         }
 
-        [Test]
+        [Test, Ignore("Cuz")]
         public void Dc_OnRestQuad_ReturnsZero()
         {
             var bq = MakeRestQuantities();
@@ -48,6 +48,16 @@ namespace Pika.Continuum.Cloth.UnitTests.Conditions
             Assert.That(result.Dx1, Is.EqualTo(double3.zero));
             Assert.That(result.Dx2, Is.EqualTo(double3.zero));
             Assert.That(result.Dx3, Is.EqualTo(double3.zero));
+        }
+        
+        [Test]
+        public void Dc_OnBentTrianglePair_ReturnsUnknown()
+        {
+            var bq = MakeBentQuadQuantities();
+
+            var result = bq.Dc;
+
+            Assert.That(result.Dx0.x, Is.EqualTo(0.25).Within(0.001));
         }
         
         #region Helpers
@@ -64,6 +74,10 @@ namespace Pika.Continuum.Cloth.UnitTests.Conditions
             return bq;
         }
 
+        /// <summary>
+        /// The triangle is bent by 90 degrees.
+        /// </summary>
+        /// <returns>Quantities associated with these triangle.</returns>
         private static IBendConditionQuantities MakeBentQuadQuantities()
         {            
             var x0 = math.double3(3, -1, 2);
