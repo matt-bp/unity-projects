@@ -26,17 +26,7 @@ namespace Pika.Continuum.Cloth.UnitTests.Conditions
             
             Assert.That(result, Is.EqualTo(math.PI_DBL / 2));
         }
-
-        [Test]
-        public void Matrix()
-        {
-            var a = math.double3x3(1, 2, 3, 4, 5, 6, 7, 8, 9);
-
-            var one = a[0];
-            Assert.That(one, Is.EqualTo(math.double3(1, 4, 7)));
-
-        }
-
+        
         [Test, Ignore("Cuz")]
         public void Dc_OnRestQuad_ReturnsZero()
         {
@@ -57,7 +47,8 @@ namespace Pika.Continuum.Cloth.UnitTests.Conditions
 
             var result = bq.Dc;
 
-            Assert.That(result.Dx0.x, Is.EqualTo(0.25).Within(0.001));
+            // Negative, because it's the second half of the equation 54.
+            Assert.That(result.Dx0.x, Is.EqualTo(-0.25).Within(0.001));
         }
         
         #region Helpers
