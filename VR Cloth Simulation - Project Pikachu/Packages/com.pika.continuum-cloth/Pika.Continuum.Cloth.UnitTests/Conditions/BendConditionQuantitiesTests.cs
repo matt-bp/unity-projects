@@ -40,8 +40,11 @@ namespace Pika.Continuum.Cloth.UnitTests.Conditions
             Assert.That(result.Dx3, Is.EqualTo(double3.zero));
         }
         
+        /// <summary>
+        /// <para>Since we're testing with a bent triangle at 90 degrees, sin = 0 and cos = 1, so we're really testing our formulation of the cos derivative.</para>
+        /// </summary>
         [Test]
-        public void Dc_OnBentTrianglePair_ReturnsUnknown()
+        public void Dc_OnBentTrianglePair_ReturnsDCos()
         {
             var bq = MakeBentQuadQuantities();
 
@@ -49,6 +52,8 @@ namespace Pika.Continuum.Cloth.UnitTests.Conditions
 
             // Negative, because it's the second half of the equation 54.
             Assert.That(result.Dx0.x, Is.EqualTo(-0.25).Within(0.001));
+            Assert.That(result.Dx0.y, Is.EqualTo(-0.25).Within(0.001));
+            Assert.That(result.Dx0.z, Is.EqualTo(0).Within(0.001));
         }
         
         #region Helpers

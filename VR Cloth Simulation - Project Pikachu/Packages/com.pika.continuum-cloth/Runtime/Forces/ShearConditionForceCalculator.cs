@@ -44,6 +44,11 @@ namespace Forces
             return ddp;
         }
 
+        /// <summary>
+        /// Check out equation 7.11 of Stuyck (pg. 63).
+        /// </summary>
+        /// <param name="i"></param>
+        /// <returns></returns>
         public WithRespectToV<double3x3> GetDampingForcePartialDerivativeWrtVelocity(int i)
         {
             var ddv = new WithRespectToV<double3x3>()

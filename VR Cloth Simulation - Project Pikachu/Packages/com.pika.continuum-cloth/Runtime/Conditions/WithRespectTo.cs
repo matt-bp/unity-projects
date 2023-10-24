@@ -42,4 +42,12 @@ namespace Conditions
                 _ => throw new ArgumentOutOfRangeException(nameof(index), $"Not expected index: {index}")
             };
     }
+    
+    public class WithRespectToV4<T>
+    {
+        public T Dv0 { get; set; }
+        public T Dv1 { get; set; }
+        public T Dv2 { get; set; }
+        public T Dv3 { get; set; }
+    }
 }

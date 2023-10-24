@@ -19,11 +19,17 @@ namespace Conditions
         /// <returns>The first derivative of the bend condition function with respect to the two triangle's 4 vertices.</returns>
         /// </summary>
         public WithRespectTo4<double3> Dc { get; }
-        
+
         /// <summary>
         /// <para>Check equation 7.7 (pg. 61).</para>
         /// </summary>
         public double CDot { get; }
+
+        /// <summary>
+        /// <para>Calculates the second partial derivative of the condition function with respect to all points in the triangle pair.</para>
+        /// <para>Check equation 57 of Pritchard (pg. 6).</para>
+        /// </summary>
+        public WithRespectTo4<WithRespectTo4<double3x3>> D2C { get; }
     }
 
     public class BendConditionQuantities : IBendConditionQuantities
@@ -43,30 +49,33 @@ namespace Conditions
         private double Sin => math.dot(math.cross(NaHat, NbHat), EHat);
 
         #region Na Derivatives
-        
+
         private Tuple<double3, double3, double3, double3> Qa =>
             Tuple.Create(X2 - X1, X0 - X2, X1 - X0, math.double3(0));
+
         private WithRespectTo4<double3x3> Dna => MakeDn(Qa);
         private WithRespectTo4<double3x3> DnaHat => MakeDHat(Na, Dna);
-        
+
         #endregion
-        
+
         #region Nb Derivatives
-        
+
         private Tuple<double3, double3, double3, double3> Qb =>
             Tuple.Create(math.double3(0), X2 - X3, X3 - X1, X1 - X2);
+
         private WithRespectTo4<double3x3> Dnb => MakeDn(Qb);
         private WithRespectTo4<double3x3> DnbHat => MakeDHat(Nb, Dnb);
-        
+
         #endregion
-        
+
         #region E Derivatives
-        
+
         private static Tuple<double3, double3, double3, double3> Qe =>
             Tuple.Create(math.double3(0), math.double3(1), math.double3(-1), math.double3(0));
+
         private static WithRespectTo4<double3x3> De => MakeDn(Qe);
         private WithRespectTo4<double3x3> DeHat => MakeDHat(E, De);
-        
+
         #endregion
 
         public BendConditionQuantities(double3 x0, double3 x1, double3 x2, double3 x3, List<double3> v)
@@ -93,31 +102,40 @@ namespace Conditions
                               math.dot(Dc.Dx2, Velocities[2]) +
                               math.dot(Dc.Dx3, Velocities[3]);
 
+        /// <summary>
+        /// <para>See equation 47 by Pritchard (pg. 5).</para> 
+        /// </summary>
+        /// <param name="i"></param>
+        /// <param name="element"></param>
+        /// <returns></returns>
+        private double MakeDCosByElement(int i, Element element) =>
+            math.dot(DnaHat[i][(int)element], NbHat) + math.dot(NaHat, DnbHat[i][(int)element]);
+
+        /// <summary>
+        /// <para>See equation 49 by Pritchard (pg. 5).</para>
+        /// </summary>
+        /// <param name="i"></param>
+        /// <param name="element"></param>
+        /// <returns></returns>
+        private double MakeDSinByElement(int i, Element element) =>
+            math.dot(math.cross(DnaHat[i][(int)element], NbHat) + math.cross(NaHat, DnbHat[i][(int)element]), EHat) +
+            math.dot(math.cross(NaHat, NbHat), DeHat[i][(int)element]);
+
         private double3 GetConditionFirstDerivative(int i)
         {
-            // See equation 47 by Pritchard (pg. 5).
-            double MakeDCosByElement(int element) =>
-                math.dot(DnaHat[i][element], NbHat) + math.dot(NaHat, DnbHat[i][element]);
-
             var dCos = math.double3(
-                MakeDCosByElement(0),   // s = 0 (X)
-                MakeDCosByElement(1),   // s = 1 (Y)
-                MakeDCosByElement(2)    // s = 2 (Z)
+                MakeDCosByElement(i, Element.X),
+                MakeDCosByElement(i, Element.Y),
+                MakeDCosByElement(i, Element.Z)
             );
 
-            // See equation 49 by Pritchard (pg. 5).
-            double MakeDSinByElement(int element) =>
-                math.dot(math.cross(DnaHat[i][element], NbHat) + math.cross(NaHat, DnbHat[i][element]), EHat) +
-                math.dot(math.cross(NaHat, NbHat), DeHat[i][element]);
-
             var dSin = math.double3(
-                MakeDSinByElement(0),   // s = 0 (X)
-                MakeDSinByElement(1),   // s = 1 (Y)
-                MakeDSinByElement(2)    // s = 2 (Z)
+                MakeDSinByElement(i, Element.X),
+                MakeDSinByElement(i, Element.Y),
+                MakeDSinByElement(i, Element.Z)
             );
 
             return Cos * dSin - Sin * dCos;
-            // return Sin * dCos; // Temporary, making sure I'm calculating this part correctly.
         }
 
         private static WithRespectTo4<double3x3> MakeDn(Tuple<double3, double3, double3, double3> auxiliary) => new()
@@ -139,6 +157,85 @@ namespace Conditions
                 Dx2 = inverseLength * dn.Dx2,
                 Dx3 = inverseLength * dn.Dx3
             };
+        }
+
+        public WithRespectTo4<WithRespectTo4<double3x3>> D2C => new()
+        {
+            Dx0 = GetConditionSecondDerivative(0),
+            Dx1 = GetConditionSecondDerivative(1),
+            Dx2 = GetConditionSecondDerivative(2),
+            Dx3 = GetConditionSecondDerivative(3),
+        };
+
+        private WithRespectTo4<double3x3> GetConditionSecondDerivative(int i) => new()
+        {
+            Dx0 = GetJacobian(i, 0),
+            Dx1 = GetJacobian(i, 1),
+            Dx2 = GetJacobian(i, 2),
+            Dx3 = GetJacobian(i, 3),
+        };
+
+        private enum Element
+        {
+            X = 0,
+            Y = 1,
+            Z = 2
+        }
+
+        /// <summary>
+        /// <para>Check equation 5.16 in Stuyck (pg. 37).</para>
+        /// </summary>
+        /// <param name="i">First element to check</param>
+        /// <param name="j">Second element to check, can be equal to i.</param>
+        /// <returns>Jacobian of the derivative of the condition function.</returns>
+        private double3x3 GetJacobian(int i, int j)
+        {
+            double GetEntry(Element iElement, Element jElement) =>
+                GetJacobianEntry(i, j, iElement, jElement);
+
+            var c0 = math.double3(
+                GetEntry(Element.X, Element.X),
+                GetEntry(Element.Y, Element.X),
+                GetEntry(Element.Z, Element.X)
+            );
+
+            var c1 = math.double3(
+                GetEntry(Element.X, Element.Y),
+                GetEntry(Element.Y, Element.Y),
+                GetEntry(Element.Z, Element.Y)
+            );
+
+            var c2 = math.double3(
+                GetEntry(Element.X, Element.Z),
+                GetEntry(Element.Y, Element.Z),
+                GetEntry(Element.Z, Element.Z)
+            );
+
+            return math.double3x3(c0, c1, c2);
+        }
+
+        /// <summary>
+        /// <para>Check equation 57 of Pritchard (pg. 6).</para>
+        /// </summary>
+        /// <param name="i">First position</param>
+        /// <param name="j">Second position, can be equal to the first.</param>
+        /// <param name="iElement">Element of the vector to use for i.</param>
+        /// <param name="jElement">Element of the vector to use for j.</param>
+        /// <returns>Evaluation of equation 57 for one entry in the Jacobian matrix.</returns>
+        private double GetJacobianEntry(int i, int j, Element iElement, Element jElement)
+        {
+            // TODO: Pick up here, have to actually compute this :) do a unit test first! :O :'(
+            var d2Sin = 0;
+            var d2Cos = 0;
+
+            var dSinI = MakeDSinByElement(i, iElement);
+            var dCosI = MakeDCosByElement(i, iElement);
+            var dSinJ = MakeDSinByElement(j, jElement);
+            var dCosJ = MakeDCosByElement(j, jElement);
+
+            return Cos * d2Sin - Sin * d2Cos +
+                   (Sin * Sin - Cos * Cos) * (dSinI * dCosJ + dCosI * dSinJ) +
+                   2 * Sin * Cos * (dCosI * dCosJ - dSinI * dSinJ);
         }
     }
 }

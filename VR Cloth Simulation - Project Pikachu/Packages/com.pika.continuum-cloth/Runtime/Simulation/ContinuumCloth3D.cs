@@ -112,8 +112,6 @@ namespace Simulation
         public List<double3> Positions => positions.Select(p => p.Value).ToList();
         public List<double3> Velocities => velocities.ToList();
 
-
-
         #endregion
 
         public void StepSimulation(double dt)
@@ -171,7 +169,7 @@ namespace Simulation
                 foreach (var pair in trianglePairIndices)
                 {
                     var (index0, index1, index2, index3) = pair;
-                    
+
                     var v = new List<double3>()
                     {
                         velocities[index0],
@@ -179,14 +177,14 @@ namespace Simulation
                         velocities[index2],
                         velocities[index3]
                     };
-                    
+
                     var bendQ = new BendConditionQuantities(
-                        positions[index0].Value, 
-                        positions[index1].Value, 
-                        positions[index2].Value, 
+                        positions[index0].Value,
+                        positions[index1].Value,
+                        positions[index2].Value,
                         positions[index3].Value, v);
                     var bendForces = new BendConditionForceCalculator(bendK, bendKd, bendQ);
-                    
+
                     // Compute forces for triangle
                     forces[index0] += bendForces.GetForce(0);
                     forces[index1] += bendForces.GetForce(1);
@@ -214,74 +212,6 @@ namespace Simulation
                 var a = Grid<double3x3>.MakeMatrix(positions.Count, double3x3.zero);
                 var dfdx = Grid<double3x3>.MakeMatrix(positions.Count, double3x3.zero);
 
-                void SetForces(IConditionForceCalculator cfc, (int, int, int) indices)
-                {
-                    var index0 = indices.Item1;
-                    var index1 = indices.Item2;
-                    var index2 = indices.Item3;
-
-                    // Compute force for triangle
-                    forces[index0] += cfc.GetForce(0);
-                    forces[index1] += cfc.GetForce(1);
-                    forces[index2] += cfc.GetForce(2);
-
-                    var df0 = cfc.GetForceFirstPartialDerivative(0);
-                    var df1 = cfc.GetForceFirstPartialDerivative(1);
-                    var df2 = cfc.GetForceFirstPartialDerivative(2);
-
-                    a[index0][index0] -= dt * dt * df0.dx0;
-                    a[index0][index1] += dt * dt * df0.dx1;
-                    a[index0][index2] += dt * dt * df0.dx2;
-
-                    a[index1][index0] += dt * dt * df1.dx0;
-                    a[index1][index1] -= dt * dt * df1.dx1;
-                    a[index1][index2] += dt * dt * df1.dx2;
-
-                    a[index2][index0] += dt * dt * df2.dx0;
-                    a[index2][index1] += dt * dt * df2.dx1;
-                    a[index2][index2] -= dt * dt * df2.dx2;
-
-                    // Compute damping force
-                    forces[index0] += cfc.GetDampingForce(0);
-                    forces[index1] += cfc.GetDampingForce(1);
-                    forces[index2] += cfc.GetDampingForce(2);
-
-                    // Compute damping force partial derivative with respect to position
-                    var dd0 = cfc.GetDampingForcePartialDerivativeWrtPosition(0);
-                    var dd1 = cfc.GetDampingForcePartialDerivativeWrtPosition(1);
-                    var dd2 = cfc.GetDampingForcePartialDerivativeWrtPosition(2);
-
-                    dfdx[index0][index0] -= dt * dt * dd0.dx0;
-                    dfdx[index0][index1] += dt * dt * dd0.dx1;
-                    dfdx[index0][index2] += dt * dt * dd0.dx2;
-
-                    dfdx[index1][index0] += dt * dt * dd1.dx0;
-                    dfdx[index1][index1] -= dt * dt * dd1.dx1;
-                    dfdx[index1][index2] += dt * dt * dd1.dx2;
-
-                    dfdx[index2][index0] += dt * dt * dd2.dx0;
-                    dfdx[index2][index1] += dt * dt * dd2.dx1;
-                    dfdx[index2][index2] -= dt * dt * dd2.dx2;
-
-                    // Compute damping force partial derivative with respect to velocity
-                    var dd0V = cfc.GetDampingForcePartialDerivativeWrtVelocity(0);
-                    var dd1V = cfc.GetDampingForcePartialDerivativeWrtVelocity(1);
-                    var dd2V = cfc.GetDampingForcePartialDerivativeWrtVelocity(2);
-
-                    // I'm adding incrementally into the A matrix, that is why this is happening below
-                    a[index0][index0] -= dt * dd0V.dv0;
-                    a[index0][index1] += dt * dd0V.dv1;
-                    a[index0][index2] += dt * dd0V.dv2;
-
-                    a[index1][index0] += dt * dd1V.dv0;
-                    a[index1][index1] -= dt * dd1V.dv1;
-                    a[index1][index2] += dt * dd1V.dv2;
-
-                    a[index2][index0] += dt * dd2V.dv0;
-                    a[index2][index1] += dt * dd2V.dv1;
-                    a[index2][index2] -= dt * dd2V.dv2;
-                }
-
                 // Set entries in matrix A and matrix dfdx for stretch condition, this will look different because 
                 //  I'm doing it all at once, and not multiplying matrices explicitly
                 for (var i = 0; i < triangleIndices.Count; i++)
@@ -303,12 +233,12 @@ namespace Simulation
                         combined, bControl, v);
                     var cf = new StretchConditionForceCalculator(k, kd, sq);
 
-                    SetForces(cf, triangleIndices[i]);
+                    SetForces(forces, a, dfdx, dt, cf, triangleIndices[i]);
 
                     var shearQ = new ShearConditionQuantities(combined, v);
                     var scf = new ShearConditionForceCalculator(shearK, shearKd, shearQ);
 
-                    SetForces(scf, triangleIndices[i]);
+                    SetForces(forces, a, dfdx, dt, scf, triangleIndices[i]);
                 }
 
                 // M
@@ -337,6 +267,174 @@ namespace Simulation
                     positions[index].Value += dt * velocities[index];
                 }
             }
+        }
+
+        private static void SetForces(List<double3> forces, List<List<double3x3>> a, List<List<double3x3>> dfdx,
+            double dt, IConditionForceCalculator cfc, (int, int, int) indices)
+        {
+            var index0 = indices.Item1;
+            var index1 = indices.Item2;
+            var index2 = indices.Item3;
+
+            // Compute force for triangle
+            forces[index0] += cfc.GetForce(0);
+            forces[index1] += cfc.GetForce(1);
+            forces[index2] += cfc.GetForce(2);
+
+            var df0 = cfc.GetForceFirstPartialDerivative(0);
+            var df1 = cfc.GetForceFirstPartialDerivative(1);
+            var df2 = cfc.GetForceFirstPartialDerivative(2);
+
+            a[index0][index0] -= dt * dt * df0.dx0;
+            a[index0][index1] += dt * dt * df0.dx1;
+            a[index0][index2] += dt * dt * df0.dx2;
+
+            a[index1][index0] += dt * dt * df1.dx0;
+            a[index1][index1] -= dt * dt * df1.dx1;
+            a[index1][index2] += dt * dt * df1.dx2;
+
+            a[index2][index0] += dt * dt * df2.dx0;
+            a[index2][index1] += dt * dt * df2.dx1;
+            a[index2][index2] -= dt * dt * df2.dx2;
+
+            // Compute damping force
+            forces[index0] += cfc.GetDampingForce(0);
+            forces[index1] += cfc.GetDampingForce(1);
+            forces[index2] += cfc.GetDampingForce(2);
+
+            // Compute damping force partial derivative with respect to position
+            var dd0 = cfc.GetDampingForcePartialDerivativeWrtPosition(0);
+            var dd1 = cfc.GetDampingForcePartialDerivativeWrtPosition(1);
+            var dd2 = cfc.GetDampingForcePartialDerivativeWrtPosition(2);
+
+            dfdx[index0][index0] -= dt * dt * dd0.dx0;
+            dfdx[index0][index1] += dt * dt * dd0.dx1;
+            dfdx[index0][index2] += dt * dt * dd0.dx2;
+
+            dfdx[index1][index0] += dt * dt * dd1.dx0;
+            dfdx[index1][index1] -= dt * dt * dd1.dx1;
+            dfdx[index1][index2] += dt * dt * dd1.dx2;
+
+            dfdx[index2][index0] += dt * dt * dd2.dx0;
+            dfdx[index2][index1] += dt * dt * dd2.dx1;
+            dfdx[index2][index2] -= dt * dt * dd2.dx2;
+
+            // Compute damping force partial derivative with respect to velocity
+            var dd0V = cfc.GetDampingForcePartialDerivativeWrtVelocity(0);
+            var dd1V = cfc.GetDampingForcePartialDerivativeWrtVelocity(1);
+            var dd2V = cfc.GetDampingForcePartialDerivativeWrtVelocity(2);
+
+            // I'm adding incrementally into the A matrix, that is why this is happening below
+            a[index0][index0] -= dt * dd0V.dv0;
+            a[index0][index1] += dt * dd0V.dv1;
+            a[index0][index2] += dt * dd0V.dv2;
+
+            a[index1][index0] += dt * dd1V.dv0;
+            a[index1][index1] -= dt * dd1V.dv1;
+            a[index1][index2] += dt * dd1V.dv2;
+
+            a[index2][index0] += dt * dd2V.dv0;
+            a[index2][index1] += dt * dd2V.dv1;
+            a[index2][index2] -= dt * dd2V.dv2;
+        }
+
+        private static void SetForces4(List<double3> forces, List<List<double3x3>> a, List<List<double3x3>> dfdx,
+            double dt, IConditionForceCalculator4 cfc, (int, int, int, int) indices)
+        {
+            var index0 = indices.Item1;
+            var index1 = indices.Item2;
+            var index2 = indices.Item3;
+            var index3 = indices.Item4;
+
+            // Compute force for triangle
+            forces[index0] += cfc.GetForce(0);
+            forces[index1] += cfc.GetForce(1);
+            forces[index2] += cfc.GetForce(2);
+            forces[index3] += cfc.GetForce(3);
+
+            var df0 = cfc.GetForceFirstPartialDerivative(0);
+            var df1 = cfc.GetForceFirstPartialDerivative(1);
+            var df2 = cfc.GetForceFirstPartialDerivative(2);
+            var df3 = cfc.GetForceFirstPartialDerivative(3);
+
+            a[index0][index0] -= dt * dt * df0.Dx0;
+            a[index0][index1] += dt * dt * df0.Dx1;
+            a[index0][index2] += dt * dt * df0.Dx2;
+            a[index0][index3] += dt * dt * df0.Dx3;
+
+            a[index1][index0] += dt * dt * df1.Dx0;
+            a[index1][index1] -= dt * dt * df1.Dx1;
+            a[index1][index2] += dt * dt * df1.Dx2;
+            a[index1][index3] += dt * dt * df1.Dx3;
+
+            a[index2][index0] += dt * dt * df2.Dx0;
+            a[index2][index1] += dt * dt * df2.Dx1;
+            a[index2][index2] -= dt * dt * df2.Dx2;
+            a[index2][index3] += dt * dt * df2.Dx3;
+            
+            a[index3][index0] += dt * dt * df3.Dx0;
+            a[index3][index1] += dt * dt * df3.Dx1;
+            a[index3][index2] += dt * dt * df3.Dx2;
+            a[index3][index3] -= dt * dt * df3.Dx3;
+
+            // Compute damping force
+            forces[index0] += cfc.GetDampingForce(0);
+            forces[index1] += cfc.GetDampingForce(1);
+            forces[index2] += cfc.GetDampingForce(2);
+            forces[index3] += cfc.GetDampingForce(3);
+
+            // Compute damping force partial derivative with respect to position
+            var dd0 = cfc.GetDampingForcePartialDerivativeWrtPosition(0);
+            var dd1 = cfc.GetDampingForcePartialDerivativeWrtPosition(1);
+            var dd2 = cfc.GetDampingForcePartialDerivativeWrtPosition(2);
+            var dd3 = cfc.GetDampingForcePartialDerivativeWrtPosition(3);
+
+            dfdx[index0][index0] -= dt * dt * dd0.Dx0;
+            dfdx[index0][index1] += dt * dt * dd0.Dx1;
+            dfdx[index0][index2] += dt * dt * dd0.Dx2;
+            dfdx[index0][index3] += dt * dt * dd0.Dx3;
+
+            dfdx[index1][index0] += dt * dt * dd1.Dx0;
+            dfdx[index1][index1] -= dt * dt * dd1.Dx1;
+            dfdx[index1][index2] += dt * dt * dd1.Dx2;
+            dfdx[index1][index3] += dt * dt * dd1.Dx3;
+
+            dfdx[index2][index0] += dt * dt * dd2.Dx0;
+            dfdx[index2][index1] += dt * dt * dd2.Dx1;
+            dfdx[index2][index2] -= dt * dt * dd2.Dx2;
+            dfdx[index2][index3] += dt * dt * dd2.Dx3;
+            
+            dfdx[index3][index0] += dt * dt * dd3.Dx0;
+            dfdx[index3][index1] += dt * dt * dd3.Dx1;
+            dfdx[index3][index2] += dt * dt * dd3.Dx2;
+            dfdx[index3][index3] -= dt * dt * dd3.Dx3;
+
+            // Compute damping force partial derivative with respect to velocity
+            var dd0V = cfc.GetDampingForcePartialDerivativeWrtVelocity(0);
+            var dd1V = cfc.GetDampingForcePartialDerivativeWrtVelocity(1);
+            var dd2V = cfc.GetDampingForcePartialDerivativeWrtVelocity(2);
+            var dd3V = cfc.GetDampingForcePartialDerivativeWrtVelocity(3);
+
+            // I'm adding incrementally into the A matrix, that is why this is happening below
+            a[index0][index0] -= dt * dd0V.Dv0;
+            a[index0][index1] += dt * dd0V.Dv1;
+            a[index0][index2] += dt * dd0V.Dv2;
+            a[index0][index3] += dt * dd0V.Dv3;
+
+            a[index1][index0] += dt * dd1V.Dv0;
+            a[index1][index1] -= dt * dd1V.Dv1;
+            a[index1][index2] += dt * dd1V.Dv2;
+            a[index1][index3] += dt * dd1V.Dv3;
+
+            a[index2][index0] += dt * dd2V.Dv0;
+            a[index2][index1] += dt * dd2V.Dv1;
+            a[index2][index2] -= dt * dd2V.Dv2;
+            a[index2][index3] += dt * dd2V.Dv3;
+            
+            a[index3][index0] += dt * dd3V.Dv0;
+            a[index3][index1] += dt * dd3V.Dv1;
+            a[index3][index2] += dt * dd3V.Dv2;
+            a[index3][index3] -= dt * dd3V.Dv3;
         }
     }
 }
