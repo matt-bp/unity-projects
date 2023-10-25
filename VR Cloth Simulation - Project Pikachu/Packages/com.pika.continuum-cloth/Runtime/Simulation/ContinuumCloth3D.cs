@@ -241,6 +241,28 @@ namespace Simulation
                     SetForces(forces, a, dfdx, dt, scf, triangleIndices[i]);
                 }
 
+                foreach (var pair in trianglePairIndices)
+                {
+                    var (index0, index1, index2, index3) = pair;
+
+                    var v = new List<double3>()
+                    {
+                        velocities[index0],
+                        velocities[index1],
+                        velocities[index2],
+                        velocities[index3]
+                    };
+
+                    var bendQ = new BendConditionQuantities(
+                        positions[index0].Value,
+                        positions[index1].Value,
+                        positions[index2].Value,
+                        positions[index3].Value, v);
+                    var bendForces = new BendConditionForceCalculator(bendK, bendKd, bendQ);
+
+                    SetForces4(forces, a, dfdx, dt, bendForces, pair);
+                }
+                
                 // M
                 foreach (var index in Enumerable.Range(0, a.Count))
                     a[index][index] += double3x3.identity * m;
