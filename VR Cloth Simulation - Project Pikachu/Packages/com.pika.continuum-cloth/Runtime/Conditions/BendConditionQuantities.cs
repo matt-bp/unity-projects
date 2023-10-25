@@ -215,6 +215,33 @@ namespace Conditions
         }
 
         /// <summary>
+        /// <para>This lookup table contains the second partial derivative of the auxiliary variables A.</para>
+        /// <para>When we use this, we index by m and n, and the result is the X, Y, and Z values for that second derivative pairing.</para>
+        /// </summary>
+        private static double4x4 ASkewSecondPartialLookUp => math.double4x4(
+            math.double4(0, -1, 1, 0),
+            math.double4(1, 0, -1, 0),
+            math.double4(-1, 1, 0, 0),
+            math.double4(0, 0, 0, 0)
+        );
+
+        /// <summary>
+        /// <para>This lookup table contains the second partial derivative of the auxiliary variables B.</para>
+        /// <para>When we use this, we index by m and n, and the result is the X, Y, and Z values for that second derivative pairing.</para>
+        /// </summary>
+        private static double4x4 BSkewSecondPartialLookUp => math.double4x4(
+            math.double4(0, 0, 0, 0),
+            math.double4(0, 0, 1, -1),
+            math.double4(0, -1, 0, 1),
+            math.double4(0, 1, -1, 0)
+        );
+
+        // private double MakeD2CosByElement(int i, int j, Element iElement, Element jElement)
+        // {
+        //     
+        // }
+
+        /// <summary>
         /// <para>Check equation 57 of Pritchard (pg. 6).</para>
         /// </summary>
         /// <param name="i">First position</param>
@@ -224,9 +251,30 @@ namespace Conditions
         /// <returns>Evaluation of equation 57 for one entry in the Jacobian matrix.</returns>
         private double GetJacobianEntry(int i, int j, Element iElement, Element jElement)
         {
-            // TODO: Pick up here, have to actually compute this :) do a unit test first! :O :'(
-            var d2Sin = 0;
-            var d2Cos = 0;
+            // All the X, Y, and Z components will be the same from this lookup
+            var d2Na = math.double3(ASkewSecondPartialLookUp[i][j]);
+            var d2Nb = math.double3(BSkewSecondPartialLookUp[i][j]);
+
+            var d2NaHat = 1 / math.length(Na) * d2Na;
+            var d2NbHat = 1 / math.length(Nb) * d2Nb;
+            
+            // Equation 50 of Pritchard (pg. 5).
+            var d2Cos = math.dot(d2NaHat, NbHat) +
+                        math.dot(DnbHat[j][(int)jElement], DnaHat[i][(int)iElement]) +
+                        math.dot(DnaHat[j][(int)jElement], DnbHat[i][(int)iElement]) +
+                        math.dot(NaHat, d2NbHat);
+            // Equation 51 of Pritchard (pg. 5). There is one more addition at the end of this, but it goes to zero, so no worries.
+            var d2Sin = math.dot(math.cross(d2NaHat, NbHat) +
+                                 math.cross(DnaHat[i][(int)iElement], DnbHat[j][(int)jElement]) +
+                                 math.cross(DnaHat[j][(int)jElement], DnbHat[i][(int)iElement]) +
+                                 math.cross(NaHat, d2Nb),
+                            EHat) +
+                        math.dot(
+                            math.cross(DnaHat[i][(int)iElement], NbHat) + math.cross(NaHat, DnbHat[i][(int)iElement]),
+                            DeHat[j][(int)jElement]) +
+                        math.dot(
+                            math.cross(DnaHat[j][(int)jElement], NbHat) + math.cross(NaHat, DnbHat[j][(int)jElement]),
+                            DeHat[i][(int)iElement]);
 
             var dSinI = MakeDSinByElement(i, iElement);
             var dCosI = MakeDCosByElement(i, iElement);
