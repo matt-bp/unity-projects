@@ -243,6 +243,7 @@ namespace Simulation
 
                 foreach (var pair in trianglePairIndices)
                 {
+                    continue; // Things blow up anyways, but this just makes things a whole lot worse.
                     var (index0, index1, index2, index3) = pair;
 
                     var v = new List<double3>()

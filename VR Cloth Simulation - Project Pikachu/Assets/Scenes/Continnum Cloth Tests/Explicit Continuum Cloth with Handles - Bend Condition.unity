@@ -3491,7 +3491,7 @@ GameObject:
   - component: {fileID: 1861527084}
   - component: {fileID: 1861527085}
   m_Layer: 0
-  m_Name: 3D Continuum Cloth - Bend Condition
+  m_Name: 3D Continuum Cloth - Bend Condition - Low Subdivision Big
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3538,7 +3538,7 @@ MonoBehaviour:
     x: 0
     y: -10
     z: 0
-  m: 0.01
+  m: 0.1
   constrainedIndices: 010000000b000000
   worldSpaceTriangles: []
   restSpaceTriangles: []
