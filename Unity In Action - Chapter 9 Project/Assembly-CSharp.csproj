@@ -47,6 +47,7 @@
      <Compile Include="Assets\Scripts\DeviceOperator.cs" />
      <Compile Include="Assets\Scripts\ColorChangeDevice.cs" />
      <Compile Include="Assets\Scripts\DeviceTrigger.cs" />
+     <Compile Include="Assets\Scripts\CollectibleItem.cs" />
      <Folder Include="Assets" />
      <Folder Include="Assets\Graphics" />
      <Folder Include="Assets\Graphics\Materials" />
