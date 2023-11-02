@@ -52,4 +52,24 @@ public class InventoryManager : MonoBehaviour, IGameManager
         Debug.Log("Unequipped");
         return false;
     }
+
+    public bool ConsumeItem(string name)
+    {
+        if (items.ContainsKey(name))
+        {
+            items[name]--;
+            if (items[name] == 0)
+            {
+                items.Remove(name);
+            }
+        }
+        else
+        {
+            Debug.Log($"Cannot consume {name}");
+            return false;
+        }
+        
+        DisplayItems();
+        return true;
+    }
 }

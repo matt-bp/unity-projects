@@ -46,6 +46,15 @@ public class BasicUI : MonoBehaviour
                 Managers.Inventory.EquipItem(item);
             }
 
+            if (item == "Coin")
+            {
+                if (GUI.Button(new Rect(posX, posY + height + buffer, width, height), "Use Money"))
+                {
+                    Managers.Inventory.ConsumeItem(item);
+                    // Managers.Player.ChangeHealth(25);
+                }
+            }
+
             posX += width + buffer;
         }
     }
