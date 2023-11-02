@@ -13,9 +13,16 @@ public class DeviceOperator : MonoBehaviour
         {
             var hitColliders = Physics.OverlapSphere(transform.position, radius);
 
-            foreach (var collider in hitColliders)
+            foreach (var hitCollider in hitColliders)
             {
-                collider.SendMessage("Operate", SendMessageOptions.DontRequireReceiver);
+                var hitPosition = hitCollider.transform.position;
+                hitPosition.y = transform.position.y;
+
+                var direction = hitPosition - transform.position;
+                if (Vector3.Dot(transform.forward, direction.normalized) > 0.5f)
+                {
+                    hitCollider.SendMessage("Operate", SendMessageOptions.DontRequireReceiver);
+                }
             }
         }
     }
