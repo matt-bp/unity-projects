@@ -48,10 +48,16 @@
      <Compile Include="Assets\Scripts\ColorChangeDevice.cs" />
      <Compile Include="Assets\Scripts\DeviceTrigger.cs" />
      <Compile Include="Assets\Scripts\CollectibleItem.cs" />
+     <Compile Include="Assets\Scripts\IGameManager.cs" />
+     <Compile Include="Assets\Scripts\ManagerStatus.cs" />
+     <Compile Include="Assets\Scripts\InventoryManager.cs" />
+     <Compile Include="Assets\Scripts\PlayerManager.cs" />
+     <Compile Include="Assets\Scripts\Managers.cs" />
      <Folder Include="Assets" />
      <Folder Include="Assets\Graphics" />
      <Folder Include="Assets\Graphics\Materials" />
      <Folder Include="Assets\Graphics\Models" />
+     <Folder Include="Assets\Prefabs" />
      <Folder Include="Assets\Graphics\Textures" />
      <Folder Include="Assets\Scripts" />
      <Reference Include="UnityEngine">
