@@ -3524,7 +3524,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89622610099b4c638322ba04bdccd69e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useExplicitIntegration: 0
+  useExplicitIntegration: 1
   bControl:
     x: 1
     y: 1
