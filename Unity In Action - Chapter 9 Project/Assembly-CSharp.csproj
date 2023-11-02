@@ -53,12 +53,15 @@
      <Compile Include="Assets\Scripts\InventoryManager.cs" />
      <Compile Include="Assets\Scripts\PlayerManager.cs" />
      <Compile Include="Assets\Scripts\Managers.cs" />
+     <Compile Include="Assets\Scripts\BasicUI.cs" />
      <Folder Include="Assets" />
      <Folder Include="Assets\Graphics" />
+     <Folder Include="Assets\Resources" />
      <Folder Include="Assets\Graphics\Materials" />
      <Folder Include="Assets\Graphics\Models" />
      <Folder Include="Assets\Prefabs" />
      <Folder Include="Assets\Graphics\Textures" />
+     <Folder Include="Assets\Resources\Icons" />
      <Folder Include="Assets\Scripts" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\Hub\Editor\2021.3.20f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
