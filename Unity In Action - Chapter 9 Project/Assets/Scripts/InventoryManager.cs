@@ -9,6 +9,7 @@ public class InventoryManager : MonoBehaviour, IGameManager
 {
     public ManagerStatus Status { get; private set; }
     private Dictionary<string, int> items;
+    public string EquippedItem { get; private set; }
 
     public void Startup()
     {
@@ -38,4 +39,17 @@ public class InventoryManager : MonoBehaviour, IGameManager
 
     public int GetItemCount(string name) => items.TryGetValue(name, out var value) ? value : 0;
 
+    public bool EquipItem(string name)
+    {
+        if (items.ContainsKey(name) && EquippedItem != name)
+        {
+            EquippedItem = name;
+            Debug.Log($"Equipped {name}");
+            return true;
+        }
+
+        EquippedItem = null;
+        Debug.Log("Unequipped");
+        return false;
+    }
 }
