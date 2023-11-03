@@ -4,12 +4,14 @@ using UnityEngine;
 public class PlayerManager : MonoBehaviour, IGameManager
 {
     public ManagerStatus Status { get; private set; }
-    
     public int Health { get; private set; }
     public int MaxHealth { get; private set; }
+    private NetworkService service;
     
-    public void Startup()
+    public void Startup(NetworkService s)
     {
+        service = s;
+        
         Debug.Log("Player manager starting...");
 
         Health = 50;
