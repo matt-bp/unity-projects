@@ -42,8 +42,13 @@ namespace Movement
 
                 if (Physics.Raycast(ray, out mouseHit))
                 {
-                    targetPos = mouseHit.point;
-                    curSpeed = moveSpeed;
+                    var hitObject = mouseHit.transform.gameObject;
+
+                    if (hitObject.layer == LayerMask.NameToLayer("Ground"))
+                    {
+                        targetPos = mouseHit.point;
+                        curSpeed = moveSpeed;
+                    }
                 }
             }
 
