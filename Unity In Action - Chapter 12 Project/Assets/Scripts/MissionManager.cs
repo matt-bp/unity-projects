@@ -6,6 +6,7 @@ public class MissionManager : MonoBehaviour, IGameManager
     public ManagerStatus Status { get; private set; }
     public int CurrentLevel { get; private set; }
     public int MaxLevel { get; private set; }
+    private string LevelName => $"Level_{CurrentLevel}";
 
     private NetworkService network;
 
@@ -26,13 +27,24 @@ public class MissionManager : MonoBehaviour, IGameManager
         if (CurrentLevel < MaxLevel)
         {
             CurrentLevel++;
-            var name = $"Level_{CurrentLevel}";
-            Debug.Log($"Loading {name}");
-            SceneManager.LoadScene(name);
+            Debug.Log($"Loading {LevelName}");
+            SceneManager.LoadScene(LevelName);
         }
         else
         {
             Debug.Log("Last level. No more!");
         }
+    }
+
+    public void ReachObjective()
+    {
+        Messenger.Broadcast(GameEvent.LevelComplete);
+    }
+
+    public void RestartCurrentLevel()
+    {
+        Debug.Log($"Restarting {LevelName}");
+
+        SceneManager.LoadScene(LevelName);
     }
 }
