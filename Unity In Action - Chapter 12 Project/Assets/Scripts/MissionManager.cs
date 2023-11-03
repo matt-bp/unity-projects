@@ -16,8 +16,7 @@ public class MissionManager : MonoBehaviour, IGameManager
 
         network = service;
 
-        CurrentLevel = 0;
-        MaxLevel = 1;
+        UpdateData(0, 1);
 
         Status = ManagerStatus.Started;
     }
@@ -46,5 +45,11 @@ public class MissionManager : MonoBehaviour, IGameManager
         Debug.Log($"Restarting {LevelName}");
 
         SceneManager.LoadScene(LevelName);
+    }
+
+    public void UpdateData(int currentLevel, int maxLevel)
+    {
+        CurrentLevel = currentLevel;
+        MaxLevel = maxLevel;
     }
 }

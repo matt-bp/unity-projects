@@ -19,7 +19,7 @@ public class InventoryManager : MonoBehaviour, IGameManager
         
         Debug.Log("Inventory manager starting...");
 
-        items = new Dictionary<string, int>();
+        UpdateData(new Dictionary<string, int>());
         
         Status = ManagerStatus.Started;
     }
@@ -68,5 +68,15 @@ public class InventoryManager : MonoBehaviour, IGameManager
         EquippedItem = null;
         Debug.Log("Unequipped");
         return false;
+    }
+
+    public void UpdateData(Dictionary<string, int> newItems)
+    {
+        items = newItems;
+    }
+
+    public Dictionary<string, int> GetData()
+    {
+        return items;
     }
 }

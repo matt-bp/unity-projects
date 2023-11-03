@@ -4,11 +4,14 @@ using System.Collections.Generic;
 
 [RequireComponent(typeof(PlayerManager))]
 [RequireComponent(typeof(InventoryManager))]
+[RequireComponent(typeof(MissionManager))]
+[RequireComponent(typeof(DataManager))]
 public class Managers : MonoBehaviour
 {
     public static PlayerManager Player { get; private set; }
     public static InventoryManager Inventory { get; private set; }
     public static MissionManager Mission { get; private set; }
+    public static DataManager Data { get; private set; }
 
     private List<IGameManager> _startSequence;
 
@@ -19,12 +22,14 @@ public class Managers : MonoBehaviour
         Player = GetComponent<PlayerManager>();
         Inventory = GetComponent<InventoryManager>();
         Mission = GetComponent<MissionManager>();
+        Data = GetComponent<DataManager>();
 
         _startSequence = new List<IGameManager>
         {
             Player,
             Inventory,
-            Mission
+            Mission,
+            Data
         };
 
         StartCoroutine(StartupManagers());
@@ -34,6 +39,8 @@ public class Managers : MonoBehaviour
     {
         var network = new NetworkService();
         
+        // This might be a good example of how to do "asynchronous" things in Unity. Make the call, and yield return immediately after.
+        // Then, check for some status to make sure it's done.
         foreach (var manager in _startSequence)
         {
             manager.Startup(network);
