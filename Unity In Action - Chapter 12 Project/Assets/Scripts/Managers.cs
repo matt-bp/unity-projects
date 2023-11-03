@@ -8,17 +8,24 @@ public class Managers : MonoBehaviour
 {
     public static PlayerManager Player { get; private set; }
     public static InventoryManager Inventory { get; private set; }
+    public static MissionManager Mission { get; private set; }
 
     private List<IGameManager> _startSequence;
 
     private void Awake()
     {
+        DontDestroyOnLoad(gameObject);
+        
         Player = GetComponent<PlayerManager>();
         Inventory = GetComponent<InventoryManager>();
+        Mission = GetComponent<MissionManager>();
 
-        _startSequence = new List<IGameManager>();
-        _startSequence.Add(Player);
-        _startSequence.Add(Inventory);
+        _startSequence = new List<IGameManager>
+        {
+            Player,
+            Inventory,
+            Mission
+        };
 
         StartCoroutine(StartupManagers());
     }
@@ -53,6 +60,7 @@ public class Managers : MonoBehaviour
             if (numReady > lastReady)
             {
                 Debug.Log($"Progress: {numReady}/{numModules}");
+                Messenger<int, int>.Broadcast(StartupEvent.ManagersProgress, numReady, numModules);
             }
 
             // Pause for one frame before checking again
@@ -60,5 +68,6 @@ public class Managers : MonoBehaviour
         }
         
         Debug.Log("All managers started up");
+        Messenger.Broadcast(StartupEvent.ManagersStarted);
     }
 }
