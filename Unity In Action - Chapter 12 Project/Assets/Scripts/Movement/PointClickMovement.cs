@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Movement
 {
@@ -35,7 +36,8 @@ namespace Movement
         {
             var movement = Vector3.zero;
 
-            if (Input.GetMouseButton(0))
+            // See if the left mouse button is down, and that we're not clicking on the UI.
+            if (Input.GetMouseButton(0) && !EventSystem.current.IsPointerOverGameObject())
             {
                 var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 RaycastHit mouseHit;
