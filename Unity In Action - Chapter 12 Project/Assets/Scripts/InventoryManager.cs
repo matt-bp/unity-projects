@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -34,6 +35,19 @@ public class InventoryManager : MonoBehaviour, IGameManager
             items[name] = 0;
 
         items[name]++;
+        
+        DisplayItems();
+    }
+
+    public void ConsumeItem(string name)
+    {
+        if (!items.ContainsKey(name))
+            return;
+
+        items[name]--;
+
+        if (items[name] < 0)
+            items.Remove(name);
         
         DisplayItems();
     }
