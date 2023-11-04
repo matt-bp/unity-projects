@@ -77,4 +77,14 @@ public class UIController : MonoBehaviour
         Managers.Player.Respawn();
         Managers.Mission.RestartCurrentLevel();
     }
+
+    public void SaveGame()
+    {
+        Managers.Data.SaveGameState();
+    }
+
+    public void LoadGame()
+    {
+        Managers.Data.LoadGameState();
+    }
 }
