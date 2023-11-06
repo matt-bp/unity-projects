@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace Managers
 {
     [RequireComponent(typeof(PidManager))]
-    public class Managers : MonoBehaviour
+    public class LoadedManagers : MonoBehaviour
     {
         public static PidManager Pid { get; private set; }
 

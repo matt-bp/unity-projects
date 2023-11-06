@@ -6,24 +6,38 @@ namespace Managers
     public class PidManager : MonoBehaviour, IGameManager
     {
         public ManagerStatus Status { get; private set; }
-        public double CommandVariable { get; private set; }
 
-        private double integral;
-        private double state;
+        
+        public float kp;
+        public float ki;
+        public float kd;
+
+        private float commandVariable;
+        private float integral;
+        private float state;
         
         public void Startup()
         {
             Status = ManagerStatus.Started;
         }
 
-        public void SetCommandVariable(double newValue)
+        public void SetCommandVariable(float newValue)
         {
-            CommandVariable = newValue;
+            commandVariable = newValue;
         }
 
-        public double UpdateError(double newMeasurement)
+        public float DoUpdate(float newMeasurement)
         {
-            throw new NotImplementedException();
+            var error = commandVariable - newMeasurement;
+
+            integral += error;
+
+            var p = kp * error;
+            var i = ki * integral;
+            var d = kd * (error - state);
+            state = error;
+
+            return p + i + d;
         }
     }
 }
