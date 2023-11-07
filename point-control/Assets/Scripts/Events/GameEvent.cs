@@ -1,6 +1,7 @@
-public static class GameEvent
+namespace Events
 {
-    public const string HealthUpdated = "HealthUpdated";
-    public const string LevelComplete = "LevelComplete";
-    public const string LevelFailed = "LevelFailed";
+    public static class GameEvent
+    {
+        public const string SimulationResetAndStop = "SimulationResetAndStop";
+    }
 }

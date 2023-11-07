@@ -39,5 +39,10 @@ namespace Managers
 
             return p + i + d;
         }
+
+        public void Reset()
+        {
+            integral = 0;
+        }
     }
 }
