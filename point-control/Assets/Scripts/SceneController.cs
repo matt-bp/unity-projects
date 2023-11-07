@@ -16,11 +16,13 @@ public class SceneController : MonoBehaviour
     private void OnEnable()
     {
         Messenger.AddListener(GameEvent.SimulationResetAndStop, OnSimulationResetAndStop);
+        Messenger.AddListener(GameEvent.ToggleSimulation, OnToggleSimulation);
     }
 
     private void OnDisable()
     {
         Messenger.RemoveListener(GameEvent.SimulationResetAndStop, OnSimulationResetAndStop);
+        Messenger.RemoveListener(GameEvent.ToggleSimulation, OnToggleSimulation);
     }
 
     private void Update()
@@ -51,5 +53,10 @@ public class SceneController : MonoBehaviour
         thingToControl.transform.position = new Vector3(xPosition, 0, 0);
         
         LoadedManagers.Pid.Reset();
+    }
+
+    private void OnToggleSimulation()
+    {
+        doSimulation = !doSimulation;
     }
 }
