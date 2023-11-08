@@ -11,6 +11,11 @@ namespace Managers
         public void Startup()
         {
             Status = ManagerStatus.Started;
+            
+            referencePositions.Add(1, 2);
+            referencePositions.Add(5, 4);
+            referencePositions.Add(10, 7);
+            referencePositions.Add(15, 10);
         }
         
         private readonly SortedDictionary<float, float> referencePositions = new();

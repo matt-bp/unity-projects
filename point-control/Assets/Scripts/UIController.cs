@@ -25,7 +25,7 @@ public class UIController : MonoBehaviour
         {
             var isShowing = popup.gameObject.activeSelf;
             popup.gameObject.SetActive(!isShowing);
-            popup.Refresh();
+            popup.Refresh(!isShowing);
         }
     }
 

@@ -35,14 +35,13 @@ public class SceneController : MonoBehaviour
         elapsed += Time.deltaTime;
 
         var updatedCommandVariable = LoadedManagers.Rpm.GetCurrentReferencePosition(elapsed);
-
+        
+        
         if (updatedCommandVariable.HasValue)
         {
-            Debug.Log($"Going to update command variable with: {updatedCommandVariable}");
-            // LoadedManagers.Pid.SetCommandVariable(updatedCommandVariable.Value);
+            LoadedManagers.Pid.SetCommandVariable(updatedCommandVariable.Value);
         }
-            
-        
+
         var error = LoadedManagers.Pid.DoUpdate(thingToControl.transform.position.x);
         
         var acceleration = error / (Time.deltaTime * Time.deltaTime);
