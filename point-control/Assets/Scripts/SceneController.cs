@@ -12,22 +12,36 @@ public class SceneController : MonoBehaviour
     [SerializeField] private float initialXPosition;
 
     private bool doSimulation;
-
+    private float elapsed;
+    
     private void OnEnable()
     {
         Messenger.AddListener(GameEvent.SimulationResetAndStop, OnSimulationResetAndStop);
         Messenger.AddListener(GameEvent.ToggleSimulation, OnToggleSimulation);
+        Messenger.AddListener(StartupEvent.ManagersStarted, OnManagersStarted);
     }
 
     private void OnDisable()
     {
         Messenger.RemoveListener(GameEvent.SimulationResetAndStop, OnSimulationResetAndStop);
         Messenger.RemoveListener(GameEvent.ToggleSimulation, OnToggleSimulation);
+        Messenger.RemoveListener(StartupEvent.ManagersStarted, OnManagersStarted);
     }
 
     private void Update()
     {
         if (!doSimulation) return;
+
+        elapsed += Time.deltaTime;
+
+        var updatedCommandVariable = LoadedManagers.Rpm.GetCurrentReferencePosition(elapsed);
+
+        if (updatedCommandVariable.HasValue)
+        {
+            Debug.Log($"Going to update command variable with: {updatedCommandVariable}");
+            // LoadedManagers.Pid.SetCommandVariable(updatedCommandVariable.Value);
+        }
+            
         
         var error = LoadedManagers.Pid.DoUpdate(thingToControl.transform.position.x);
         
@@ -50,6 +64,7 @@ public class SceneController : MonoBehaviour
         Debug.Log("Resetting scene controller.");
         xPosition = initialXPosition;
         xVelocity = 0;
+        elapsed = 0;
         thingToControl.transform.position = new Vector3(xPosition, 0, 0);
         
         LoadedManagers.Pid.Reset();
@@ -58,5 +73,10 @@ public class SceneController : MonoBehaviour
     private void OnToggleSimulation()
     {
         doSimulation = !doSimulation;
+    }
+
+    private void OnManagersStarted()
+    {
+        doSimulation = false;
     }
 }

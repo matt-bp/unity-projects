@@ -5,21 +5,25 @@ using System.Collections.Generic;
 namespace Managers
 {
     [RequireComponent(typeof(PidManager))]
+    [RequireComponent(typeof(ReferencePositionManager))]
     public class LoadedManagers : MonoBehaviour
     {
         public static PidManager Pid { get; private set; }
+        public static ReferencePositionManager Rpm { get; private set; }
 
-        private List<IGameManager> _startSequence;
+        private List<IGameManager> startSequence;
 
         private void Awake()
         {
             DontDestroyOnLoad(gameObject);
 
             Pid = GetComponent<PidManager>();
+            Rpm = GetComponent<ReferencePositionManager>();
 
-            _startSequence = new List<IGameManager>
+            startSequence = new List<IGameManager>
             {
                 Pid,
+                Rpm
             };
 
             StartCoroutine(StartupManagers());
@@ -29,14 +33,14 @@ namespace Managers
         {
             // This might be a good example of how to do "asynchronous" things in Unity. Make the call, and yield return immediately after.
             // Then, check for some status to make sure it's done.
-            foreach (var manager in _startSequence)
+            foreach (var manager in startSequence)
             {
                 manager.Startup();
             }
 
             yield return null;
 
-            var numModules = _startSequence.Count;
+            var numModules = startSequence.Count;
             var numReady = 0;
 
             while (numReady < numModules)
@@ -44,7 +48,7 @@ namespace Managers
                 var lastReady = numReady;
                 numReady = 0;
 
-                foreach (var manager in _startSequence)
+                foreach (var manager in startSequence)
                 {
                     if (manager.Status == ManagerStatus.Started)
                     {

@@ -1,17 +1,34 @@
+using System;
 using Events;
 using Managers;
 using TMPro;
+using UI;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UIController : MonoBehaviour
 {
     [SerializeField] private GameObject xValueVisualizer;
-    [SerializeField] private GameObject yValueVisualizer;
     [SerializeField] private Button toggleButton;
+    [SerializeField] private ReferencePositionCreationPopup popup;
 
     private bool showGreen;
-    
+
+    private void Start()
+    {
+        popup.gameObject.SetActive(false);
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            var isShowing = popup.gameObject.activeSelf;
+            popup.gameObject.SetActive(!isShowing);
+            popup.Refresh();
+        }
+    }
+
     public void OnSliderChange(float value)
     {
         xValueVisualizer.transform.position = new Vector3(value, 0, 0);
