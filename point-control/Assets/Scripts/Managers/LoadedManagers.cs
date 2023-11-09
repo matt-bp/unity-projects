@@ -9,7 +9,7 @@ namespace Managers
     public class LoadedManagers : MonoBehaviour
     {
         public static PidManager Pid { get; private set; }
-        public static ReferencePositionManager Rpm { get; private set; }
+        public static ReferencePositionManager ReferencePositionManager { get; private set; }
 
         private List<IGameManager> startSequence;
 
@@ -18,12 +18,12 @@ namespace Managers
             DontDestroyOnLoad(gameObject);
 
             Pid = GetComponent<PidManager>();
-            Rpm = GetComponent<ReferencePositionManager>();
+            ReferencePositionManager = GetComponent<ReferencePositionManager>();
 
             startSequence = new List<IGameManager>
             {
                 Pid,
-                Rpm
+                ReferencePositionManager
             };
 
             StartCoroutine(StartupManagers());

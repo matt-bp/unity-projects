@@ -1,8 +1,8 @@
+#nullable enable
 using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
+using Value = UnityEngine.Vector2;
 
 namespace Managers
 {
@@ -12,21 +12,18 @@ namespace Managers
         public void Startup()
         {
             Status = ManagerStatus.Started;
-            
-            referencePositions.Add(0, -5);
-            // referencePositions.Add(1, 10);
         }
         
-        private readonly SortedDictionary<float, float> referencePositions = new();
+        private readonly SortedDictionary<float, Value> referencePositions = new();
 
-        public void AddReferencePosition(float time, float position)
+        public void AddReferencePosition(float time, Value position)
         {
             referencePositions.Add(time, position);
         }
 
-        public float? GetCurrentReferencePosition(float elapsed)
+        public Value? GetCurrentReferencePosition(float elapsed)
         {
-            float? position = null;
+            Value? position = null;
             
             foreach (var (time, pos) in referencePositions)
             {
@@ -39,9 +36,9 @@ namespace Managers
             return position;
         }
 
-        public SortedDictionary<float, float> GetReferencePositions() => referencePositions;
+        public SortedDictionary<float, Value> GetReferencePositions() => referencePositions;
 
-        public void UpdateReferencePosition(int index, float value)
+        public void UpdateReferencePosition(int index, Value value)
         {
             Assert.IsTrue(referencePositions.ContainsKey(index));
 

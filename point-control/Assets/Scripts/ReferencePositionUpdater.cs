@@ -1,4 +1,3 @@
-using System;
 using Managers;
 using UnityEngine;
 
@@ -8,6 +7,8 @@ public class ReferencePositionUpdater : MonoBehaviour
 
     private void Update()
     {
-        LoadedManagers.Rpm.UpdateReferencePosition(index, this.gameObject.transform.position.x);
+        var newReferencePosition =
+            new Vector2(this.gameObject.transform.position.x, this.gameObject.transform.position.y);
+        LoadedManagers.ReferencePositionManager.UpdateReferencePosition(index, newReferencePosition);
     }
 }

@@ -24,25 +24,32 @@ namespace UI
             if (!createVisualization) return;
 
             // Show current visualization
-            var referencePositions = LoadedManagers.Rpm.GetReferencePositions();
+            var referencePositions = LoadedManagers.ReferencePositionManager.GetReferencePositions();
             foreach (var ((time, pos), index) in referencePositions.WithIndex())
             {
-                var refPosPrefab = Instantiate(referencePositionPrefab, new Vector3(pos, 0, 0),
-                    Quaternion.identity);
-                refPosPrefab.GetComponent<ReferencePositionUpdater>().index = index;
-                refPosPrefab.GetComponentInChildren<TMP_Text>().text = time.ToString();
-                visualizedReferencePositions.Add(refPosPrefab);
+                CreateAndAddReferencePositionVisualization(index, time, pos);
             }
         }
 
-        private float currentTime = 5;
+        private float currentTime = 0;
 
         public void AddTest()
         {
             Debug.Log("Adding test data from Reference Position Creation Popup");
 
-            LoadedManagers.Rpm.AddReferencePosition(currentTime, currentTime);
-            currentTime++;
+            LoadedManagers.ReferencePositionManager.AddReferencePosition(currentTime, new Vector2(0, 0));
+            currentTime+=5;
+            
+            Refresh(true);
+        }
+
+        private void CreateAndAddReferencePositionVisualization(int index, float time, Vector2 pos)
+        {
+            var refPosPrefab = Instantiate(referencePositionPrefab, new Vector3(pos.x, pos.y, 0),
+                Quaternion.identity);
+            refPosPrefab.GetComponent<ReferencePositionUpdater>().index = index;
+            refPosPrefab.GetComponentInChildren<TMP_Text>().text = time.ToString();
+            visualizedReferencePositions.Add(refPosPrefab);
         }
     }
 }

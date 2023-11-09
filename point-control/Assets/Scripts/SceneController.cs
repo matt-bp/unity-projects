@@ -6,10 +6,10 @@ using UnityEngine;
 public class SceneController : MonoBehaviour
 {
     [SerializeField] private GameObject thingToControl;
-    [SerializeField] private float xVelocity;
-    [SerializeField] private float xPosition;
+    [SerializeField] private Vector2 velocity;
+    [SerializeField] private Vector2 position;
 
-    [SerializeField] private float initialXPosition;
+    [SerializeField] private Vector2 initialPosition;
 
     private bool doSimulation;
     private float elapsed;
@@ -34,7 +34,7 @@ public class SceneController : MonoBehaviour
 
         elapsed += Time.deltaTime;
 
-        var updatedCommandVariable = LoadedManagers.Rpm.GetCurrentReferencePosition(elapsed);
+        var updatedCommandVariable = LoadedManagers.ReferencePositionManager.GetCurrentReferencePosition(elapsed);
         
         
         if (updatedCommandVariable.HasValue)
@@ -42,13 +42,14 @@ public class SceneController : MonoBehaviour
             LoadedManagers.Pid.SetCommandVariable(updatedCommandVariable.Value);
         }
 
-        var error = LoadedManagers.Pid.DoUpdate(thingToControl.transform.position.x);
+        var newMeasurement = new Vector2(thingToControl.transform.position.x, thingToControl.transform.position.y);
+        var error = LoadedManagers.Pid.DoUpdate(newMeasurement);
         
         var acceleration = error / (Time.deltaTime * Time.deltaTime);
-        xVelocity += acceleration * Time.deltaTime;
-        xPosition += xVelocity * Time.deltaTime;
+        velocity += acceleration * Time.deltaTime;
+        position += velocity * Time.deltaTime;
 
-        thingToControl.transform.position = new Vector3(xPosition, 0, 0);
+        thingToControl.transform.position = new Vector3(position.x, position.y, 0);
     }
     
     private void OnSimulationResetAndStop()
@@ -61,10 +62,10 @@ public class SceneController : MonoBehaviour
     private void Reset()
     {
         Debug.Log("Resetting scene controller.");
-        xPosition = initialXPosition;
-        xVelocity = 0;
+        position = initialPosition;
+        velocity = Vector2.zero;
         elapsed = 0;
-        thingToControl.transform.position = new Vector3(xPosition, 0, 0);
+        thingToControl.transform.position = new Vector3(position.x, position.y, 0);
         
         LoadedManagers.Pid.Reset();
     }

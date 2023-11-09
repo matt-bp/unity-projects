@@ -1,5 +1,5 @@
-using System;
 using UnityEngine;
+using Value = UnityEngine.Vector2;
 
 namespace Managers
 {
@@ -15,21 +15,21 @@ namespace Managers
         public float ki;
         public float kd;
 
-        private float commandVariable;
-        private float integral;
-        private float state;
+        private Value commandVariable;
+        private Value integral;
+        private Value state;
         
         public void Startup()
         {
             Status = ManagerStatus.Started;
         }
 
-        public void SetCommandVariable(float newValue)
+        public void SetCommandVariable(Value newValue)
         {
             commandVariable = newValue;
         }
 
-        public float DoUpdate(float newMeasurement)
+        public Value DoUpdate(Value newMeasurement)
         {
             var error = commandVariable - newMeasurement;
 
@@ -45,7 +45,7 @@ namespace Managers
 
         public void Reset()
         {
-            integral = 0;
+            integral = default;
         }
     }
 }
