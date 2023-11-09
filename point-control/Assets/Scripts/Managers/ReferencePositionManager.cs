@@ -14,11 +14,17 @@ namespace Managers
             Status = ManagerStatus.Started;
         }
         
-        private readonly SortedDictionary<float, Value> referencePositions = new();
+        private readonly List<(float Time, Value Position)> referencePositions = new();
 
         public void AddReferencePosition(float time, Value position)
         {
-            referencePositions.Add(time, position);
+            referencePositions.Add((time, position));
+            referencePositions.Sort();
+
+            foreach (var (item, index) in referencePositions.WithIndex())
+            {
+                Debug.Log($"{index} contains {item}");
+            }
         }
 
         public Value? GetCurrentReferencePosition(float elapsed)
@@ -36,13 +42,13 @@ namespace Managers
             return position;
         }
 
-        public SortedDictionary<float, Value> GetReferencePositions() => referencePositions;
+        public List<(float Time, Value Position)> GetReferencePositions() => referencePositions;
 
         public void UpdateReferencePosition(int index, Value value)
         {
-            Assert.IsTrue(referencePositions.ContainsKey(index));
+            Assert.IsTrue(referencePositions.Count > index && index >= 0);
 
-            referencePositions[index] = value;
+            referencePositions[index] = (referencePositions[index].Time, value);
         }
     }
 }

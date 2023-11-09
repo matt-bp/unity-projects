@@ -1,6 +1,8 @@
+using System.Collections;
 using System.Collections.Generic;
 using Managers;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace UI
@@ -35,11 +37,18 @@ namespace UI
 
         public void AddTest()
         {
+            StartCoroutine(AddDefaultPositionAtCurrentTime());
+        }
+
+        private IEnumerator AddDefaultPositionAtCurrentTime()
+        {
             Debug.Log("Adding test data from Reference Position Creation Popup");
 
             LoadedManagers.ReferencePositionManager.AddReferencePosition(currentTime, new Vector2(0, 0));
-            currentTime+=5;
-            
+            currentTime += 5;
+
+            yield return new WaitForSeconds(1);
+
             Refresh(true);
         }
 
