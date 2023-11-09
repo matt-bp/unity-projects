@@ -8,7 +8,6 @@ using UnityEngine.UI;
 
 public class UIController : MonoBehaviour
 {
-    [SerializeField] private GameObject xValueVisualizer;
     [SerializeField] private Button toggleButton;
     [SerializeField] private ReferencePositionCreationPopup popup;
 
@@ -29,13 +28,6 @@ public class UIController : MonoBehaviour
         }
     }
 
-    public void OnSliderChange(float value)
-    {
-        xValueVisualizer.transform.position = new Vector3(value, 0, 0);
-        
-        LoadedManagers.Pid.SetCommandVariable(value);
-    }
-    
     public void OnResetClick()
     {
         showGreen = false;

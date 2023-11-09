@@ -17,16 +17,19 @@ namespace UI
             {
                 Destroy(previousObject);
             }
+
             visualizedReferencePositions = new List<GameObject>();
 
             if (!createVisualization) return;
-            
+
             // Show current visualization
             var referencePositions = LoadedManagers.Rpm.GetReferencePositions();
-            foreach (var (time, pos) in referencePositions)
+            foreach (var ((_, pos), index) in referencePositions.WithIndex())
             {
-                visualizedReferencePositions.Add(Instantiate(referencePositionPrefab, new Vector3(pos, 0, 0),
-                    Quaternion.identity));
+                var refPosPrefab = Instantiate(referencePositionPrefab, new Vector3(pos, 0, 0),
+                    Quaternion.identity);
+                refPosPrefab.GetComponent<ReferencePositionUpdater>().index = index;
+                visualizedReferencePositions.Add(refPosPrefab);
             }
         }
 

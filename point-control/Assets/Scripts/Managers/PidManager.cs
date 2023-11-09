@@ -7,7 +7,10 @@ namespace Managers
     {
         public ManagerStatus Status { get; private set; }
 
-        
+        /// <summary>
+        /// Global control that adjusts each value together.
+        /// </summary>
+        public float kg = 1;
         public float kp;
         public float ki;
         public float kd;
@@ -32,9 +35,9 @@ namespace Managers
 
             integral += error;
 
-            var p = kp * error;
-            var i = ki * integral;
-            var d = kd * (error - state);
+            var p = kg * kp * error;
+            var i = kg * ki * integral;
+            var d = kg * kd * (error - state);
             state = error;
 
             return p + i + d;

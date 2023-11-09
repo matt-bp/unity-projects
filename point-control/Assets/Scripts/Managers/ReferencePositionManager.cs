@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Managers
 {
@@ -12,10 +13,8 @@ namespace Managers
         {
             Status = ManagerStatus.Started;
             
-            referencePositions.Add(1, 2);
-            referencePositions.Add(5, 4);
-            referencePositions.Add(10, 7);
-            referencePositions.Add(15, 10);
+            referencePositions.Add(0, -5);
+            // referencePositions.Add(1, 10);
         }
         
         private readonly SortedDictionary<float, float> referencePositions = new();
@@ -41,5 +40,12 @@ namespace Managers
         }
 
         public SortedDictionary<float, float> GetReferencePositions() => referencePositions;
+
+        public void UpdateReferencePosition(int index, float value)
+        {
+            Assert.IsTrue(referencePositions.ContainsKey(index));
+
+            referencePositions[index] = value;
+        }
     }
 }
