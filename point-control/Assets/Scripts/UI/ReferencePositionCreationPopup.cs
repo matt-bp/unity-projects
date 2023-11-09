@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Managers;
+using TMPro;
 using UnityEngine;
 
 namespace UI
@@ -24,11 +25,12 @@ namespace UI
 
             // Show current visualization
             var referencePositions = LoadedManagers.Rpm.GetReferencePositions();
-            foreach (var ((_, pos), index) in referencePositions.WithIndex())
+            foreach (var ((time, pos), index) in referencePositions.WithIndex())
             {
                 var refPosPrefab = Instantiate(referencePositionPrefab, new Vector3(pos, 0, 0),
                     Quaternion.identity);
                 refPosPrefab.GetComponent<ReferencePositionUpdater>().index = index;
+                refPosPrefab.GetComponentInChildren<TMP_Text>().text = time.ToString();
                 visualizedReferencePositions.Add(refPosPrefab);
             }
         }
