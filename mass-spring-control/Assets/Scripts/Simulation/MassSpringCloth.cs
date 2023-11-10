@@ -14,7 +14,6 @@ namespace Simulation
         private const float Kd = 1.0f;
         private const float Gravity = -10.0f;
         private const float Mass = 1.0f;
-        private const float RestLength = 0.2f;
 
         #endregion
 
@@ -26,6 +25,7 @@ namespace Simulation
         [SerializeField] private Vector3[] forces;
         [SerializeField] private List<int> constrainedIndices = new();
         [SerializeField] private List<SpringPair> springs = new();
+        [SerializeField] private float[] masses;
 
         private void Start()
         {
@@ -37,6 +37,18 @@ namespace Simulation
             positions = initialPositions.Select(v => v).ToArray();
             velocities = Enumerable.Range(0, positions.Length).Select(_ => Vector3.zero).ToArray();
             forces = Enumerable.Range(0, positions.Length).Select(_ => Vector3.zero).ToArray();
+
+            InitializeMasses();
+        }
+
+        private void InitializeMasses()
+        {
+            masses = Enumerable.Range(0, positions.Length).Select(_ => 0.0f).ToArray();
+
+            for (var i = 0; i < meshFilter.mesh.triangles.Length; i++)
+            {
+                // var currentTriangle = ...
+            }
         }
 
         public void Step(Vector3[] externalForces)
@@ -102,13 +114,13 @@ namespace Simulation
 
             foreach (var pair in springs)
             {
-                ComputeForceForPair(pair.firstIndex, pair.secondIndex);
+                ComputeForceForPair(pair.firstIndex, pair.secondIndex, pair.restLength);
             }
         }
 
-        private void ComputeForceForPair(int first, int second)
+        private void ComputeForceForPair(int first, int second, float restLength)
         {
-            var springForce = GetSpringForce(positions[first], positions[second]);
+            var springForce = GetSpringForce(positions[first], positions[second], restLength);
 
             var dampingForce = GetDampingForce(velocities[first], velocities[second]);
 
@@ -123,10 +135,10 @@ namespace Simulation
             }
         }
 
-        private Vector3 GetSpringForce(Vector3 position1, Vector3 position2)
+        private Vector3 GetSpringForce(Vector3 position1, Vector3 position2, float restLength)
         {
             var distance = Vector3.Distance(position1, position2);
-            var force = K * (distance - RestLength) * ((position1 - position2) / distance);
+            var force = K * (distance - restLength) * ((position1 - position2) / distance);
             return force;
         }
 
