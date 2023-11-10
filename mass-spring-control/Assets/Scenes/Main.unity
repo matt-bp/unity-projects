@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028305, g: 0.22571313, b: 0.3069213, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -158,6 +158,7 @@ MonoBehaviour:
   initialPosition: {x: 0, y: 0}
   mass: 1
   gravity: -10
+  cloth: {fileID: 1493167806}
 --- !u!4 &140282868
 Transform:
   m_ObjectHideFlags: 0
@@ -1550,10 +1551,10 @@ MonoBehaviour:
   positions: []
   velocities: []
   forces: []
-  constrainedIndices: 00000000
+  constrainedIndices: 010000000200000003000000
   springs:
-  - firstIndex: 0
-    secondIndex: 1
+  - firstIndex: 2
+    secondIndex: 0
 --- !u!1 &1617696721
 GameObject:
   m_ObjectHideFlags: 0

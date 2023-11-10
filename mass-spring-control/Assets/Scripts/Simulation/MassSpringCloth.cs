@@ -36,6 +36,7 @@ namespace Simulation
 
         public void Step(Vector3[] externalForces)
         {
+            Debug.Log($"Forces {forces.Length}. External {externalForces.Length}");
             Assert.IsTrue(externalForces.Length == forces.Length);
             
             SimulationStep(externalForces);
@@ -44,6 +45,8 @@ namespace Simulation
             meshFilter.mesh.vertices = positions.Select(v => meshFilter.gameObject.transform.InverseTransformPoint(v)).ToArray();
             meshFilter.mesh.RecalculateBounds();
         }
+
+        public Vector3[] Positions => positions;
         
         private void SimulationStep(Vector3[] externalForces)
         {

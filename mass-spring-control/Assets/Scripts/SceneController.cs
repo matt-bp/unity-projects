@@ -1,6 +1,9 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Events;
 using Managers;
+using Simulation;
 using UnityEngine;
 
 public class SceneController : MonoBehaviour
@@ -12,6 +15,7 @@ public class SceneController : MonoBehaviour
     [SerializeField] private Vector2 initialPosition;
     [SerializeField] private float mass = 1;
     [SerializeField] private float gravity = -10.0f;
+    [SerializeField] private MassSpringCloth cloth;
 
     private bool doSimulation;
     private float elapsed;
@@ -36,30 +40,34 @@ public class SceneController : MonoBehaviour
     {
         if (!doSimulation) return;
 
-        elapsed += Time.deltaTime;
+        // elapsed += Time.deltaTime;
+        //
+        // var updatedCommandVariable = LoadedManagers.ReferencePositionManager.GetCurrentReferencePosition(elapsed);
+        //
+        // if (updatedCommandVariable.HasValue)
+        // {
+        //     LoadedManagers.Pid.SetCommandVariable(updatedCommandVariable.Value);
+        // }
 
-        var updatedCommandVariable = LoadedManagers.ReferencePositionManager.GetCurrentReferencePosition(elapsed);
+        // var forces = Vector2.zero;
+        //
+        // var newMeasurement = new Vector2(thingToControl.transform.position.x, thingToControl.transform.position.y);
+        // var error = LoadedManagers.Pid.DoUpdate(newMeasurement);
+        // // Error, don't include mass, want to have it "heavier"
+        // forces += (error / (Time.deltaTime * Time.deltaTime));
+        //
+        // // Gravity
+        // forces += new Vector2(0, gravity * mass);
+        //
+        // var acceleration = forces / mass;
+        // velocity += acceleration * Time.deltaTime;
+        // position += velocity * Time.deltaTime;
+        //
+        // thingToControl.transform.position = new Vector3(position.x, position.y, 0);
 
-        if (updatedCommandVariable.HasValue)
-        {
-            LoadedManagers.Pid.SetCommandVariable(updatedCommandVariable.Value);
-        }
-
-        var forces = Vector2.zero;
-
-        var newMeasurement = new Vector2(thingToControl.transform.position.x, thingToControl.transform.position.y);
-        var error = LoadedManagers.Pid.DoUpdate(newMeasurement);
-        // Error, don't include mass, want to have it "heavier"
-        forces += (error / (Time.deltaTime * Time.deltaTime));
-
-        // Gravity
-        forces += new Vector2(0, gravity * mass);
-
-        var acceleration = forces / mass;
-        velocity += acceleration * Time.deltaTime;
-        position += velocity * Time.deltaTime;
-
-        thingToControl.transform.position = new Vector3(position.x, position.y, 0);
+        var temporaryExternalForces = Enumerable.Range(0, cloth.Positions.Length)
+            .Select(_ => Vector3.zero).ToArray();
+        cloth.Step(temporaryExternalForces);
     }
 
     private void OnSimulationResetAndStop()
