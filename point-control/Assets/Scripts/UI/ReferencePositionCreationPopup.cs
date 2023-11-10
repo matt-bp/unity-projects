@@ -47,7 +47,8 @@ namespace UI
             LoadedManagers.ReferencePositionManager.AddReferencePosition(currentTime, new Vector2(0, 0));
             currentTime += 5;
 
-            yield return new WaitForSeconds(1);
+            // Wait one frame
+            yield return null;
 
             Refresh(true);
         }

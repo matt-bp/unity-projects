@@ -45,6 +45,7 @@ namespace Managers
 
             while (numReady < numModules)
             {
+                Debug.Log("Checking");
                 var lastReady = numReady;
                 numReady = 0;
 
@@ -58,7 +59,6 @@ namespace Managers
 
                 if (numReady > lastReady)
                 {
-                    Debug.Log($"Progress: {numReady}/{numModules}");
                     Messenger<int, int>.Broadcast(StartupEvent.ManagersProgress, numReady, numModules);
                 }
 

@@ -19,6 +19,7 @@ public class SceneController : MonoBehaviour
         Messenger.AddListener(GameEvent.SimulationResetAndStop, OnSimulationResetAndStop);
         Messenger.AddListener(GameEvent.ToggleSimulation, OnToggleSimulation);
         Messenger.AddListener(StartupEvent.ManagersStarted, OnManagersStarted);
+        Messenger<int, int>.AddListener(StartupEvent.ManagersProgress, OnMangerProgress);
     }
 
     private void OnDisable()
@@ -26,6 +27,7 @@ public class SceneController : MonoBehaviour
         Messenger.RemoveListener(GameEvent.SimulationResetAndStop, OnSimulationResetAndStop);
         Messenger.RemoveListener(GameEvent.ToggleSimulation, OnToggleSimulation);
         Messenger.RemoveListener(StartupEvent.ManagersStarted, OnManagersStarted);
+        Messenger<int, int>.RemoveListener(StartupEvent.ManagersProgress, OnMangerProgress);
     }
 
     private void Update()
@@ -78,5 +80,12 @@ public class SceneController : MonoBehaviour
     private void OnManagersStarted()
     {
         doSimulation = false;
+        
+        Reset();
+    }
+
+    private void OnMangerProgress(int current, int total)
+    {
+        Debug.Log($"Progress: {current}/{total}");
     }
 }
