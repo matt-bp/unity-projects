@@ -40,7 +40,6 @@ public class SceneController : MonoBehaviour
 
         var updatedCommandVariable = LoadedManagers.ReferencePositionManager.GetCurrentReferencePosition(elapsed);
 
-
         if (updatedCommandVariable.HasValue)
         {
             LoadedManagers.Pid.SetCommandVariable(updatedCommandVariable.Value);
@@ -50,12 +49,11 @@ public class SceneController : MonoBehaviour
 
         var newMeasurement = new Vector2(thingToControl.transform.position.x, thingToControl.transform.position.y);
         var error = LoadedManagers.Pid.DoUpdate(newMeasurement);
-        // Error
-        forces += mass * (error / (Time.deltaTime * Time.deltaTime));
+        // Error, don't include mass, want to have it "heavier"
+        forces += (error / (Time.deltaTime * Time.deltaTime));
 
         // Gravity
         forces += new Vector2(0, gravity * mass);
-        // Debug.Log(forces);
 
         var acceleration = forces / mass;
         velocity += acceleration * Time.deltaTime;
