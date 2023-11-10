@@ -1462,6 +1462,7 @@ GameObject:
   - component: {fileID: 1493167805}
   - component: {fileID: 1493167804}
   - component: {fileID: 1493167803}
+  - component: {fileID: 1493167806}
   m_Layer: 0
   m_Name: Cloth
   m_TagString: Untagged
@@ -1518,7 +1519,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1493167802}
-  m_Mesh: {fileID: -462981019419857548, guid: 6dcb6a6a5a09e8d4f96cd838ed4e7985, type: 3}
+  m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!4 &1493167805
 Transform:
   m_ObjectHideFlags: 0
@@ -1527,13 +1528,32 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1493167802}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.003, y: 1.825, z: 0}
-  m_LocalScale: {x: 108, y: 108, z: 108}
+  m_LocalPosition: {x: 2.1, y: 1.37, z: 0}
+  m_LocalScale: {x: 2.13, y: 2.13, z: 2.13}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1493167806
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1493167802}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fec75943385e432cb16ad04d7d443b52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  positions: []
+  velocities: []
+  forces: []
+  constrainedIndices: 00000000
+  springs:
+  - firstIndex: 0
+    secondIndex: 1
 --- !u!1 &1617696721
 GameObject:
   m_ObjectHideFlags: 0

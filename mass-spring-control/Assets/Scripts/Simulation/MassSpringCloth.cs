@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -19,22 +18,20 @@ namespace Simulation
 
         #endregion
         
-        private Mesh mesh;
+        private MeshFilter meshFilter;
         [SerializeField] private Vector3[] positions;
-        private Vector3[] velocities;
-        private Vector3[] forces;
-        [SerializeField] private SerializableDictionary<int, bool> anchors = new();
+        [SerializeField] private Vector3[] velocities;
+        [SerializeField] private Vector3[] forces;
+        [SerializeField] private List<int> constrainedIndices = new();
+        [SerializeField] private List<SpringPair> springs = new();
 
         private void Start()
         {
-            mesh = GetComponent<Mesh>();
+            meshFilter = GetComponent<MeshFilter>();
 
-            positions = mesh.vertices;
+            positions = meshFilter.mesh.vertices.Select(v => meshFilter.gameObject.transform.TransformPoint(v)).ToArray();
             velocities = Enumerable.Range(0, positions.Length).Select(_ => Vector3.zero).ToArray();
             forces = Enumerable.Range(0, positions.Length).Select(_ => Vector3.zero).ToArray();
-
-            anchors[2] = true;
-            anchors[3] = true;
         }
 
         public void Step(Vector3[] externalForces)
@@ -44,8 +41,8 @@ namespace Simulation
             SimulationStep(externalForces);
 
             // Update mesh with new positions
-            mesh.vertices = positions;
-            mesh.RecalculateBounds();
+            meshFilter.mesh.vertices = positions.Select(v => meshFilter.gameObject.transform.InverseTransformPoint(v)).ToArray();
+            meshFilter.mesh.RecalculateBounds();
         }
         
         private void SimulationStep(Vector3[] externalForces)
@@ -68,7 +65,7 @@ namespace Simulation
         
         private bool IsAnchor(int index)
         {
-            return anchors.TryGetValue(index, out var isAnchor);
+            return constrainedIndices.Contains(index);
         }
 
         private void ComputeForces()
@@ -83,13 +80,18 @@ namespace Simulation
                 forces[i].y = Gravity * Mass;
             }
 
-            for (var i = 0; i < mesh.triangles.Length; i += 3)
+            foreach (var pair in springs)
             {
-                var triangles = mesh.triangles;
-                ComputeForceForPair(triangles[i], triangles[i + 1]);
-                ComputeForceForPair(triangles[i + 1], triangles[i + 2]);
-                ComputeForceForPair(triangles[i + 2], triangles[i]);
+                ComputeForceForPair(pair.firstIndex, pair.secondIndex);
             }
+
+            // for (var i = 0; i < mesh.triangles.Length; i += 3)
+            // {
+            //     var triangles = mesh.triangles;
+            //     ComputeForceForPair(triangles[i], triangles[i + 1]);
+            //     ComputeForceForPair(triangles[i + 1], triangles[i + 2]);
+            //     ComputeForceForPair(triangles[i + 2], triangles[i]);
+            // }
         }
 
         private void ComputeForceForPair(int first, int second)
