@@ -10,10 +10,12 @@ public class SceneController : MonoBehaviour
     [SerializeField] private Vector2 position;
 
     [SerializeField] private Vector2 initialPosition;
+    [SerializeField] private float mass = 1;
+    [SerializeField] private float gravity = -10.0f;
 
     private bool doSimulation;
     private float elapsed;
-    
+
     private void OnEnable()
     {
         Messenger.AddListener(GameEvent.SimulationResetAndStop, OnSimulationResetAndStop);
@@ -37,30 +39,38 @@ public class SceneController : MonoBehaviour
         elapsed += Time.deltaTime;
 
         var updatedCommandVariable = LoadedManagers.ReferencePositionManager.GetCurrentReferencePosition(elapsed);
-        
-        
+
+
         if (updatedCommandVariable.HasValue)
         {
             LoadedManagers.Pid.SetCommandVariable(updatedCommandVariable.Value);
         }
 
+        var forces = Vector2.zero;
+
         var newMeasurement = new Vector2(thingToControl.transform.position.x, thingToControl.transform.position.y);
         var error = LoadedManagers.Pid.DoUpdate(newMeasurement);
-        
-        var acceleration = error / (Time.deltaTime * Time.deltaTime);
+        // Error
+        forces += mass * (error / (Time.deltaTime * Time.deltaTime));
+
+        // Gravity
+        forces += new Vector2(0, gravity * mass);
+        // Debug.Log(forces);
+
+        var acceleration = forces / mass;
         velocity += acceleration * Time.deltaTime;
         position += velocity * Time.deltaTime;
 
         thingToControl.transform.position = new Vector3(position.x, position.y, 0);
     }
-    
+
     private void OnSimulationResetAndStop()
     {
         Reset();
-        
+
         doSimulation = false;
     }
-    
+
     private void Reset()
     {
         Debug.Log("Resetting scene controller.");
@@ -68,7 +78,7 @@ public class SceneController : MonoBehaviour
         velocity = Vector2.zero;
         elapsed = 0;
         thingToControl.transform.position = new Vector3(position.x, position.y, 0);
-        
+
         LoadedManagers.Pid.Reset();
     }
 
@@ -80,7 +90,7 @@ public class SceneController : MonoBehaviour
     private void OnManagersStarted()
     {
         doSimulation = false;
-        
+
         Reset();
     }
 

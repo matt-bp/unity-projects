@@ -153,9 +153,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   thingToControl: {fileID: 802987621}
-  xVelocity: 0
-  xPosition: 0
-  initialXPosition: -5
+  velocity: {x: 0, y: 0}
+  position: {x: 0, y: 0}
+  initialPosition: {x: 0, y: 0}
+  mass: 1
 --- !u!4 &140282868
 Transform:
   m_ObjectHideFlags: 0
