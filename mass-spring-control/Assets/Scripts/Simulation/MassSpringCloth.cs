@@ -5,7 +5,7 @@ using UnityEngine.Assertions;
 
 namespace Simulation
 {
-    [RequireComponent(typeof(Mesh))]
+    [RequireComponent(typeof(MeshFilter))]
     public class MassSpringCloth : MonoBehaviour
     {
         #region Simulation Constants
@@ -17,8 +17,10 @@ namespace Simulation
         private const float RestLength = 0.2f;
 
         #endregion
-        
+
         private MeshFilter meshFilter;
+        private Vector3[] initialPositions;
+
         [SerializeField] private Vector3[] positions;
         [SerializeField] private Vector3[] velocities;
         [SerializeField] private Vector3[] forces;
@@ -29,25 +31,40 @@ namespace Simulation
         {
             meshFilter = GetComponent<MeshFilter>();
 
-            positions = meshFilter.mesh.vertices.Select(v => meshFilter.gameObject.transform.TransformPoint(v)).ToArray();
+            initialPositions = meshFilter.mesh.vertices.Select(v => meshFilter.gameObject.transform.TransformPoint(v))
+                .ToArray();
+
+            positions = initialPositions.Select(v => v).ToArray();
             velocities = Enumerable.Range(0, positions.Length).Select(_ => Vector3.zero).ToArray();
             forces = Enumerable.Range(0, positions.Length).Select(_ => Vector3.zero).ToArray();
         }
 
         public void Step(Vector3[] externalForces)
         {
-            Debug.Log($"Forces {forces.Length}. External {externalForces.Length}");
             Assert.IsTrue(externalForces.Length == forces.Length);
-            
+
             SimulationStep(externalForces);
 
-            // Update mesh with new positions
-            meshFilter.mesh.vertices = positions.Select(v => meshFilter.gameObject.transform.InverseTransformPoint(v)).ToArray();
+            SetMeshVertices(positions);
+        }
+
+        private void SetMeshVertices(Vector3[] newPositions)
+        {
+            meshFilter.mesh.vertices =
+                newPositions.Select(v => meshFilter.gameObject.transform.InverseTransformPoint(v)).ToArray();
             meshFilter.mesh.RecalculateBounds();
         }
 
         public Vector3[] Positions => positions;
-        
+
+        public void Reset()
+        {
+            positions = initialPositions.Select(v => v).ToArray();
+            SetMeshVertices(initialPositions);
+            velocities = Enumerable.Range(0, positions.Length).Select(_ => Vector3.zero).ToArray();
+            forces = Enumerable.Range(0, positions.Length).Select(_ => Vector3.zero).ToArray();
+        }
+
         private void SimulationStep(Vector3[] externalForces)
         {
             ComputeForces();
@@ -65,7 +82,7 @@ namespace Simulation
                 positions[i] += velocities[i] * Time.deltaTime;
             }
         }
-        
+
         private bool IsAnchor(int index)
         {
             return constrainedIndices.Contains(index);
@@ -79,7 +96,7 @@ namespace Simulation
             for (var i = 0; i < forces.Length; i++)
             {
                 if (IsAnchor(i)) continue;
-                
+
                 forces[i].y = Gravity * Mass;
             }
 
@@ -87,20 +104,12 @@ namespace Simulation
             {
                 ComputeForceForPair(pair.firstIndex, pair.secondIndex);
             }
-
-            // for (var i = 0; i < mesh.triangles.Length; i += 3)
-            // {
-            //     var triangles = mesh.triangles;
-            //     ComputeForceForPair(triangles[i], triangles[i + 1]);
-            //     ComputeForceForPair(triangles[i + 1], triangles[i + 2]);
-            //     ComputeForceForPair(triangles[i + 2], triangles[i]);
-            // }
         }
 
         private void ComputeForceForPair(int first, int second)
         {
             var springForce = GetSpringForce(positions[first], positions[second]);
-        
+
             var dampingForce = GetDampingForce(velocities[first], velocities[second]);
 
             if (!IsAnchor(first))

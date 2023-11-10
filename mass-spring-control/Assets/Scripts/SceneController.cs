@@ -86,6 +86,8 @@ public class SceneController : MonoBehaviour
         thingToControl.transform.position = new Vector3(position.x, position.y, 0);
 
         LoadedManagers.Pid.Reset();
+        
+        cloth.Reset();
     }
 
     private void OnToggleSimulation()
