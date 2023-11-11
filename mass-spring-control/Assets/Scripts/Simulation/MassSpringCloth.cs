@@ -13,7 +13,6 @@ namespace Simulation
         private const int K = 4;
         private const float Kd = 1.0f;
         private const float Gravity = -10.0f;
-        private const float Mass = 1.0f;
 
         #endregion
 
@@ -26,6 +25,7 @@ namespace Simulation
         [SerializeField] private List<int> constrainedIndices = new();
         [SerializeField] private List<SpringPair> springs = new();
         [SerializeField] private float[] masses;
+        [SerializeField] private float surfaceDensity;
 
         private void Start()
         {
@@ -44,10 +44,17 @@ namespace Simulation
         private void InitializeMasses()
         {
             masses = Enumerable.Range(0, positions.Length).Select(_ => 0.0f).ToArray();
-
-            for (var i = 0; i < meshFilter.mesh.triangles.Length; i++)
+            
+            var triangles = meshFilter.mesh.triangles;
+            for (var i = 0; i < triangles.Length; i+=3)
             {
-                // var currentTriangle = ...
+                var index0 = triangles[i];
+                var index1 = triangles[i + 1];
+                var index2 = triangles[i + 2];
+                var m = surfaceDensity * HeronsFormula.GetArea(positions[index0], positions[index1], positions[index2]);
+                masses[index0] += m / 3;
+                masses[index1] += m / 3;
+                masses[index2] += m / 3;
             }
         }
 
@@ -89,7 +96,7 @@ namespace Simulation
             // Update velocities * positions
             for (var i = 0; i < forces.Length; i++)
             {
-                var acceleration = forces[i] / Mass;
+                var acceleration = forces[i] / masses[i];
                 velocities[i] += acceleration * Time.deltaTime;
                 positions[i] += velocities[i] * Time.deltaTime;
             }
@@ -109,7 +116,7 @@ namespace Simulation
             {
                 if (IsAnchor(i)) continue;
 
-                forces[i].y = Gravity * Mass;
+                forces[i].y = Gravity * masses[i];
             }
 
             foreach (var pair in springs)

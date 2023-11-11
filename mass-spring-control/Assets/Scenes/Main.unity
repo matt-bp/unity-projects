@@ -1581,6 +1581,7 @@ MonoBehaviour:
     secondIndex: 3
     restLength: 0.2
   masses: []
+  surfaceDensity: 0.5
 --- !u!1 &1617696721
 GameObject:
   m_ObjectHideFlags: 0
