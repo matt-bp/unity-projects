@@ -8,13 +8,6 @@ using UnityEngine;
 
 public class SceneController : MonoBehaviour
 {
-    [SerializeField] private GameObject thingToControl;
-    [SerializeField] private Vector2 velocity;
-    [SerializeField] private Vector2 position;
-
-    [SerializeField] private Vector2 initialPosition;
-    [SerializeField] private float mass = 1;
-    [SerializeField] private float gravity = -10.0f;
     [SerializeField] private MassSpringCloth cloth;
 
     private bool doSimulation;
@@ -40,8 +33,8 @@ public class SceneController : MonoBehaviour
     {
         if (!doSimulation) return;
 
-        // elapsed += Time.deltaTime;
-        //
+        elapsed += Time.deltaTime;
+        
         // var updatedCommandVariable = LoadedManagers.ReferencePositionManager.GetCurrentReferencePosition(elapsed);
         //
         // if (updatedCommandVariable.HasValue)
@@ -80,14 +73,11 @@ public class SceneController : MonoBehaviour
     private void Reset()
     {
         Debug.Log("Resetting scene controller.");
-        position = initialPosition;
-        velocity = Vector2.zero;
+
         elapsed = 0;
-        thingToControl.transform.position = new Vector3(position.x, position.y, 0);
+        cloth.Reset();
 
         LoadedManagers.Pid.Reset();
-        
-        cloth.Reset();
     }
 
     private void OnToggleSimulation()
