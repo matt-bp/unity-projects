@@ -43,19 +43,14 @@ namespace Simulation
 
         private void InitializeMasses()
         {
-            masses = Enumerable.Range(0, positions.Length).Select(_ => 0.0f).ToArray();
+            var totalArea = meshFilter.mesh.triangles.Select((value, i) => new { value, i })
+                .GroupBy(v => v.i / 3)
+                .Select(g => g.Select(x => x.value).ToList())
+                .Sum(v => HeronsFormula.GetArea(positions[v[0]], positions[v[1]], positions[v[2]]));
+
+            var totalMass = surfaceDensity * totalArea;
             
-            var triangles = meshFilter.mesh.triangles;
-            for (var i = 0; i < triangles.Length; i+=3)
-            {
-                var index0 = triangles[i];
-                var index1 = triangles[i + 1];
-                var index2 = triangles[i + 2];
-                var m = surfaceDensity * HeronsFormula.GetArea(positions[index0], positions[index1], positions[index2]);
-                masses[index0] += m / 3;
-                masses[index1] += m / 3;
-                masses[index2] += m / 3;
-            }
+            masses = Enumerable.Range(0, positions.Length).Select(_ => totalMass / positions.Length).ToArray();
         }
 
         public void Step(Vector3[] externalForces)
