@@ -12,6 +12,14 @@ namespace Managers
         public void Startup()
         {
             Status = ManagerStatus.Started;
+            
+            referencePositions.Add((0, new Value()
+            {
+                new(1.035f, 0.7348798f, 0.9054227f),
+                new(3.165f, 0.7348798f, 0.9054227f),
+                new(1.035f, 2.36512f, -0.4654227f),
+                new(3.165f, 2.36512f, -0.4654227f)
+            }));
         }
         
         private readonly List<(float Time, Value Position)> referencePositions = new();

@@ -17,8 +17,8 @@ namespace Simulation
         #endregion
 
         private MeshFilter meshFilter;
-        private Vector3[] initialPositions;
-
+        
+        [SerializeField] private Vector3[] initialPositions;
         [SerializeField] private Vector3[] positions;
         [SerializeField] private Vector3[] velocities;
         [SerializeField] private Vector3[] forces;

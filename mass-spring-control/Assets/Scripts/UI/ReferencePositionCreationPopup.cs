@@ -14,7 +14,7 @@ namespace UI
         private List<GameObject> visualizedReferencePositions = new();
 
         [SerializeField] private MeshFilter defaultMeshFilter;
-
+        
         public void Refresh(bool createVisualization)
         {
             // Clear out previous visualization
@@ -63,7 +63,7 @@ namespace UI
             
             // At some point, we'll need to change the triangles too
             var mesh = refPosPrefab.GetComponent<MeshFilter>().mesh;
-            mesh.vertices = pos.ToArray();
+            mesh.vertices = pos.Select(v => refPosPrefab.transform.InverseTransformPoint((v))).ToArray();
             mesh.RecalculateBounds();
 
             visualizedReferencePositions.Add(refPosPrefab);
