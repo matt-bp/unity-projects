@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
-using Value = UnityEngine.Vector2;
+using Value = System.Collections.Generic.List<UnityEngine.Vector3>;
 
 namespace Managers
 {
@@ -20,11 +20,6 @@ namespace Managers
         {
             referencePositions.Add((time, position));
             referencePositions.Sort();
-
-            foreach (var (item, index) in referencePositions.WithIndex())
-            {
-                Debug.Log($"{index} contains {item}");
-            }
         }
 
         public Value? GetCurrentReferencePosition(float elapsed)

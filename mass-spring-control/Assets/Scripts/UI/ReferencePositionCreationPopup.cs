@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Managers;
 using TMPro;
 using Unity.VisualScripting;
@@ -12,6 +13,7 @@ namespace UI
         [SerializeField] private GameObject referencePositionPrefab;
         private List<GameObject> visualizedReferencePositions = new();
 
+        [SerializeField] private MeshFilter defaultMeshFilter;
 
         public void Refresh(bool createVisualization)
         {
@@ -44,7 +46,7 @@ namespace UI
         {
             Debug.Log("Adding test data from Reference Position Creation Popup");
 
-            LoadedManagers.ReferencePositionManager.AddReferencePosition(currentTime, new Vector2(0, 0));
+            LoadedManagers.ReferencePositionManager.AddReferencePosition(currentTime, defaultMeshFilter.mesh.vertices.Select(v => v).ToList());
             currentTime += 5;
 
             // Wait one frame
@@ -53,12 +55,17 @@ namespace UI
             Refresh(true);
         }
 
-        private void CreateAndAddReferencePositionVisualization(int index, float time, Vector2 pos)
+        private void CreateAndAddReferencePositionVisualization(int index, float time, List<Vector3> pos)
         {
-            var refPosPrefab = Instantiate(referencePositionPrefab, new Vector3(pos.x, pos.y, 0),
-                Quaternion.identity);
+            var refPosPrefab = Instantiate(referencePositionPrefab, Vector3.zero, Quaternion.identity);
             refPosPrefab.GetComponent<ReferencePositionUpdater>().index = index;
             refPosPrefab.GetComponentInChildren<TMP_Text>().text = time.ToString();
+            
+            // At some point, we'll need to change the triangles too
+            var mesh = refPosPrefab.GetComponent<MeshFilter>().mesh;
+            mesh.vertices = pos.ToArray();
+            mesh.RecalculateBounds();
+
             visualizedReferencePositions.Add(refPosPrefab);
         }
     }
