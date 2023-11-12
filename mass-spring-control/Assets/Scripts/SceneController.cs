@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Events;
@@ -34,33 +33,22 @@ public class SceneController : MonoBehaviour
         if (!doSimulation) return;
 
         elapsed += Time.deltaTime;
+
+
+        List<Vector3> externalForces = new();
+
+        var updatedCommandVariable = LoadedManagers.ReferencePositionManager.GetCurrentReferencePosition(elapsed);
         
-        // var updatedCommandVariable = LoadedManagers.ReferencePositionManager.GetCurrentReferencePosition(elapsed);
-        //
-        // if (updatedCommandVariable.HasValue)
-        // {
-        //     LoadedManagers.Pid.SetCommandVariable(updatedCommandVariable.Value);
-        // }
-
-        // var forces = Vector2.zero;
-        //
-        // var newMeasurement = new Vector2(thingToControl.transform.position.x, thingToControl.transform.position.y);
-        // var error = LoadedManagers.Pid.DoUpdate(newMeasurement);
-        // // Error, don't include mass, want to have it "heavier"
-        // forces += (error / (Time.deltaTime * Time.deltaTime));
-        //
-        // // Gravity
-        // forces += new Vector2(0, gravity * mass);
-        //
-        // var acceleration = forces / mass;
-        // velocity += acceleration * Time.deltaTime;
-        // position += velocity * Time.deltaTime;
-        //
-        // thingToControl.transform.position = new Vector3(position.x, position.y, 0);
-
-        var temporaryExternalForces = Enumerable.Range(0, cloth.Positions.Length)
-            .Select(_ => Vector3.zero).ToArray();
-        cloth.Step(temporaryExternalForces);
+        if (updatedCommandVariable is not null)
+        {
+            LoadedManagers.Pid.SetCommandVariable(updatedCommandVariable);
+            
+            var error = LoadedManagers.Pid.DoUpdate(cloth.Positions);
+            // Error, don't include mass, want to have it "heavier"
+            externalForces = error.Select(e => e / (Time.deltaTime * Time.deltaTime)).ToList();
+        }
+        
+        cloth.Step(externalForces.ToArray());
     }
 
     private void OnSimulationResetAndStop()

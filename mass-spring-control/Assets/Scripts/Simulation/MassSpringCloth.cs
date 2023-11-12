@@ -55,7 +55,7 @@ namespace Simulation
 
         public void Step(Vector3[] externalForces)
         {
-            Assert.IsTrue(externalForces.Length == forces.Length);
+            // Assert.IsTrue(externalForces.Length == forces.Length);
 
             SimulationStep(externalForces);
 
@@ -85,6 +85,8 @@ namespace Simulation
 
             for (var i = 0; i < externalForces.Length; i++)
             {
+                if (IsAnchor(i)) continue;
+                
                 forces[i] += externalForces[i];
             }
 

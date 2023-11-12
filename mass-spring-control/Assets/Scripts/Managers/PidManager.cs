@@ -1,5 +1,7 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using Value = UnityEngine.Vector2;
+using Value = System.Collections.Generic.List<UnityEngine.Vector3>;
 
 namespace Managers
 {
@@ -15,9 +17,9 @@ namespace Managers
         public float ki;
         public float kd;
 
-        private Value commandVariable;
-        private Value integral;
-        private Value state;
+        private Value commandVariable = new();
+        private Value integral = new();
+        private Value state = new();
         
         public void Startup()
         {
@@ -27,20 +29,44 @@ namespace Managers
         public void SetCommandVariable(Value newValue)
         {
             commandVariable = newValue;
+
+            if (integral == null || !integral.Any())
+            {
+                integral = Enumerable.Repeat(Vector3.zero, newValue.Count).ToList();
+            }
+
+            if (state == null || !state.Any())
+            {
+                state = Enumerable.Repeat(Vector3.zero, newValue.Count).ToList();
+            }
         }
 
-        public Value DoUpdate(Value newMeasurement)
+        public Value DoUpdate(IEnumerable<Vector3> newMeasurement)
         {
-            var error = commandVariable - newMeasurement;
+            Debug.Assert(commandVariable.Any());
+            Debug.Assert(integral.Any());
+            Debug.Assert(state.Any());
+            
+            var update = new Value();
+            
+            foreach (var item in newMeasurement.Select((v, i) => new {v, i}))
+            {
+                var measurement = item.v;
+                var index = item.i;
 
-            integral += error;
+                var error = commandVariable[index] - measurement;
 
-            var p = kg * kp * error;
-            var i = kg * ki * integral;
-            var d = kg * kd * (error - state);
-            state = error;
+                integral[index] += error;
 
-            return p + i + d;
+                var p = kg * kp * error;
+                var i = kg * ki * integral[index];
+                var d = kg * kd * (error - state[index]);
+                state[index] = error;
+                
+                update.Add(p + i + d);
+            }
+
+            return update;
         }
 
         public void Reset()
