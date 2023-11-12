@@ -58,13 +58,16 @@ namespace UI
         private void CreateAndAddReferencePositionVisualization(int index, float time, List<Vector3> pos)
         {
             var refPosPrefab = Instantiate(referencePositionPrefab, Vector3.zero, Quaternion.identity);
-            refPosPrefab.GetComponent<ReferencePositionUpdater>().index = index;
+            var refPositionUpdater = refPosPrefab.GetComponent<ReferencePositionUpdater>();
+            refPositionUpdater.referencePositionIndex = index;
             refPosPrefab.GetComponentInChildren<TMP_Text>().text = time.ToString();
             
             // At some point, we'll need to change the triangles too
             var mesh = refPosPrefab.GetComponent<MeshFilter>().mesh;
             mesh.vertices = pos.Select(v => refPosPrefab.transform.InverseTransformPoint((v))).ToArray();
             mesh.RecalculateBounds();
+
+            refPositionUpdater.CreateHandles();
 
             visualizedReferencePositions.Add(refPosPrefab);
         }

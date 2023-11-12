@@ -152,12 +152,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d11017452c9423ea6993aaa14ca8c57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  thingToControl: {fileID: 802987621}
-  velocity: {x: 0, y: 0}
-  position: {x: 0, y: 0}
-  initialPosition: {x: 0, y: 0}
-  mass: 1
-  gravity: -10
   cloth: {fileID: 1493167806}
 --- !u!4 &140282868
 Transform:
@@ -667,6 +661,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 675fa177dc6c41479801ac81cb934fb9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  referencePositions: []
 --- !u!1 &952655858
 GameObject:
   m_ObjectHideFlags: 0
@@ -1566,6 +1561,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fec75943385e432cb16ad04d7d443b52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  initialPositions: []
   positions: []
   velocities: []
   forces: []
@@ -2069,3 +2065,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   referencePositionPrefab: {fileID: 8806471310354583835, guid: 53e4112040d80be4e8f0b5123d560da3, type: 3}
+  defaultMeshFilter: {fileID: 0}
