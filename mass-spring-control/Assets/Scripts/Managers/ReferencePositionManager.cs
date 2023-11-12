@@ -1,4 +1,5 @@
 #nullable enable
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -8,25 +9,32 @@ namespace Managers
 {
     public class ReferencePositionManager : MonoBehaviour, IGameManager
     {
+        [Serializable]
+        public class ReferencePosition
+        {
+            public float Time;
+            public Value Position = new();
+        }
+        
         public ManagerStatus Status { get; private set; }
         public void Startup()
         {
             Status = ManagerStatus.Started;
             
-            referencePositions.Add((0, new Value()
+            referencePositions.Add(new ReferencePosition{ Time = 5, Position = new Value()
             {
                 new(1.035f, 0.7348798f, 0.9054227f),
                 new(3.165f, 0.7348798f, 0.9054227f),
                 new(1.035f, 2.36512f, -0.4654227f),
                 new(3.165f, 2.36512f, -0.4654227f)
-            }));
+            }});
         }
         
-        private readonly List<(float Time, Value Position)> referencePositions = new();
+        [SerializeField] private List<ReferencePosition> referencePositions = new();
 
         public void AddReferencePosition(float time, Value position)
         {
-            referencePositions.Add((time, position));
+            referencePositions.Add(new ReferencePosition{Time = time, Position =  position});
             referencePositions.Sort();
         }
 
@@ -34,24 +42,26 @@ namespace Managers
         {
             Value? position = null;
             
-            foreach (var (time, pos) in referencePositions)
+            foreach (var value in referencePositions)
             {
-                if (elapsed >= time)
+                if (elapsed >= value.Time)
                 {
-                    position = pos;
+                    position = value.Position;
                 }
             }
 
             return position;
         }
 
-        public List<(float Time, Value Position)> GetReferencePositions() => referencePositions;
+        public List<ReferencePosition> GetReferencePositions() => referencePositions;
 
+        public Value GetReferencePosition(int index) => referencePositions[index].Position;
+        
         public void UpdateReferencePosition(int index, Value value)
         {
             Assert.IsTrue(referencePositions.Count > index && index >= 0);
 
-            referencePositions[index] = (referencePositions[index].Time, value);
+            referencePositions[index].Position = value;
         }
     }
 }

@@ -29,9 +29,9 @@ namespace UI
 
             // Show current visualization
             var referencePositions = LoadedManagers.ReferencePositionManager.GetReferencePositions();
-            foreach (var ((time, pos), index) in referencePositions.WithIndex())
+            foreach (var (value, index) in referencePositions.WithIndex())
             {
-                CreateAndAddReferencePositionVisualization(index, time, pos);
+                CreateAndAddReferencePositionVisualization(index, value.Time, value.Position);
             }
         }
 
