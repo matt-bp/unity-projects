@@ -1,9 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Managers;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace UI
@@ -12,8 +12,6 @@ namespace UI
     {
         [SerializeField] private GameObject referencePositionPrefab;
         private List<GameObject> visualizedReferencePositions = new();
-
-        [SerializeField] private MeshFilter defaultMeshFilter;
         
         public void Refresh(bool createVisualization)
         {
@@ -46,7 +44,8 @@ namespace UI
         {
             Debug.Log("Adding test data from Reference Position Creation Popup");
 
-            LoadedManagers.ReferencePositionManager.AddReferencePosition(currentTime, defaultMeshFilter.mesh.vertices.Select(v => v).ToList());
+            throw new NotImplementedException();
+            // LoadedManagers.ReferencePositionManager.AddReferencePosition(currentTime, defaultMeshFilter.mesh.vertices.Select(v => v).ToList());
             currentTime += 5;
 
             // Wait one frame
