@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using UnityEngine;
 using Value = System.Collections.Generic.List<UnityEngine.Vector3>;
 
@@ -17,7 +18,7 @@ namespace Managers
         public float ki;
         public float kd;
 
-        private Value commandVariable = new();
+        private List<Vector3?> commandVariable = new();
         private Value integral = new();
         private Value state = new();
         
@@ -26,7 +27,7 @@ namespace Managers
             Status = ManagerStatus.Started;
         }
 
-        public void SetCommandVariable(Value newValue)
+        public void SetCommandVariable(List<Vector3?> newValue)
         {
             commandVariable = newValue;
 
@@ -54,8 +55,15 @@ namespace Managers
                 var measurement = item.v;
                 var index = item.i;
 
-                var error = commandVariable[index] - measurement;
-
+                // If we're not controlling this index, return a zero for error, we're where we want to be!
+                if (commandVariable[index] is null)
+                {
+                    update.Add(Vector3.zero);
+                    continue;
+                }
+                
+                var error = (commandVariable[index] - measurement).Value;
+                
                 integral[index] += error;
 
                 var p = kg * kp * error;
