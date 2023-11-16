@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.18028305, g: 0.22571313, b: 0.3069213, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1417,7 +1417,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2113990404}
         m_TargetAssemblyTypeName: UI.ReferencePositionCreationPopup, Assembly-CSharp
-        m_MethodName: AddTest
+        m_MethodName: AddNewReferencePosition
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2065,4 +2065,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   referencePositionPrefab: {fileID: 8806471310354583835, guid: 53e4112040d80be4e8f0b5123d560da3, type: 3}
-  defaultMeshFilter: {fileID: 0}

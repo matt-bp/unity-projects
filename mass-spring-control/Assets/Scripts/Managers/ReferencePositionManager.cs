@@ -18,7 +18,7 @@ namespace Managers
             /// <summary>
             /// As in, enabled to be controlled
             /// </summary>
-            public List<int> EnabledVertices;
+            public List<int> EnabledVertices = new();
         }
 
         public ManagerStatus Status { get; private set; }
@@ -43,16 +43,18 @@ namespace Managers
 
         [SerializeField] private List<ReferencePosition> referencePositions = new();
 
-        public void AddReferencePosition(float time, Value position)
+        public void AddReferencePosition(ReferencePosition newReferencePosition)
         {
-            referencePositions.Add(new ReferencePosition { Time = time, Position = position });
-            referencePositions.Sort();
+            referencePositions.Add(newReferencePosition);
+            // These need to be sorted so that GetCurrentReferencePosition works, it does so by grabbing the position until it can't anymore.
+            referencePositions = referencePositions.OrderBy(rp => rp.Time).ToList();
         }
 
         public List<Vector3?>? GetCurrentReferencePosition(float elapsed)
         {
             List<Vector3?>? position = null;
 
+            // Might just want to find the max value, and take it, not having to iterate so many times.
             foreach (var value in referencePositions.Where(value => elapsed >= value.Time))
             {
                 position = value.Position.Select<Vector3, Vector3?>((p, i) => value.EnabledVertices.Contains(i) ? p : null).ToList();

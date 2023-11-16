@@ -29,32 +29,50 @@ namespace UI
             var referencePositions = LoadedManagers.ReferencePositionManager.GetReferencePositions();
             foreach (var (value, index) in referencePositions.WithIndex())
             {
-                CreateAndAddReferencePositionVisualization(index, value.Time, value.Position);
+                VisualizeReferencePosition(index, value.Time, value.Position);
             }
         }
 
         private float currentTime = 0;
 
-        public void AddTest()
+        public void AddNewReferencePosition()
         {
-            StartCoroutine(AddDefaultPositionAtCurrentTime());
+            StartCoroutine(CopyLastOrCreateAndUpdateTime());
         }
 
-        private IEnumerator AddDefaultPositionAtCurrentTime()
+        private IEnumerator CopyLastOrCreateAndUpdateTime()
         {
             Debug.Log("Adding test data from Reference Position Creation Popup");
 
-            throw new NotImplementedException();
-            // LoadedManagers.ReferencePositionManager.AddReferencePosition(currentTime, defaultMeshFilter.mesh.vertices.Select(v => v).ToList());
-            currentTime += 5;
+            var previousReferences = LoadedManagers.ReferencePositionManager.GetReferencePositions();
 
+            if (!previousReferences.Any())
+            {
+                // Create
+                throw new NotImplementedException();
+            }
+            else
+            {
+                // Copy last and update the time
+                var mostRecentReferencePosition = previousReferences.Last();
+
+                var newReferencePosition = new ReferencePositionManager.ReferencePosition
+                {
+                    Time = mostRecentReferencePosition.Time + 5,
+                    Position = mostRecentReferencePosition.Position.ToList(),
+                    EnabledVertices = mostRecentReferencePosition.EnabledVertices
+                };
+
+                LoadedManagers.ReferencePositionManager.AddReferencePosition(newReferencePosition);
+            }
+            
             // Wait one frame
             yield return null;
 
             Refresh(true);
         }
 
-        private void CreateAndAddReferencePositionVisualization(int index, float time, List<Vector3> pos)
+        private void VisualizeReferencePosition(int index, float time, List<Vector3> pos)
         {
             var refPosPrefab = Instantiate(referencePositionPrefab, Vector3.zero, Quaternion.identity);
             var refPositionUpdater = refPosPrefab.GetComponent<ReferencePositionUpdater>();
