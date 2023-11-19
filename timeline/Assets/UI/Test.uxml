@@ -1,0 +1,14 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:VisualElement style="background-color: rgb(0, 255, 24); flex-direction: column; width: 300px; height: 200px; right: 10px; position: absolute;">
+        <ui:TextField picking-mode="Ignore" label="Text Field" value="filler text" text="filler text" />
+        <ui:MinMaxSlider picking-mode="Ignore" label="Min/Max Slider" min-value="10" max-value="12" low-limit="-10" high-limit="40" />
+        <ui:Slider picking-mode="Ignore" label="Slider" value="42" high-value="100" />
+        <ui:Label text="Yup here I am" display-tooltip-when-elided="true" style="height: 111px; background-color: rgb(0, 0, 0); flex-direction: column-reverse;" />
+        <ui:RadioButtonGroup label="Radio Button Group" value="-1" />
+        <ui:Button text="Button" display-tooltip-when-elided="true" />
+        <ui:Toggle label="Toggle" />
+        <ui:Scroller high-value="100" direction="Horizontal" value="42" />
+        <ui:DropdownField label="Dropdown" index="-1" choices="System.Collections.Generic.List`1[System.String]" />
+        <ui:RadioButton label="Radio Button" />
+    </ui:VisualElement>
+</ui:UXML>
