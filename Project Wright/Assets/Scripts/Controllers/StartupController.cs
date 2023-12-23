@@ -29,8 +29,7 @@ namespace Controllers
 
         private void OnManagersStarted()
         {
-            // LoadedManagers.Level.GoToNextLevel();
-            Debug.Log("Go to next level!");
+            StartedManagers.Level.GoToNextLevel();
         }
     }
 }
