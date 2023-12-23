@@ -1,0 +1,20 @@
+{
+    "name": "Pika.Simulation.Helpers",
+    "rootNamespace": "",
+    "references": [
+        "GUID:75469ad4d38634e559750d17036d5f7c",
+        "GUID:6c1e985154d5b4aebb6381f23c3d70c8",
+        "GUID:d8b63aba1907145bea998dd612889d6b",
+        "GUID:e1e9424caed889d458b514e4507f030b",
+        "GUID:11e437ab159ab5344b0aebc469961355"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
