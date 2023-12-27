@@ -10,6 +10,7 @@ namespace Models
     {
         private string _currentInputMethod = "Keyboard & Mouse";
         private int _currentLevel;
+        private string CurrentLevelName => $"Level_{_currentLevel}";
         [SerializeField] private int lastLevel;
         
         private void OnEnable()
@@ -33,6 +34,8 @@ namespace Models
             {
                 _currentLevel++;
                 Debug.Log("Go to next scene");
+
+                StartCoroutine(StartLevelWithInputMethod());
             }
             else
             {
@@ -47,7 +50,20 @@ namespace Models
 
         private IEnumerator LoadInputSwitchSceneAsync()
         {
-            var load = SceneManager.LoadSceneAsync("Input_Switch");
+            const string inputSwitchingSceneName = "Input_Switch";
+            
+            var load = SceneManager.LoadSceneAsync(inputSwitchingSceneName);
+
+            while (!load.isDone) yield return null;
+            
+            Messenger<string>.Broadcast(ModelToPresenter.CURRENT_INPUT, _currentInputMethod);
+        }
+
+        private IEnumerator StartLevelWithInputMethod()
+        {
+            Debug.Assert(_currentLevel > 0 && _currentLevel <= lastLevel);
+            
+            var load = SceneManager.LoadSceneAsync(CurrentLevelName);
 
             while (!load.isDone) yield return null;
             
