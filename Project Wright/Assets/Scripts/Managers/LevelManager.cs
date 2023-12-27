@@ -19,14 +19,14 @@ namespace Managers
             // The game hasn't started yet
             CurrentLevel = 0;
             // And we have this many levels to do
-            LastLevel = 2;
+            LastLevel = 1;
 
             Status = ManagerStatus.Started;
         }
 
         public void GoToNextLevel()
         {
-            if (CurrentLevel <= LastLevel)
+            if (CurrentLevel < LastLevel)
             {
                 CurrentLevel++;
                 Debug.Log($"Loading {LevelName}");
@@ -34,8 +34,14 @@ namespace Managers
             }
             else
             {
-                Debug.Log("Last level! What do I do? ...");
+                SceneManager.LoadScene("End");
             }
+        }
+
+        public void RestartAndGo()
+        {
+            CurrentLevel = 0;
+            GoToNextLevel();
         }
     }
 }
