@@ -1,5 +1,6 @@
 using Managers;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Controllers
 {
@@ -7,7 +8,7 @@ namespace Controllers
     {
         public void OnClick()
         {
-            StartedManagers.Level.RestartAndGo();
+            SceneManager.LoadScene("Start");
         }
     }
 }

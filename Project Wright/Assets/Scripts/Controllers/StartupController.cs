@@ -1,5 +1,6 @@
 using Managers;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Wright.Library.Messages;
 
@@ -29,7 +30,7 @@ namespace Controllers
 
         private void OnManagersStarted()
         {
-            StartedManagers.Level.GoToNextLevel();
+            SceneManager.LoadScene("Start");
         }
     }
 }

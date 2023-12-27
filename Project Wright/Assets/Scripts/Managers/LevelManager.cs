@@ -16,12 +16,15 @@ namespace Managers
         {
             Debug.Log("Level Manager starting...");
             
-            // The game hasn't started yet
-            CurrentLevel = 0;
             // And we have this many levels to do
             LastLevel = 1;
 
             Status = ManagerStatus.Started;
+        }
+
+        public void StartLevels()
+        {
+            RestartAndGo();
         }
 
         public void GoToNextLevel()
