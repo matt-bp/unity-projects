@@ -1,4 +1,6 @@
+using Events;
 using UnityEngine;
+using Wright.Library.Messages;
 
 namespace Presenters
 {
@@ -6,6 +8,8 @@ namespace Presenters
     {
         public void OnExitClicked()
         {
+            Messenger.Broadcast(PresenterToModel.EXITING_GAME);
+            
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
 #else

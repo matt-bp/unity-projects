@@ -29,6 +29,8 @@ namespace Presenters
         private void OnUsingInput(string input)
         {
             Debug.Log($"Using input {input} for the task.");
+            
+            LoadedModels.Measurement.ResetTime();
         }
 
         private void OnTimeUpdate(double dt)

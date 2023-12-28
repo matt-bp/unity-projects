@@ -31,5 +31,12 @@ namespace Models
                 _timeSinceLastUpdate -= 1;
             }
         }
+
+        public void ResetTime()
+        {
+            Debug.Log("Resetting time");
+            _timeSinceLastUpdate = 0;
+            ElapsedTimeSeconds = 0;
+        }
     }
 }

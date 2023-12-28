@@ -6,6 +6,7 @@ namespace Models
 {
     [RequireComponent(typeof(LevelProgressionModel))]
     [RequireComponent(typeof(TaskMeasurementModel))]
+    [RequireComponent(typeof(DataExportModel))]
     public class LoadedModels : MonoBehaviour
     {
         public static TaskMeasurementModel Measurement { get; private set; }
