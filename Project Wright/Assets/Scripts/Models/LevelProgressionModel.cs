@@ -9,7 +9,7 @@ namespace Models
     public class LevelProgressionModel : MonoBehaviour
     {
         private string _currentInputMethod = "Keyboard & Mouse";
-        private int _currentLevel;
+        private int _currentLevel = 1;
         private string CurrentLevelName => $"Level_{_currentLevel}";
         [SerializeField] private int lastLevel;
         
@@ -18,6 +18,7 @@ namespace Models
             Debug.Log("LPM Enable");
             Messenger.AddListener(PresenterToModel.SWITCHED_INPUT, OnSwitchedInput);
             Messenger.AddListener(GameEvents.START, OnStart);
+            Messenger.AddListener(PresenterToModel.SUBMITTED, OnSubmitted);
         }
 
         private void OnDisable()
@@ -25,12 +26,13 @@ namespace Models
             Debug.Log("LPM Disable");
             Messenger.RemoveListener(PresenterToModel.SWITCHED_INPUT, OnSwitchedInput);
             Messenger.RemoveListener(GameEvents.START, OnStart);
+            Messenger.RemoveListener(PresenterToModel.SUBMITTED, OnSubmitted);
         }
 
         private void OnSwitchedInput()
         {
             Debug.Log("Switched input");
-            if (_currentLevel < lastLevel)
+            if (_currentLevel <= lastLevel)
             {
                 _currentLevel++;
                 Debug.Log("Go to next scene");
@@ -46,6 +48,18 @@ namespace Models
         private void OnStart()
         {
             StartCoroutine(LoadInputSwitchSceneAsync());
+        }
+
+        private void OnSubmitted()
+        {
+            if (_currentLevel >= lastLevel)
+            {
+                LoadEndScene();
+            }
+            else
+            {
+                StartCoroutine(LoadInputSwitchSceneAsync());
+            }
         }
 
         private IEnumerator LoadInputSwitchSceneAsync()
@@ -68,6 +82,11 @@ namespace Models
             while (!load.isDone) yield return null;
             
             Messenger<string>.Broadcast(ModelToPresenter.CURRENT_INPUT, _currentInputMethod);
+        }
+
+        private void LoadEndScene()
+        {
+            // SceneManager.LoadScene("End");
         }
     }
 }
