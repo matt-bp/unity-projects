@@ -6,7 +6,7 @@ namespace Wright.Library.File
     {
         public static string Sanitize(string filename)
         {
-            const string pattern = @"\\";
+            const string pattern = @"[^\d\w\.]";
 
             return Regex.Replace(filename, pattern, "_");
         }
