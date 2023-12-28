@@ -12,7 +12,7 @@ namespace Models
     public class DataExportModel : MonoBehaviour
     {
         [SerializeField] private string filename = "game";
-        [SerializeField] private string extension = ".dat";
+        [SerializeField] private string extension = "dat";
         
         private void OnEnable()
         {
@@ -28,7 +28,7 @@ namespace Models
         
         private void SaveGameStatus()
         {
-            var datedFilename = FilenameSanitizer.Sanitize($"{filename}-{DateTime.UtcNow}.{extension}");
+            var datedFilename = FilenameSanitizer.Sanitize($"{filename}_{DateTime.Now}.{extension}");
             var fullFilename = Path.Combine(Application.persistentDataPath, datedFilename);
             Debug.Log($"Saving file to {fullFilename}");
             var gameState = new Dictionary<string, object> { { "time", LoadedModels.Measurement.ElapsedTimeSeconds } };
