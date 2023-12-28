@@ -34,10 +34,11 @@ namespace Models
             Debug.Log("Switched input");
             if (_currentLevel <= lastLevel)
             {
-                _currentLevel++;
                 Debug.Log("Go to next scene");
 
                 StartCoroutine(StartLevelWithInputMethod());
+                
+                _currentLevel++;
             }
             else
             {
@@ -86,7 +87,7 @@ namespace Models
 
         private void LoadEndScene()
         {
-            // SceneManager.LoadScene("End");
+            SceneManager.LoadScene("End");
         }
     }
 }
