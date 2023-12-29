@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class CursorFollower : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField] private GameObject followerPrefab;
+    [SerializeField] private RectTransform thingToUpdateTransform;
+    [SerializeField] private RectTransform canvasTransform;
 
-    // Update is called once per frame
     void Update()
     {
-        
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasTransform, Input.mousePosition, Camera.current,
+            out var anchoredPos);
+        thingToUpdateTransform.anchoredPosition = anchoredPos;
+        // thingToUpdate.transform.position = new Vector3(point.x, point.y, 0);
     }
 }
