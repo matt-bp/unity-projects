@@ -1,63 +1,68 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
-public class Grid : MonoBehaviour
+namespace Projects.Procedural_Grid.Scripts
 {
-    public int xSize, ySize;
-    private Vector3[] vertices;
-    private Mesh mesh;
+    [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
+    public class Grid : MonoBehaviour
+    {
+        public int xSize, ySize;
+        private Vector3[] vertices;
+        private Mesh mesh;
     
-    private void Awake()
-    {
-        StartCoroutine(Generate());
-    }
-
-    private IEnumerator Generate()
-    {
-        var wait = new WaitForSeconds(0.05f);
-
-        GetComponent<MeshFilter>().mesh = mesh = new Mesh();
-        mesh.name = "Procedural Grid";
-        
-        vertices = new Vector3[(xSize + 1) * (ySize + 1)];
-        
-        for (int i = 0, y = 0; y <= ySize; y++)
+        private void Awake()
         {
-            for (var x = 0; x <= xSize; x++, i++)
+            Generate();
+        }
+
+        private void Generate()
+        {
+            GetComponent<MeshFilter>().mesh = mesh = new Mesh();
+            mesh.name = "Procedural Grid";
+        
+            vertices = new Vector3[(xSize + 1) * (ySize + 1)];
+        
+            for (int i = 0, y = 0; y <= ySize; y++)
             {
-                vertices[i] = new Vector3(x, y);
-                yield return wait;
+                for (var x = 0; x <= xSize; x++, i++)
+                {
+                    vertices[i] = new Vector3(x, y);
+                }
             }
-        }
         
-        mesh.vertices = vertices;
+            mesh.vertices = vertices;
 
-        var triangles = new int[6];
-        triangles[0] = 0;
-        triangles[1] = xSize + 1;
-        triangles[2] = 1;
-        triangles[3] = 1;
-        triangles[4] = xSize + 1;
-        triangles[5] = xSize + 2;
+            int[] triangles = new int[xSize * ySize * 6];
 
-        mesh.triangles = triangles; // has to come after setting vertices
-    }
+            for (int ti = 0, vi = 0, y = 0; y < ySize; y++, vi++)
+            {
+                for (int x = 0; x < xSize; x++, ti += 6, vi++) {
+                    triangles[ti] = vi;
+                    triangles[ti + 3] = triangles[ti + 2] = vi + 1;
+                    triangles[ti + 4] = triangles[ti + 1] = vi + xSize + 1;
+                    triangles[ti + 5] = vi + xSize + 2;
 
-    private void OnDrawGizmos()
-    {
-        if (vertices is null)
-        {
-            return;
+                    mesh.triangles = triangles;
+                }  
+            }
+
+            mesh.triangles = triangles; // has to come after setting vertices
+            mesh.RecalculateNormals();
         }
-        
-        Gizmos.color = Color.black;
-        for (var i = 0; i < vertices.Length; i++)
+
+        private void OnDrawGizmos()
         {
-            // Drawing in world space
-            Gizmos.DrawSphere(vertices[i], 0.1f);
+            if (vertices is null)
+            {
+                return;
+            }
+        
+            Gizmos.color = Color.black;
+            for (var i = 0; i < vertices.Length; i++)
+            {
+                // Drawing in world space
+                Gizmos.DrawSphere(vertices[i], 0.1f);
+            }
         }
     }
 }
