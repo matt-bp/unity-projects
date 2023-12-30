@@ -4,6 +4,7 @@ Shader "Custom/Textured With Detail"
     {
         _Tint("Tint", Color) = (1, 1, 1, 1)
         _MainTex ("Texture", 2D) = "white" {}
+        _DetailTex ("Detail Texture", 2d) = "gray" {}
     }
 
     SubShader
@@ -19,12 +20,15 @@ Shader "Custom/Textured With Detail"
             float4 _Tint;
             sampler2D _MainTex;
             float4 _MainTex_ST; // Getting tiling and offset information
+            sampler2D _DetailTex;
+            float4 _DetailTex_ST;
+            
 
             struct Interpolators
             {
                 float4 position : SV_POSITION;
-                // float3 localPosition : TEXCOORD0;
                 float2 uv : TEXCOORD0;
+                float2 uvDetail : TEXCOORD1;
             };
 
             struct VertexData
@@ -36,15 +40,17 @@ Shader "Custom/Textured With Detail"
             Interpolators MyVertexProgram(VertexData v)
             {
                 Interpolators i;
-                // i.uv = v.uv * _MainTex_ST.xy + _MainTex_ST.zw; // Use below instead
-                i.uv = TRANSFORM_TEX(v.uv, _MainTex); // This appends _ST during the pre-processing step
                 i.position = UnityObjectToClipPos(v.position);
+                i.uv = TRANSFORM_TEX(v.uv, _MainTex);
+                i.uvDetail = TRANSFORM_TEX(v.uv, _DetailTex);
                 return i;
             }
 
             float4 MyFragmentProgram(Interpolators i) : SV_TARGET
             {
-                return tex2D(_MainTex, i.uv) * _Tint;
+                float4 color = tex2D(_MainTex, i.uv) * _Tint;
+                color *= tex2D(_DetailTex, i.uvDetail) * 2;
+                return color;
             }
             ENDCG
         }
