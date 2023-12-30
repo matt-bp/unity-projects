@@ -21,16 +21,19 @@ namespace Projects.Procedural_Grid.Scripts
             mesh.name = "Procedural Grid";
         
             vertices = new Vector3[(xSize + 1) * (ySize + 1)];
-        
+            var uv = new Vector2[vertices.Length];
+            
             for (int i = 0, y = 0; y <= ySize; y++)
             {
                 for (var x = 0; x <= xSize; x++, i++)
                 {
                     vertices[i] = new Vector3(x, y);
+                    uv[i] = new Vector2((float)x / xSize, (float)y / ySize);
                 }
             }
         
             mesh.vertices = vertices;
+            mesh.uv = uv;
 
             int[] triangles = new int[xSize * ySize * 6];
 
@@ -45,7 +48,7 @@ namespace Projects.Procedural_Grid.Scripts
                     mesh.triangles = triangles;
                 }  
             }
-
+            
             mesh.triangles = triangles; // has to come after setting vertices
             mesh.RecalculateNormals();
         }
