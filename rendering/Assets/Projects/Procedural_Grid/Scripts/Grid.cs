@@ -22,6 +22,8 @@ namespace Projects.Procedural_Grid.Scripts
         
             vertices = new Vector3[(xSize + 1) * (ySize + 1)];
             var uv = new Vector2[vertices.Length];
+            var tangents = new Vector4[vertices.Length];
+            var tangent = new Vector4(1, 0, 0, -1);
             
             for (int i = 0, y = 0; y <= ySize; y++)
             {
@@ -29,11 +31,13 @@ namespace Projects.Procedural_Grid.Scripts
                 {
                     vertices[i] = new Vector3(x, y);
                     uv[i] = new Vector2((float)x / xSize, (float)y / ySize);
+                    tangents[i] = tangent;
                 }
             }
         
             mesh.vertices = vertices;
             mesh.uv = uv;
+            mesh.tangents = tangents;
 
             int[] triangles = new int[xSize * ySize * 6];
 
