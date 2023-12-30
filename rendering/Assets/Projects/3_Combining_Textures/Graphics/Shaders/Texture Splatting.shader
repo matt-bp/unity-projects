@@ -1,10 +1,12 @@
-Shader "Custom/Textured With Detail"
+Shader "Custom/Texture Splatting"
 {
     Properties
     {
-        _Tint("Tint", Color) = (1, 1, 1, 1)
-        _MainTex ("Texture", 2D) = "white" {}
-        _DetailTex ("Detail Texture", 2d) = "gray" {}
+        _MainTex ("Splat Map", 2D) = "white" {}
+        [NoScaleOffset] _Texture1 ("Texture 1", 2D) = "white" {}
+        [NoScaleOffset] _Texture2 ("Texture 2", 2D) = "white" {}
+        [NoScaleOffset] _Texture3 ("Texture 3", 2D) = "white" {}
+        [NoScaleOffset] _Texture4 ("Texture 4", 2D) = "white" {}
     }
 
     SubShader
@@ -17,18 +19,16 @@ Shader "Custom/Textured With Detail"
 
             #include "UnityCG.cginc"
 
-            float4 _Tint;
             sampler2D _MainTex;
             float4 _MainTex_ST; // Getting tiling and offset information
-            sampler2D _DetailTex;
-            float4 _DetailTex_ST;
-            
+
+            sampler2D _Texture1, _Texture2, _Texture3, _Texture4;
 
             struct Interpolators
             {
                 float4 position : SV_POSITION;
                 float2 uv : TEXCOORD0;
-                float2 uvDetail : TEXCOORD1;
+                float2 uvSplat : TEXCOORD1;
             };
 
             struct VertexData
@@ -41,16 +41,20 @@ Shader "Custom/Textured With Detail"
             {
                 Interpolators i;
                 i.position = UnityObjectToClipPos(v.position);
-                i.uv = TRANSFORM_TEX(v.uv, _MainTex);
-                i.uvDetail = TRANSFORM_TEX(v.uv, _DetailTex);
+                i.uv = TRANSFORM_TEX(v.uv, _MainTex); // This appends _ST during the pre-processing step
+                i.uvSplat = v.uv;
+
                 return i;
             }
 
             float4 MyFragmentProgram(Interpolators i) : SV_TARGET
             {
-                float4 color = tex2D(_MainTex, i.uv) * _Tint;
-                color *= tex2D(_DetailTex, i.uvDetail);
-                return color * unity_ColorSpaceDouble;
+                float4 splat = tex2D(_MainTex, i.uvSplat);
+                return
+                    tex2D(_Texture1, i.uv) * splat.r +
+                    tex2D(_Texture2, i.uv) * splat.g +
+                    tex2D(_Texture3, i.uv) * splat.b +
+                    tex2D(_Texture4, i.uv) * (1 - splat.r - splat.g - splat.b);
             }
             ENDCG
         }
