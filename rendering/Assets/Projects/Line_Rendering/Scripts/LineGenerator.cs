@@ -18,14 +18,14 @@ namespace Projects.Line_Rendering.Scripts
         {
             Debug.Log($"GOInG");
             var renderer = GetComponent<LineRenderer>();
-            renderer.positionCount = numPoints;
+            renderer.positionCount = numPoints + 1;
 
             var positions = new Vector3[renderer.positionCount];
 
-            var anglePerThing = 360 / (positions.Length - 1);
+            var anglePerThing = 360 / (renderer.positionCount - 1);
             var vectorToRotate = Vector3.left;
 
-            for (int i = 0, currentAngle = 0; i < positions.Length; i++, currentAngle += anglePerThing)
+            for (int i = 0, currentAngle = 0; i < renderer.positionCount; i++, currentAngle += anglePerThing)
             {
                 positions[i] = Quaternion.AngleAxis(currentAngle, Vector3.forward) * vectorToRotate;
             }
