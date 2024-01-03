@@ -9,6 +9,13 @@ Shader "Custom/Always On Top"
     {
         ZTest Always
         
+        Tags
+        {
+            // Needed since the wireframe shader runs as well, and we need to 
+            // guarantee this is always on top.
+            "Queue" = "Geometry+1"
+        }
+        
         Pass
         {
             HLSLPROGRAM
