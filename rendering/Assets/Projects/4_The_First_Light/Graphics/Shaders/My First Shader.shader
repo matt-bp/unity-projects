@@ -10,11 +10,17 @@ Shader "Custom/My First Lighting Shader"
     {
         Pass
         {
+            Tags 
+            {
+                "LightMode" = "ForwardBase"
+            }
+            
             CGPROGRAM
             #pragma vertex MyVertexProgram
             #pragma fragment MyFragmentProgram
 
             #include "UnityCG.cginc"
+            #include "UnityStandardBRDF.cginc" // For DotClamped, and other lighting functions
 
             float4 _Tint;
             sampler2D _MainTex;
@@ -37,15 +43,22 @@ Shader "Custom/My First Lighting Shader"
             Interpolators MyVertexProgram(VertexData v)
             {
                 Interpolators i;
-                i.uv = TRANSFORM_TEX(v.uv, _MainTex); // This appends _ST during the pre-processing step
                 i.position = UnityObjectToClipPos(v.position);
-                i.normal = v.normal;
+                i.uv = TRANSFORM_TEX(v.uv, _MainTex); // This appends _ST during the pre-processing step
+                // i.normal = normalize(mul(transpose((float3x3)unity_ObjectToWorld), v.normal));
+                // i.normal = normalize(mul(v.normal, transpose((float3x3)unity_ObjectToWorld)));
+                i.normal = UnityObjectToWorldNormal(v.normal);
+
                 return i;
             }
 
             float4 MyFragmentProgram(Interpolators i) : SV_TARGET
             {
-                return float4(i.normal * 0.5 + 0.5, 1);
+                i.normal = normalize(i.normal);
+                // return float4(i.normal * 0.5 + 0.5, 1); // Visualize normal
+                // return saturate(dot(float3(0, 1, 0), i.normal)); // Alternatively, use below
+                float3 lightDir = _WorldSpaceLightPos0.xyz;
+                return DotClamped(lightDir, i.normal);
             }
             ENDCG
         }
