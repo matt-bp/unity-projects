@@ -10,6 +10,7 @@ public class CursorFollower : MonoBehaviour
 
     void Update()
     {
+        // Use for getting cursor position on a canvas.
         RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasTransform, Input.mousePosition, Camera.current,
             out var anchoredPos);
         thingToUpdateTransform.anchoredPosition = anchoredPos;
