@@ -51,8 +51,6 @@ public class MouseCaster : MonoBehaviour
         
             if (Input.GetMouseButtonUp(0))
             {
-                // _mouseIndicatorState.Show(); // because we might not be over a cloth
-                // StopTrackingVertices();
                 _trackingState.StopTracking();
             }
         }
@@ -77,21 +75,8 @@ public class MouseCaster : MonoBehaviour
             
             if (Input.GetMouseButtonDown(0))
             {
-                _trackingState.StartTracking(worldSpacePosition);
+                _trackingState.StartTracking(worldSpacePosition, hitObject, size);
             }
-            
-            // If the mouse is down
-            // Start tracking!
-            // Record worldSpacePosition
-            // Record hitObject
-            // Record indices that were hit
-            
-            // if (Input.GetMouseButtonDown(0))
-            // {
-            //     if (!_trackingState.CurrentlyTracking)
-            //         StartKeepingTrackOfVertices(hitObject.GetComponent<MeshFilter>().sharedMesh, hitObject.transform,
-            //             worldSpacePosition);
-            // }
         }
         else
         {
@@ -100,44 +85,44 @@ public class MouseCaster : MonoBehaviour
         }
     }
 
-    // private void StartKeepingTrackOfVertices(Mesh mesh, Transform hitObjectTransform, Vector3 worldSpacePosition)
-    // {
-    //     var indicesToUpdate = mesh.vertices
-    //         .Select((v, i) => new { v = hitObjectTransform.TransformPoint(v), i })
-    //         .Where(pair => Vector3.Distance(pair.v, worldSpacePosition) <= size)
-    //         .Select(pair => pair.i).ToList();
-    //
-    //     Debug.Log($"Found {indicesToUpdate.Count} vertices");
-    //     
-    //     _trackingState = new TrackingState()
-    //     {
-    //         CurrentlyTracking = true,
-    //         Mesh = mesh,
-    //         StartingCursorWorldPosition = worldSpacePosition,
-    //         IndicesToUpdate = indicesToUpdate
-    //     };
-    // }
-    //
-    // private void StopTrackingVertices()
-    // {
-    //     _trackingState = new TrackingState() { CurrentlyTracking = false };
-    // }
-    
     class TrackingState
     {
         public bool CurrentlyTracking { get; private set; }
         private Vector3 _initialPosition;
+        private GameObject _hitObject;
+        private Mesh _meshToUpdate;
+        private Dictionary<int, Vector3> _indicesAndOriginalPositions;
         
-        public void StartTracking(Vector3 initialHitPosition)
+        public void StartTracking(Vector3 initialHitPosition, GameObject hitObject, float radius)
         {
             CurrentlyTracking = true;
             _initialPosition = initialHitPosition;
-
-            // Start tracking
-
-            // Keep list of vertex indices that we hit
+            _hitObject = hitObject;
+            _meshToUpdate = hitObject.GetComponent<MeshFilter>().sharedMesh;
+            
+            _indicesAndOriginalPositions = _meshToUpdate.vertices
+                .Select((v, i) => new { v = hitObject.transform.TransformPoint(v), i })
+                .Where(pair => Vector3.Distance(pair.v, initialHitPosition) <= radius)
+                .ToDictionary(pair => pair.i, pair => pair.v);
+            
+            Debug.Log($"Finished starting tracking! Got {_indicesAndOriginalPositions.Count} indices.");
         }
-        
+
+        public void UpdateIndices(Vector3 offset)
+        {
+            var newPositions = _meshToUpdate.vertices;
+            
+            foreach (var pair in _indicesAndOriginalPositions)
+            {
+                // Start with direct offset, then add offset to original world space,
+                // and convert back to local space for the mesh
+                newPositions[pair.Key] += offset;
+            }
+
+            _meshToUpdate.vertices = newPositions;
+            _meshToUpdate.RecalculateBounds();
+            _meshToUpdate.RecalculateNormals();
+        }
 
         public void StopTracking()
         {
