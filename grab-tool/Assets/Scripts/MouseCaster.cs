@@ -8,7 +8,8 @@ public class MouseCaster : MonoBehaviour
 {
     [SerializeField] private float size;
     [SerializeField] private GameObject hitLocationIndicator;
-    private GameObject hitLocationInstance;
+    // private GameObject _hitLocationInstance;
+    private MouseIndicatorState _mouseIndicatorState;
     private Camera _camera;
 
     class TrackingState
@@ -19,12 +20,44 @@ public class MouseCaster : MonoBehaviour
         public List<int> IndicesToUpdate { get; set; }
     }
 
+    class MouseIndicatorState
+    {
+        private GameObject _instance;
+        private LineRenderer _lineRenderer;
+
+        public MouseIndicatorState(GameObject instance)
+        {
+            _instance = instance;
+            _lineRenderer = instance.GetComponent<LineRenderer>();
+        }
+
+        public void UpdatePosition(Vector3 position, float size)
+        {
+            _instance.transform.position = position;
+            _instance.transform.localScale = new Vector3(size, size, size);
+        }
+
+        public void Hide()
+        {
+            if (_lineRenderer.enabled)
+            {
+                _lineRenderer.enabled = false;
+            }
+        }
+
+        public void Show()
+        {
+            _lineRenderer.enabled = true;
+        }
+    }
+
     private TrackingState _trackingState;
 
     private void Start()
     {
         _camera = Camera.main;
-        hitLocationInstance = Instantiate(hitLocationIndicator, Vector3.zero, Quaternion.identity);
+        _mouseIndicatorState =
+            new MouseIndicatorState(Instantiate(hitLocationIndicator, Vector3.zero, Quaternion.identity));
     }
 
     // Update is called once per frame
@@ -40,33 +73,40 @@ public class MouseCaster : MonoBehaviour
 
             var worldSpacePosition = mouseHit.point;
 
-            UpdateCursorCircle(worldSpacePosition);
+            _mouseIndicatorState.Show();
+            _mouseIndicatorState.UpdatePosition(worldSpacePosition, size);
             
-            if (Input.GetMouseButtonDown(0))
-            {
-                if (!_trackingState.CurrentlyTracking)
-                    StartKeepingTrackOfVertices(hitObject.GetComponent<MeshFilter>().sharedMesh, hitObject.transform,
-                        worldSpacePosition);
-            }
+            // if (Input.GetMouseButtonDown(0))
+            // {
+            //     if (!_trackingState.CurrentlyTracking)
+            //         StartKeepingTrackOfVertices(hitObject.GetComponent<MeshFilter>().sharedMesh, hitObject.transform,
+            //             worldSpacePosition);
+            // }
+        }
+        else
+        {
+            _mouseIndicatorState.Hide();
         }
 
         if (Input.GetMouseButton(0))
         {
+            _mouseIndicatorState.Hide();
             Debug.Log("Moving everywhere");
             // Update the vertices with how far we've come so far, from the beginning, not the last move.
         }
         
         if (Input.GetMouseButtonUp(0))
         {
-            StopTrackingVertices();
+            _mouseIndicatorState.Show();
+            // StopTrackingVertices();
         }
     }
 
-    private void UpdateCursorCircle(Vector3 worldSpacePosition)
-    {
-        hitLocationInstance.transform.position = worldSpacePosition;
-        hitLocationInstance.transform.localScale = new Vector3(size, size, size);
-    }
+    // private void UpdateCursorCircle(Vector3 worldSpacePosition)
+    // {
+    //     _hitLocationInstance.transform.position = worldSpacePosition;
+    //     _hitLocationInstance.transform.localScale = new Vector3(size, size, size);
+    // }
 
     private void StartKeepingTrackOfVertices(Mesh mesh, Transform hitObjectTransform, Vector3 worldSpacePosition)
     {
