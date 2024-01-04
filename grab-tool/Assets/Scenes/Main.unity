@@ -278,7 +278,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   size: 1
-  hitLocationIndicator: {fileID: 8785789554699229785, guid: 5dc8f5c961c841e4782ad5450ff8ede5, type: 3}
+  hitLocationIndicatorPrefab: {fileID: 8785789554699229785, guid: 5dc8f5c961c841e4782ad5450ff8ede5, type: 3}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
