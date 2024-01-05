@@ -280,6 +280,7 @@ MonoBehaviour:
   size: 1
   hitLocationIndicatorPrefab: {fileID: 8785789554699229785, guid: 5dc8f5c961c841e4782ad5450ff8ede5, type: 3}
   planeIntersectionIndicatorPrefab: {fileID: 500564696420371316, guid: d73bc889377bd9b48af10616d5ca5b09, type: 3}
+  startPrefab: {fileID: 500564696420371316, guid: 9b7ea4806841f0c49bd2efc28d8d4310, type: 3}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0

@@ -13,6 +13,8 @@ public class MouseCaster : MonoBehaviour
     private readonly TrackingState _trackingState = new();
     [SerializeField] private GameObject planeIntersectionIndicatorPrefab;
     private GameObject _planeIntersectionIndicatorInstance;
+    [SerializeField] private GameObject startPrefab;
+    private GameObject _startInstance;
 
     private void Start()
     {
@@ -21,6 +23,7 @@ public class MouseCaster : MonoBehaviour
             new MouseIndicatorState(Instantiate(hitLocationIndicatorPrefab, Vector3.zero, Quaternion.identity));
         _planeIntersectionIndicatorInstance =
             Instantiate(planeIntersectionIndicatorPrefab, Vector3.zero, Quaternion.identity);
+        _startInstance = Instantiate(startPrefab, Vector3.zero, Quaternion.identity);
     }
 
     // Update is called once per frame
@@ -61,7 +64,7 @@ public class MouseCaster : MonoBehaviour
                     {
                         newPoint = ray.GetPoint(t);
                         Debug.Log("Intersection at: " + newPoint);
-                        // _planeIntersectionIndicatorInstance.transform.position = newPoint;
+                        _planeIntersectionIndicatorInstance.transform.position = newPoint;
                     }
                     else
                     {
@@ -108,6 +111,7 @@ public class MouseCaster : MonoBehaviour
             if (Input.GetMouseButtonDown(0))
             {
                 _trackingState.StartTracking(worldSpacePosition, hitObject, size);
+                _startInstance.transform.position = worldSpacePosition;
             }
         }
         else
