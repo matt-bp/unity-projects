@@ -15,6 +15,7 @@ public class MouseCaster : MonoBehaviour
     private GameObject _planeIntersectionIndicatorInstance;
     [SerializeField] private GameObject startPrefab;
     private GameObject _startInstance;
+    [SerializeField] private MeshFilter[] meshesToCheckCollision;
 
     private void Start()
     {
@@ -39,8 +40,6 @@ public class MouseCaster : MonoBehaviour
                 _mouseIndicatorState.Hide();
                 Debug.Log("Moving everywhere");
                 
-                var newPoint = _trackingState.InitialPosition;
-
                 // I need that point in a plane parallel to the camera XY plane.
                 // - Get the camera normal, and reverse it
                 var planeNormal = -_camera.transform.forward;
@@ -49,35 +48,12 @@ public class MouseCaster : MonoBehaviour
                 
                 Debug.DrawRay(point, planeNormal * 2);
                 
-                // - Create a ray 
-                Console.WriteLine(ray);
-                // - Intersect the ray with the plane
-                var denom = Vector3.Dot(planeNormal, ray.direction);
-                if (Mathf.Abs(denom) > Mathf.Epsilon)
+                if (Intersections.RayPlane(ray, point, planeNormal, out var hit))
                 {
-                    var t = Vector3.Dot(point - ray.origin, planeNormal) / denom;
-                    if (t >= 0)
-                    {
-                        newPoint = ray.GetPoint(t);
-                        Debug.Log("Intersection at: " + newPoint);
-                        _planeIntersectionIndicatorInstance.transform.position = newPoint;
-                    }
-                    else
-                    {
-                        Debug.Log("No hit!");
-                    }
+                    Debug.Log("Intersection at: " + hit.point);
+                    _planeIntersectionIndicatorInstance.transform.position = hit.point;
+                    _trackingState.UpdateIndices(hit.point);
                 }
-                else
-                {
-                    Debug.Log("No hit!");
-                }
-
-                // From intersection point, compute a difference to adjust points by.
-                // - Add this difference to the points original position.
-
-                // replace with newPoint
-                _trackingState.UpdateIndices(newPoint);
-
             }
         
             if (Input.GetMouseButtonUp(0))
@@ -93,14 +69,15 @@ public class MouseCaster : MonoBehaviour
 
     private void CheckForMouseOverAndStart(Ray ray)
     {
+        // Will probably use something like this for VR
         if (Physics.Raycast(ray, out var mouseHit, 1000, LayerMask.GetMask("MovableCloth")))
         {
             var hitObject = mouseHit.transform.gameObject;
-
+        
             // Debug.Log($"Mouse is over: {hitObject.name}");
-
+        
             var worldSpacePosition = mouseHit.point;
-
+        
             _mouseIndicatorState.Show();
             _mouseIndicatorState.UpdatePosition(worldSpacePosition, size);
             
@@ -115,6 +92,15 @@ public class MouseCaster : MonoBehaviour
             // If we're not over the cloth, we for sure wont see anything
             _mouseIndicatorState.Hide();
         }
+        
+        // if (MyMath.Raycast(ray, meshesToCheckCollision.First(), out var houseHit))
+        // {
+        //     Debug.Log("Over!");
+        // }
+        // else
+        // {
+        //     Debug.Log("Not over");
+        // }
     }
 
     class TrackingState

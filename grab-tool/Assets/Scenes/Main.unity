@@ -281,6 +281,8 @@ MonoBehaviour:
   hitLocationIndicatorPrefab: {fileID: 8785789554699229785, guid: 5dc8f5c961c841e4782ad5450ff8ede5, type: 3}
   planeIntersectionIndicatorPrefab: {fileID: 500564696420371316, guid: d73bc889377bd9b48af10616d5ca5b09, type: 3}
   startPrefab: {fileID: 500564696420371316, guid: 9b7ea4806841f0c49bd2efc28d8d4310, type: 3}
+  meshesToCheckCollision:
+  - {fileID: 1416996909}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -827,6 +829,11 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 7629811779324647873, guid: 3070abe886f96f042a0ff8af9a6c50b0, type: 3}
+--- !u!33 &1416996909 stripped
+MeshFilter:
+  m_CorrespondingSourceObject: {fileID: -5754084199372789682, guid: 3070abe886f96f042a0ff8af9a6c50b0, type: 3}
+  m_PrefabInstance: {fileID: 1416996906}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1416996912
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1082,7 +1089,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 167.9, y: -42.16}
+  m_AnchoredPosition: {x: 167.9, y: -42.160004}
   m_SizeDelta: {x: 291.26, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1819629875
