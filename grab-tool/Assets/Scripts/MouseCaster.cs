@@ -141,7 +141,7 @@ public class MouseCaster : MonoBehaviour
             bool LocalVertexInWorldHitRadius(Vector3 v) => Vector3.Distance(v, initialHitPosition) <= radius;
             
             _indicesAndOriginalPositions = _meshToUpdate.vertices
-                .Select((v, i) => new { v = hitObject.transform.TransformPoint(v), i })
+                .Select((v, i) => new { v, i })
                 .Where(pair => LocalVertexInWorldHitRadius(pair.v))
                 .ToDictionary(pair => pair.i, pair => pair.v);
 
@@ -163,23 +163,21 @@ public class MouseCaster : MonoBehaviour
             };
             
             // Test
-            var first = _indicesAndOriginalPositions.First();
+            // var first = _indicesAndOriginalPositions.First();
 
             // Moving in the Z axis for world.
             // var delta = new Vector3(0, 0, 0.2f * Time.deltaTime);
-            var localPos = _hitObject.transform.InverseTransformPoint(delta1);
-            Debug.Log("First is: " + first.Value);
-            newPositions[first.Key] = first.Value + localPos;
-            Debug.Log("Result: " + newPositions[first.Key]);
+            // var localPos = _hitObject.transform.InverseTransformVector(delta1);
+            // Debug.Log("First is: " + first.Value);
+            // newPositions[first.Key] = first.Value + localPos;
+            // Debug.Log("Result: " + newPositions[first.Key]);
+
+            // var localDelta = Vector3.zero;
             
-            // foreach (var pair in _indicesAndOriginalPositions)
-            // {
-            //     var newPos = _hitObject.transform.TransformPoint(newPositions[pair.Key]);
-            //     // newPos += offset * Time.deltaTime;
-            //     // Start with direct offset, then add offset to original world space,
-            //     // and convert back to local space for the mesh
-            //     newPositions[pair.Key] += _hitObject.transform.InverseTransformPoint(newPos);
-            // }
+            foreach (var pair in _indicesAndOriginalPositions.Take(1))
+            {
+                newPositions[pair.Key] = pair.Value;
+            }
 
             UpdateMeshes(newPositions);
         }
