@@ -138,7 +138,8 @@ public class MouseCaster : MonoBehaviour
             _meshToUpdate = hitObject.GetComponent<MeshFilter>().sharedMesh;
             _meshCollider = hitObject.GetComponent<MeshCollider>();
 
-            bool LocalVertexInWorldHitRadius(Vector3 v) => Vector3.Distance(v, initialHitPosition) <= radius;
+            bool LocalVertexInWorldHitRadius(Vector3 p) => 
+                Vector3.Distance( hitObject.transform.TransformPoint(p), initialHitPosition) <= radius;
             
             _indicesAndOriginalPositions = _meshToUpdate.vertices
                 .Select((v, i) => new { v, i })
@@ -167,7 +168,7 @@ public class MouseCaster : MonoBehaviour
 
             // Moving in the Z axis for world.
             // var delta = new Vector3(0, 0, 0.2f * Time.deltaTime);
-            // var localPos = _hitObject.transform.InverseTransformVector(delta1);
+            var localDelta = _hitObject.transform.InverseTransformVector(delta1);
             // Debug.Log("First is: " + first.Value);
             // newPositions[first.Key] = first.Value + localPos;
             // Debug.Log("Result: " + newPositions[first.Key]);
@@ -176,7 +177,7 @@ public class MouseCaster : MonoBehaviour
             
             foreach (var pair in _indicesAndOriginalPositions.Take(1))
             {
-                newPositions[pair.Key] = pair.Value;
+                newPositions[pair.Key] = pair.Value + localDelta;
             }
 
             UpdateMeshes(newPositions);
