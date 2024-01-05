@@ -16,6 +16,10 @@ public class MouseCaster : MonoBehaviour
     [SerializeField] private GameObject startPrefab;
     private GameObject _startInstance;
     [SerializeField] private MeshFilter[] meshesToCheckCollision;
+    
+    [Tooltip("X = Radius percentage distance from hit point.\nY = Strength of offset.")]
+    public AnimationCurve dragSensitivityCurve = new(new Keyframe(0, 1), new Keyframe(1, 0));
+
 
     private void Start()
     {
@@ -50,9 +54,9 @@ public class MouseCaster : MonoBehaviour
                 
                 if (Intersections.RayPlane(ray, point, planeNormal, out var hit))
                 {
-                    Debug.Log("Intersection at: " + hit.point);
-                    _planeIntersectionIndicatorInstance.transform.position = hit.point;
-                    _trackingState.UpdateIndices(hit.point);
+                    Debug.Log("Intersection at: " + hit.Point);
+                    _planeIntersectionIndicatorInstance.transform.position = hit.Point;
+                    _trackingState.UpdateIndices(hit.Point);
                 }
             }
         
@@ -69,18 +73,44 @@ public class MouseCaster : MonoBehaviour
 
     private void CheckForMouseOverAndStart(Ray ray)
     {
-        // Will probably use something like this for VR
-        if (Physics.Raycast(ray, out var mouseHit, 1000, LayerMask.GetMask("MovableCloth")))
+        // // Will probably use something like this for VR
+        // if (Physics.Raycast(ray, out var mouseHit, 1000, LayerMask.GetMask("MovableCloth")))
+        // {
+        //     var hitObject = mouseHit.transform.gameObject;
+        //
+        //     // Debug.Log($"Mouse is over: {hitObject.name}");
+        //
+        //     var worldSpacePosition = mouseHit.point;
+        //
+        //     _mouseIndicatorState.Show();
+        //     _mouseIndicatorState.UpdatePosition(worldSpacePosition, size);
+        //     
+        //     if (Input.GetMouseButtonDown(0))
+        //     {
+        //         _trackingState.StartTracking(worldSpacePosition, hitObject, size);
+        //         _startInstance.transform.position = worldSpacePosition;
+        //     }
+        // }
+        // else
+        // {
+        //     // If we're not over the cloth, we for sure wont see anything
+        //     _mouseIndicatorState.Hide();
+        // }
+        
+        if (MyMath.Raycast(ray, meshesToCheckCollision.First(), out var mouseHit))
         {
-            var hitObject = mouseHit.transform.gameObject;
-        
-            // Debug.Log($"Mouse is over: {hitObject.name}");
-        
-            var worldSpacePosition = mouseHit.point;
-        
+            Debug.Log("Over!");
+
+
+            var hitObject = mouseHit.Transform.gameObject;
+
+            Debug.Log($"Mouse is over: {hitObject.name}");
+
+            var worldSpacePosition = mouseHit.Point;
+
             _mouseIndicatorState.Show();
             _mouseIndicatorState.UpdatePosition(worldSpacePosition, size);
-            
+
             if (Input.GetMouseButtonDown(0))
             {
                 _trackingState.StartTracking(worldSpacePosition, hitObject, size);
@@ -92,15 +122,6 @@ public class MouseCaster : MonoBehaviour
             // If we're not over the cloth, we for sure wont see anything
             _mouseIndicatorState.Hide();
         }
-        
-        // if (MyMath.Raycast(ray, meshesToCheckCollision.First(), out var houseHit))
-        // {
-        //     Debug.Log("Over!");
-        // }
-        // else
-        // {
-        //     Debug.Log("Not over");
-        // }
     }
 
     class TrackingState

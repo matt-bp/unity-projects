@@ -283,6 +283,30 @@ MonoBehaviour:
   startPrefab: {fileID: 500564696420371316, guid: 9b7ea4806841f0c49bd2efc28d8d4310, type: 3}
   meshesToCheckCollision:
   - {fileID: 1416996909}
+  dragSensitivityCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.9991455
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.99819946
+      value: 0.0008544922
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
