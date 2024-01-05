@@ -117,6 +117,11 @@ public class MouseCaster : MonoBehaviour
         }
     }
 
+    public void OnSizeChanged(float value)
+    {
+        size = value;
+    }
+
     class TrackingState
     {
         public bool CurrentlyTracking { get; private set; }
