@@ -11,12 +11,16 @@ public class MouseCaster : MonoBehaviour
     private MouseIndicatorState _mouseIndicatorState;
     private Camera _camera;
     private readonly TrackingState _trackingState = new();
+    [SerializeField] private GameObject planeIntersectionIndicatorPrefab;
+    private GameObject _planeIntersectionIndicatorInstance;
 
     private void Start()
     {
         _camera = Camera.main;
         _mouseIndicatorState =
             new MouseIndicatorState(Instantiate(hitLocationIndicatorPrefab, Vector3.zero, Quaternion.identity));
+        _planeIntersectionIndicatorInstance =
+            Instantiate(planeIntersectionIndicatorPrefab, Vector3.zero, Quaternion.identity);
     }
 
     // Update is called once per frame
@@ -32,23 +36,49 @@ public class MouseCaster : MonoBehaviour
                 _mouseIndicatorState.Hide();
                 Debug.Log("Moving everywhere");
                 
-                _trackingState.UpdateIndices(new Vector3(0, 0, 0.001f));
-            
+
                 // Update the vertices with how far we've come so far, from the beginning, not the last move.
-            
+
+                var newPoint = _trackingState.InitialPosition;
+                
                 // Get where the cursor is now
             
                 // I need how far it is from where it started
             
                 // I need that point in a plane parallel to the camera XY plane.
                 // - Get the camera normal, and reverse it
+                var planeNormal = -_camera.transform.forward;
                 // - Get the point that we started at (1st mouse down)
-                // - Create a ray
+                var point = _trackingState.InitialPosition;
+                // - Create a ray 
+                Console.WriteLine(ray);
                 // - Intersect the ray with the plane
-            
+                var denom = Vector3.Dot(planeNormal, ray.direction);
+                if (Mathf.Abs(denom) > Mathf.Epsilon)
+                {
+                    var t = Vector3.Dot(point - ray.origin, planeNormal) / denom;
+                    if (t >= 0)
+                    {
+                        newPoint = ray.GetPoint(t);
+                        Debug.Log("Intersection at: " + newPoint);
+                        // _planeIntersectionIndicatorInstance.transform.position = newPoint;
+                    }
+                    else
+                    {
+                        Debug.Log("No hit!");
+                    }
+                }
+                else
+                {
+                    Debug.Log("No hit!");
+                }
+
                 // From intersection point, compute a difference to adjust points by.
                 // - Add this difference to the points original position.
-            
+
+                // replace with newPoint
+                _trackingState.UpdateIndices(newPoint);
+
             }
         
             if (Input.GetMouseButtonUp(0))
@@ -90,7 +120,7 @@ public class MouseCaster : MonoBehaviour
     class TrackingState
     {
         public bool CurrentlyTracking { get; private set; }
-        private Vector3 _initialPosition;
+        public Vector3 InitialPosition { get; private set; }
         private GameObject _hitObject;
         private Mesh _meshToUpdate;
         private MeshCollider _meshCollider;
@@ -99,7 +129,7 @@ public class MouseCaster : MonoBehaviour
         public void StartTracking(Vector3 initialHitPosition, GameObject hitObject, float radius)
         {
             CurrentlyTracking = true;
-            _initialPosition = initialHitPosition;
+            InitialPosition = initialHitPosition;
             _hitObject = hitObject;
             _meshToUpdate = hitObject.GetComponent<MeshFilter>().sharedMesh;
             _meshCollider = hitObject.GetComponent<MeshCollider>();
@@ -116,19 +146,27 @@ public class MouseCaster : MonoBehaviour
 
         public void UpdateIndices(Vector3 worldMousePosition)
         {
-            // var delta = worldMousePosition - _initialPosition; // Also, go to local space
+            Debug.Log("Initial: " + InitialPosition + ", Current: " + worldMousePosition);
+            var delta1 = worldMousePosition - InitialPosition; // Also, go to local space
+            Debug.Log("Delta 1 is: " + delta1);
             
             var newPositions = _meshToUpdate.vertices;
 
-            if (!_indicesAndOriginalPositions.Any()) return;
+            if (!_indicesAndOriginalPositions.Any())
+            {
+                Debug.Log("No indices currently");
+                return;
+            };
             
             // Test
             var first = _indicesAndOriginalPositions.First();
 
             // Moving in the Z axis for world.
-            var delta = new Vector3(0, 0, 0.2f * Time.deltaTime);
-            var localPos = _hitObject.transform.InverseTransformVector(delta);
-            newPositions[first.Key] += localPos;
+            // var delta = new Vector3(0, 0, 0.2f * Time.deltaTime);
+            var localPos = _hitObject.transform.InverseTransformPoint(delta1);
+            Debug.Log("First is: " + first.Value);
+            newPositions[first.Key] = first.Value + localPos;
+            Debug.Log("Result: " + newPositions[first.Key]);
             
             // foreach (var pair in _indicesAndOriginalPositions)
             // {
@@ -148,7 +186,7 @@ public class MouseCaster : MonoBehaviour
             _meshToUpdate.RecalculateBounds();
             _meshToUpdate.RecalculateNormals();
             
-            // Need to assign the mesh every frame to get collisions happening correctly.
+            // Need to assign the mesh every frame to get intersections happening correctly.
             // See: https://forum.unity.com/threads/how-to-update-a-mesh-collider.32467/
             _meshCollider.sharedMesh = _meshToUpdate;
         }
