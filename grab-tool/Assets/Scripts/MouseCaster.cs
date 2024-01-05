@@ -39,20 +39,16 @@ public class MouseCaster : MonoBehaviour
                 _mouseIndicatorState.Hide();
                 Debug.Log("Moving everywhere");
                 
-
-                // Update the vertices with how far we've come so far, from the beginning, not the last move.
-
                 var newPoint = _trackingState.InitialPosition;
-                
-                // Get where the cursor is now
-            
-                // I need how far it is from where it started
-            
+
                 // I need that point in a plane parallel to the camera XY plane.
                 // - Get the camera normal, and reverse it
                 var planeNormal = -_camera.transform.forward;
                 // - Get the point that we started at (1st mouse down)
                 var point = _trackingState.InitialPosition;
+                
+                Debug.DrawRay(point, planeNormal * 2);
+                
                 // - Create a ray 
                 Console.WriteLine(ray);
                 // - Intersect the ray with the plane
@@ -151,29 +147,10 @@ public class MouseCaster : MonoBehaviour
 
         public void UpdateIndices(Vector3 worldMousePosition)
         {
-            Debug.Log("Initial: " + InitialPosition + ", Current: " + worldMousePosition);
-            var delta1 = worldMousePosition - InitialPosition; // Also, go to local space
-            Debug.Log("Delta 1 is: " + delta1);
-            
+            var localDelta = _hitObject.transform.InverseTransformVector(worldMousePosition - InitialPosition);
             var newPositions = _meshToUpdate.vertices;
 
-            if (!_indicesAndOriginalPositions.Any())
-            {
-                Debug.Log("No indices currently");
-                return;
-            };
-            
-            // Test
-            // var first = _indicesAndOriginalPositions.First();
-
-            // Moving in the Z axis for world.
-            // var delta = new Vector3(0, 0, 0.2f * Time.deltaTime);
-            var localDelta = _hitObject.transform.InverseTransformVector(delta1);
-            // Debug.Log("First is: " + first.Value);
-            // newPositions[first.Key] = first.Value + localPos;
-            // Debug.Log("Result: " + newPositions[first.Key]);
-
-            // var localDelta = Vector3.zero;
+            if (!_indicesAndOriginalPositions.Any()) return;
             
             foreach (var pair in _indicesAndOriginalPositions.Take(1))
             {
