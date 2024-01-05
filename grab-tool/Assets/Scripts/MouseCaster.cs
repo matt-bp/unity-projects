@@ -43,8 +43,7 @@ public class MouseCaster : MonoBehaviour
             if (Input.GetMouseButton(0))
             {
                 _mouseIndicatorState.Hide();
-                Debug.Log("Moving everywhere");
-                
+
                 // I need that point in a plane parallel to the camera XY plane.
                 // - Get the camera normal, and reverse it
                 var planeNormal = -_camera.transform.forward;
@@ -55,7 +54,6 @@ public class MouseCaster : MonoBehaviour
                 
                 if (Intersections.RayPlane(ray, point, planeNormal, out var hit))
                 {
-                    Debug.Log("Intersection at: " + hit.Point);
                     _planeIntersectionIndicatorInstance.transform.position = hit.Point;
                     _trackingState.UpdateIndices(hit.Point);
                 }
@@ -100,13 +98,7 @@ public class MouseCaster : MonoBehaviour
         
         if (MyMath.Raycast(ray, meshesToCheckCollision.First(), out var mouseHit))
         {
-            Debug.Log("Over!");
-
-
             var hitObject = mouseHit.Transform.gameObject;
-
-            Debug.Log($"Mouse is over: {hitObject.name}");
-
             var worldSpacePosition = mouseHit.Point;
 
             _mouseIndicatorState.Show();
