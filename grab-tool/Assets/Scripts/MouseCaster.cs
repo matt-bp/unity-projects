@@ -1,8 +1,5 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting.Dependencies.Sqlite;
 using UnityEngine;
 
 public class MouseCaster : MonoBehaviour
@@ -12,10 +9,7 @@ public class MouseCaster : MonoBehaviour
     private MouseIndicatorState _mouseIndicatorState;
     private Camera _camera;
     private readonly TrackingState _trackingState = new();
-    [SerializeField] private GameObject planeIntersectionIndicatorPrefab;
-    private GameObject _planeIntersectionIndicatorInstance;
-    [SerializeField] private GameObject startPrefab;
-    private GameObject _startInstance;
+
     [SerializeField] private MeshFilter[] meshesToCheckCollision;
     
     [Tooltip("X = Radius percentage distance from hit point.\nY = Strength of offset.")]
@@ -27,9 +21,6 @@ public class MouseCaster : MonoBehaviour
         _camera = Camera.main;
         _mouseIndicatorState =
             new MouseIndicatorState(Instantiate(hitLocationIndicatorPrefab, Vector3.zero, Quaternion.identity));
-        _planeIntersectionIndicatorInstance =
-            Instantiate(planeIntersectionIndicatorPrefab, Vector3.zero, Quaternion.identity);
-        _startInstance = Instantiate(startPrefab, Vector3.zero, Quaternion.identity);
     }
 
     // Update is called once per frame
@@ -54,7 +45,6 @@ public class MouseCaster : MonoBehaviour
                 
                 if (Intersections.RayPlane(ray, point, planeNormal, out var hit))
                 {
-                    _planeIntersectionIndicatorInstance.transform.position = hit.Point;
                     _trackingState.UpdateIndices(hit.Point);
                 }
             }
@@ -107,7 +97,6 @@ public class MouseCaster : MonoBehaviour
             if (Input.GetMouseButtonDown(0))
             {
                 _trackingState.StartTracking(worldSpacePosition, hitObject, size, dragSensitivityCurve);
-                _startInstance.transform.position = worldSpacePosition;
             }
         }
         else
