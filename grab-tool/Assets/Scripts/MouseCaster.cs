@@ -95,8 +95,7 @@ public class MouseCaster : MonoBehaviour
         private Mesh _meshToUpdate;
         private MeshCollider _meshCollider;
         private Dictionary<int, Vector3> _indicesAndOriginalPositions;
-        private float _elapsed;
-        
+
         public void StartTracking(Vector3 initialHitPosition, GameObject hitObject, float radius)
         {
             CurrentlyTracking = true;
@@ -104,26 +103,28 @@ public class MouseCaster : MonoBehaviour
             _hitObject = hitObject;
             _meshToUpdate = hitObject.GetComponent<MeshFilter>().sharedMesh;
             _meshCollider = hitObject.GetComponent<MeshCollider>();
+
+            bool LocalVertexInWorldHitRadius(Vector3 v) => Vector3.Distance(v, initialHitPosition) <= radius;
             
             _indicesAndOriginalPositions = _meshToUpdate.vertices
                 .Select((v, i) => new { v = hitObject.transform.TransformPoint(v), i })
-                .Where(pair => Vector3.Distance(pair.v, initialHitPosition) <= radius)
+                .Where(pair => LocalVertexInWorldHitRadius(pair.v))
                 .ToDictionary(pair => pair.i, pair => pair.v);
 
-            _elapsed = 0;
-            
             Debug.Log($"Finished starting tracking! Got {_indicesAndOriginalPositions.Count} indices.");
         }
 
-        public void UpdateIndices(Vector3 offset)
+        public void UpdateIndices(Vector3 worldMousePosition)
         {
+            // var delta = worldMousePosition - _initialPosition; // Also, go to local space
+            
             var newPositions = _meshToUpdate.vertices;
 
+            if (!_indicesAndOriginalPositions.Any()) return;
+            
+            // Test
             var first = _indicesAndOriginalPositions.First();
 
-            _elapsed += Time.deltaTime;
-            
-            
             // Moving in the Z axis for world.
             var delta = new Vector3(0, 0, 0.2f * Time.deltaTime);
             var localPos = _hitObject.transform.InverseTransformVector(delta);
