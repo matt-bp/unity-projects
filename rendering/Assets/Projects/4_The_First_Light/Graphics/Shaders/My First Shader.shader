@@ -3,7 +3,7 @@ Shader "Custom/My First Lighting Shader"
     Properties
     {
         _Tint("Tint", Color) = (1, 1, 1, 1)
-        _MainTex ("Texture", 2D) = "white" {}
+        _MainTex ("Albedo", 2D) = "white" {}
     }
 
     SubShader
@@ -18,8 +18,7 @@ Shader "Custom/My First Lighting Shader"
             CGPROGRAM
             #pragma vertex MyVertexProgram
             #pragma fragment MyFragmentProgram
-
-            #include "UnityCG.cginc"
+            
             #include "UnityStandardBRDF.cginc" // For DotClamped, and other lighting functions
 
             float4 _Tint;
@@ -58,7 +57,12 @@ Shader "Custom/My First Lighting Shader"
                 // return float4(i.normal * 0.5 + 0.5, 1); // Visualize normal
                 // return saturate(dot(float3(0, 1, 0), i.normal)); // Alternatively, use below
                 float3 lightDir = _WorldSpaceLightPos0.xyz;
-                return DotClamped(lightDir, i.normal);
+                float3 lightColor = _LightColor0.rgb;
+
+                float3 albedo = tex2D(_MainTex, i.uv).rgb * _Tint.rgb;
+                float3 diffuse = albedo * lightColor * DotClamped(lightDir, i.normal);
+                
+                return float4(diffuse, 1);
             }
             ENDCG
         }

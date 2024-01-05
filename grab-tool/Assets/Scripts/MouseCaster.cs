@@ -31,6 +31,8 @@ public class MouseCaster : MonoBehaviour
             {
                 _mouseIndicatorState.Hide();
                 Debug.Log("Moving everywhere");
+                
+                _trackingState.UpdateIndices(new Vector3(0, 0, 0.001f));
             
                 // Update the vertices with how far we've come so far, from the beginning, not the last move.
             
@@ -91,7 +93,9 @@ public class MouseCaster : MonoBehaviour
         private Vector3 _initialPosition;
         private GameObject _hitObject;
         private Mesh _meshToUpdate;
+        private MeshCollider _meshCollider;
         private Dictionary<int, Vector3> _indicesAndOriginalPositions;
+        private float _elapsed;
         
         public void StartTracking(Vector3 initialHitPosition, GameObject hitObject, float radius)
         {
@@ -99,11 +103,14 @@ public class MouseCaster : MonoBehaviour
             _initialPosition = initialHitPosition;
             _hitObject = hitObject;
             _meshToUpdate = hitObject.GetComponent<MeshFilter>().sharedMesh;
+            _meshCollider = hitObject.GetComponent<MeshCollider>();
             
             _indicesAndOriginalPositions = _meshToUpdate.vertices
                 .Select((v, i) => new { v = hitObject.transform.TransformPoint(v), i })
                 .Where(pair => Vector3.Distance(pair.v, initialHitPosition) <= radius)
                 .ToDictionary(pair => pair.i, pair => pair.v);
+
+            _elapsed = 0;
             
             Debug.Log($"Finished starting tracking! Got {_indicesAndOriginalPositions.Count} indices.");
         }
@@ -111,17 +118,38 @@ public class MouseCaster : MonoBehaviour
         public void UpdateIndices(Vector3 offset)
         {
             var newPositions = _meshToUpdate.vertices;
-            
-            foreach (var pair in _indicesAndOriginalPositions)
-            {
-                // Start with direct offset, then add offset to original world space,
-                // and convert back to local space for the mesh
-                newPositions[pair.Key] += offset;
-            }
 
+            var first = _indicesAndOriginalPositions.First();
+
+            _elapsed += Time.deltaTime;
+            
+            
+            // Moving in the Z axis for world.
+            var delta = new Vector3(0, 0, 0.2f * Time.deltaTime);
+            var localPos = _hitObject.transform.InverseTransformVector(delta);
+            newPositions[first.Key] += localPos;
+            
+            // foreach (var pair in _indicesAndOriginalPositions)
+            // {
+            //     var newPos = _hitObject.transform.TransformPoint(newPositions[pair.Key]);
+            //     // newPos += offset * Time.deltaTime;
+            //     // Start with direct offset, then add offset to original world space,
+            //     // and convert back to local space for the mesh
+            //     newPositions[pair.Key] += _hitObject.transform.InverseTransformPoint(newPos);
+            // }
+
+            UpdateMeshes(newPositions);
+        }
+
+        private void UpdateMeshes(Vector3[] newPositions)
+        {
             _meshToUpdate.vertices = newPositions;
             _meshToUpdate.RecalculateBounds();
             _meshToUpdate.RecalculateNormals();
+            
+            // Need to assign the mesh every frame to get collisions happening correctly.
+            // See: https://forum.unity.com/threads/how-to-update-a-mesh-collider.32467/
+            _meshCollider.sharedMesh = _meshToUpdate;
         }
 
         public void StopTracking()
