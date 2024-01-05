@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting.Dependencies.Sqlite;
 using UnityEngine;
 
 public class MouseCaster : MonoBehaviour
@@ -113,7 +114,7 @@ public class MouseCaster : MonoBehaviour
 
             if (Input.GetMouseButtonDown(0))
             {
-                _trackingState.StartTracking(worldSpacePosition, hitObject, size);
+                _trackingState.StartTracking(worldSpacePosition, hitObject, size, dragSensitivityCurve);
                 _startInstance.transform.position = worldSpacePosition;
             }
         }
@@ -131,23 +132,33 @@ public class MouseCaster : MonoBehaviour
         private GameObject _hitObject;
         private Mesh _meshToUpdate;
         private MeshCollider _meshCollider;
-        private Dictionary<int, Vector3> _indicesAndOriginalPositions;
+        private Dictionary<int, (Vector3 LocalPoint, float CloseRatio)> _indicesAndOriginalPositions;
+        private AnimationCurve _falloff;
 
-        public void StartTracking(Vector3 initialHitPosition, GameObject hitObject, float radius)
+        public void StartTracking(Vector3 initialHitPosition, GameObject hitObject, float radius, AnimationCurve falloff)
         {
             CurrentlyTracking = true;
             InitialPosition = initialHitPosition;
             _hitObject = hitObject;
             _meshToUpdate = hitObject.GetComponent<MeshFilter>().sharedMesh;
             _meshCollider = hitObject.GetComponent<MeshCollider>();
-
-            bool LocalVertexInWorldHitRadius(Vector3 p) => 
-                Vector3.Distance( hitObject.transform.TransformPoint(p), initialHitPosition) <= radius;
+            _falloff = falloff;
             
+            // Make sure we have the valid range of [0, 1].
+            Debug.Assert(_falloff.keys.Any(k => k.time >= 1));
+            Debug.Assert(_falloff.keys.Any(k => k.time <= 0));
+            
+            float GetWorldSpaceDistance(Vector3 p) =>
+                Vector3.Distance(hitObject.transform.TransformPoint(p), initialHitPosition);
+
             _indicesAndOriginalPositions = _meshToUpdate.vertices
-                .Select((v, i) => new { v, i })
-                .Where(pair => LocalVertexInWorldHitRadius(pair.v))
-                .ToDictionary(pair => pair.i, pair => pair.v);
+                .Select((v, i) => new { v, i, closeRatio = GetWorldSpaceDistance(v) / radius })
+                .Where(x => x.closeRatio is >= 0 and <= 1)
+                .ToDictionary(x => x.i, x => (x.v, x.closeRatio));
+                
+                
+                // .Where(x => x.dist <= radius)
+                // .ToDictionary(pair => pair.i, pair => pair.v);
 
             Debug.Log($"Finished starting tracking! Got {_indicesAndOriginalPositions.Count} indices.");
         }
@@ -159,9 +170,11 @@ public class MouseCaster : MonoBehaviour
 
             if (!_indicesAndOriginalPositions.Any()) return;
             
-            foreach (var pair in _indicesAndOriginalPositions.Take(1))
+            foreach (var contents in _indicesAndOriginalPositions)
             {
-                newPositions[pair.Key] = pair.Value + localDelta;
+                Debug.Assert(contents.Value.CloseRatio is >= 0 and <= 1);
+                
+                newPositions[contents.Key] = contents.Value.LocalPoint + localDelta * _falloff.Evaluate(contents.Value.CloseRatio) ;
             }
 
             UpdateMeshes(newPositions);

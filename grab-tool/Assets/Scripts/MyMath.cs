@@ -24,7 +24,6 @@ public static class MyMath
             // Intersect ray with triangle
             if (Intersections.RayTriangle(ray, triangle[0], triangle[1], triangle[2], out var triangleHit))
             {
-                Debug.Log($"Hit at {triangleHit.Point}");
                 hit = new Intersections.CustomRaycastHit()
                 {
                     Point = triangleHit.Point,
